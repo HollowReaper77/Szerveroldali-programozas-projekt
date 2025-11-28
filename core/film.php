@@ -1,12 +1,12 @@
 <?php
 
 
-class Post{
+class Film{
     //db tulajdonságok
     private $conn;
     private $table = "film";
 
-    //post tulajdonságok
+    //film tulajdonságok
     // TODO: PONTOSÍTANI MINDEN OSZTÁLYBAN A LEKÉRDEZÉSEK MEZŐIT
     
     public $film_id;
@@ -31,7 +31,15 @@ class Post{
         return $stmt;
     }
 
+    public function read_single(){
+        $query = "SELECT `film_id`,`cim`,`idotartam`,`poszter_url`,`leiras`,`kiadasi_ev` FROM `film` WHERE film_id = ? LIMIT 1";
 
+        $stmt = $this->conn->prepare($query);
+
+        $stmt->execute();
+
+        return $stmt;
+    }
 }
 
 

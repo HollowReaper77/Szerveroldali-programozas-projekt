@@ -8,18 +8,18 @@
     include_once('../core/initialize.php');
 
 
-    // a post előkészítése
-    $post = new Post($db);
+    // a film előkészítése
+    $film = new Film($db);
 
     // query használata
-    $result = $post->read();
+    $result = $film->read();
 
     //sorok számának lekérdezése
     $num = $result->rowCount();
 
     if($num > 0){
-        $post_arr = array();
-        $post_arr['data'] = array();
+        $film_arr = array();
+        $film_arr['data'] = array();
 
         while($row = $result->fetch(PDO::FETCH_ASSOC)){
             extract($row);
@@ -31,7 +31,7 @@
                 'leiras' => $leiras,
                 'kiadas_ev' => $kiadas_ev
             );
-            array_push($post_arr['data'.$film_item]);
+            array_push($film_arr['data'.$film_item]);
         }
         echo json_encode($film_item);
     }else{
