@@ -12,7 +12,7 @@ class Film{
     public $film_id;
     public $cim;
     public $idotartam;
-    public $poszter_ul;
+    public $poszter_url;
     public $leiras;
     public $kiadas_ev;
 
@@ -22,7 +22,13 @@ class Film{
 
     public function read(){
 
-        $query = "SELECT `film_id`,`cim`,`idotartam`,`poszter_url`,`leiras`,`kiadasi_ev` FROM `film`";
+        $query = "SELECT `film_id`,
+        `cim`,
+        `idotartam`,
+        `poszter_url`,
+        `leiras`,
+        `kiadasi_ev`
+         FROM `film`";
 
         $stmt = $this->conn->prepare($query);
 
@@ -32,13 +38,37 @@ class Film{
     }
 
     public function read_single(){
-        $query = "SELECT `film_id`,`cim`,`idotartam`,`poszter_url`,`leiras`,`kiadasi_ev` FROM `film` WHERE film_id = ? LIMIT 1";
+        $query = "SELECT `film_id`,
+        `cim`,
+        `idotartam`,
+        `poszter_url`,
+        `leiras`,
+        `kiadasi_ev` 
+        FROM ". $this->table.
+        " WHERE film_id = ? LIMIT 1";
 
+        
+        
         $stmt = $this->conn->prepare($query);
-
+        $stmt-> bindParam(1, $this->film_id);
         $stmt->execute();
+        
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        
+        $this->film_id =$row['film_id'];
+        $this->cim =$row['cím'];
+        $this->idotartam =$row['idotartam'];
+        $this->poszter_url =$row['poszter_url'];
+        $this->leiras =$row['leiras'];
+        $this->kiadas_ev =$row['kiadasev'];
 
         return $stmt;
+
+
+
+
+
+
     }
 }
 
