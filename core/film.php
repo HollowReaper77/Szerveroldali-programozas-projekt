@@ -56,7 +56,7 @@ class Film{
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         
         $this->film_id =$row['film_id'];
-        $this->cim =$row['cím'];
+        $this->cim =$row['cim'];
         $this->idotartam =$row['idotartam'];
         $this->poszter_url =$row['poszter_url'];
         $this->leiras =$row['leiras'];
@@ -66,7 +66,7 @@ class Film{
     }
 
     public function create(){
-        $query = 'INSERT INTO ' .$this->table. 'SET cim = : cim, idotartam = : idotartam, poszt_url = : poszt_url, leiras = : leiras, kiadas_ev = : kiadas_ev';
+        $query = 'INSERT INTO ' .$this->table. 'SET cim = :cim, idotartam = :idotartam, poszter_url = :poszter_url, leiras = :leiras, kiadas_ev = :kiadas_ev';
         $stmt = $this->conn->prepare($query);
 
         $this->film_id =        htmlspecialchars(strip_tags($this->film_id));
@@ -96,7 +96,7 @@ class Film{
 
         public function update(){
         $query = 'UPDATE' .$this->table. '
-        SET cim = : cim, idotartam = : idotartam, poszt_url = : poszt_url, leiras = : leiras, kiadas_ev = : kiadas_ev
+        SET cim = : cim, idotartam = : idotartam, poszter_url = : poszter_url, leiras = : leiras, kiadas_ev = : kiadas_ev
         WHERE film_id = :film_id';
         $stmt = $this->conn->prepare($query);
 
@@ -126,7 +126,7 @@ class Film{
 
 
     public function delete(){
-        $query = 'DELETE FROM ' .$this->table. ' WHERE ID = : film_id';
+        $query = 'DELETE FROM ' .$this->table. ' WHERE film_id = : film_id';
 
         $stmt = $this->conn->prepare($query);
 
@@ -144,19 +144,6 @@ class Film{
 
 
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
