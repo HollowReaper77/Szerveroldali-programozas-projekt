@@ -9,7 +9,7 @@
 
 
     // a film előkészítése
-    $film = new Film($db);
+    $film = new Film($dbConn);
 
     // query használata
     $result = $film->read();
