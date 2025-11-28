@@ -16,7 +16,7 @@ class Film{
     public $leiras;
     public $kiadas_ev;
 
-    public function __construct($dbdbConn) {
+    public function __construct($dbConn) {
         $this->conn = $dbConn;
     }
 
