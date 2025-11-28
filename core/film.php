@@ -124,6 +124,42 @@ class Film{
 
     }
 
+
+    public function delete(){
+        $query = 'DELETE FROM ' .$this->table. ' WHERE ID = : film_id';
+
+        $stmt = $this->conn->prepare($query);
+
+        $this->film_id = htmlspecialchars(strip_tags($this->film_id));
+        $stmt->bindParam(':id', $this->film_id);
+
+
+        if($stmt->execute()){
+            return true;
+        }
+
+        printf("Error %s \n", $stmt->error);
+        return false;
+
+
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }
 
 
