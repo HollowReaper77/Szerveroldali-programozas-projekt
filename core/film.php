@@ -14,7 +14,7 @@ class Film{
     public $idotartam;
     public $poszter_url;
     public $leiras;
-    public $kiadas_ev;
+    public $kiadasi_ev;
 
     public function __construct($dbConn) {
         $this->conn = $dbConn;
@@ -60,13 +60,13 @@ class Film{
         $this->idotartam =$row['idotartam'];
         $this->poszter_url =$row['poszter_url'];
         $this->leiras =$row['leiras'];
-        $this->kiadas_ev =$row['kiadasev'];
+        $this->kiadasi_ev =$row['kiadasev'];
 
         return $stmt;
     }
 
     public function create(){
-        $query = 'INSERT INTO ' .$this->table. 'SET cim = :cim, idotartam = :idotartam, poszter_url = :poszter_url, leiras = :leiras, kiadas_ev = :kiadas_ev';
+        $query = 'INSERT INTO ' .$this->table. ' SET cim = :cim, idotartam = :idotartam, poszter_url = :poszter_url, leiras = :leiras, kiadasi_ev = :kiadasi_ev';
         $stmt = $this->conn->prepare($query);
 
         $this->film_id =        htmlspecialchars(strip_tags($this->film_id));
@@ -74,7 +74,7 @@ class Film{
         $this->idotartam =      htmlspecialchars(strip_tags($this->idotartam));
         $this->poszter_url =    htmlspecialchars(strip_tags($this->poszter_url));
         $this->leiras =         htmlspecialchars(strip_tags($this->leiras));
-        $this->kiadas_ev =      htmlspecialchars(strip_tags($this->kiadas_ev));
+        $this->kiadasi_ev =      htmlspecialchars(strip_tags($this->kiadasi_ev));
 
 
         $stmt->bindParam(':film_id', $this->film_id);
@@ -82,7 +82,7 @@ class Film{
         $stmt->bindParam(':idotartam', $this->idotartam);
         $stmt->bindParam(':poszter_url', $this->poszter_url);
         $stmt->bindParam(':leiras', $this->leiras);
-        $stmt->bindParam(':kiadas_ev', $this->kiadas_ev);
+        $stmt->bindParam(':kiadasi_ev', $this->kiadasi_ev);
 
         if($stmt->execute()){
             return true;
@@ -95,8 +95,7 @@ class Film{
 
 
         public function update(){
-        $query = 'UPDATE' .$this->table. '
-        SET cim = : cim, idotartam = : idotartam, poszter_url = : poszter_url, leiras = : leiras, kiadas_ev = : kiadas_ev
+        $query = 'UPDATE' .$this->table. ' SET cim = : cim, idotartam = : idotartam, poszter_url = : poszter_url, leiras = : leiras, kiadasi_ev = : kiadasi_ev
         WHERE film_id = :film_id';
         $stmt = $this->conn->prepare($query);
 
@@ -104,7 +103,7 @@ class Film{
         $this->idotartam =      htmlspecialchars(strip_tags($this->idotartam));
         $this->poszter_url =    htmlspecialchars(strip_tags($this->poszter_url));
         $this->leiras =         htmlspecialchars(strip_tags($this->leiras));
-        $this->kiadas_ev =      htmlspecialchars(strip_tags($this->kiadas_ev));
+        $this->kiadasi_ev =      htmlspecialchars(strip_tags($this->kiadasi_ev));
         $this->film_id =        htmlspecialchars(strip_tags($this->film_id));
 
 
@@ -113,7 +112,7 @@ class Film{
         $stmt->bindParam(':idotartam', $this->idotartam);
         $stmt->bindParam(':poszter_url', $this->poszter_url);
         $stmt->bindParam(':leiras', $this->leiras);
-        $stmt->bindParam(':kiadas_ev', $this->kiadas_ev);
+        $stmt->bindParam(':kiadasi_ev', $this->kiadasi_ev);
 
         if($stmt->execute()){
             return true;
@@ -131,7 +130,7 @@ class Film{
         $stmt = $this->conn->prepare($query);
 
         $this->film_id = htmlspecialchars(strip_tags($this->film_id));
-        $stmt->bindParam(':id', $this->film_id);
+        $stmt->bindParam(':film_id', $this->film_id);
 
 
         if($stmt->execute()){
