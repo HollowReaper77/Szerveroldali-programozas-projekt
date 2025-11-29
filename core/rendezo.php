@@ -1,6 +1,6 @@
 <?php
 
-class Director {
+class Rendezo {
     private $conn;
     private $table = "rendezok";
 

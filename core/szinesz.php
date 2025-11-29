@@ -1,6 +1,6 @@
 <?php
 
-class Actor {
+class Szinesz {
     private $conn;
     private $table = "szineszek";
 
