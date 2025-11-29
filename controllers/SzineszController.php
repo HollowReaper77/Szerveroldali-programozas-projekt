@@ -1,6 +1,6 @@
 <?php
 
-require_once __DIR__ . '/../models/szinesz.php';
+require_once __DIR__ . '/../core/szinesz.php';
 
 class SzineszController {
 

@@ -1,6 +1,6 @@
 <?php
 
-require_once __DIR__ . '/../models/Film.php';
+require_once __DIR__ . '/../core/Film.php';
 
 class FilmController {
 
@@ -49,7 +49,7 @@ class FilmController {
                 "idotartam" => $this->filmModel->idotartam,
                 "poszter_url" => $this->filmModel->poszter_url,
                 "leiras" => $this->filmModel->leiras,
-                "kiadas_ev" => $this->filmModel->kiadas_ev
+                "kiadas_ev" => $this->filmModel->kiadasi_ev
             ]);
         } else {
             http_response_code(404);
@@ -79,7 +79,7 @@ class FilmController {
         $this->filmModel->idotartam = $data->idotartam;
         $this->filmModel->poszter_url = $data->poszter_url;
         $this->filmModel->leiras = $data->leiras;
-        $this->filmModel->kiadas_ev = $data->kiadas_ev;
+        $this->filmModel->kiadasi_ev = $data->kiadas_ev;
 
         if ($this->filmModel->create()) {
             http_response_code(201);
@@ -102,7 +102,7 @@ class FilmController {
         $this->filmModel->idotartam = $data->idotartam ?? null;
         $this->filmModel->poszter_url = $data->poszter_url ?? null;
         $this->filmModel->leiras = $data->leiras ?? null;
-        $this->filmModel->kiadas_ev = $data->kiadas_ev ?? null;
+        $this->filmModel->kiadasi_ev = $data->kiadas_ev ?? null;
 
         if ($this->filmModel->update()) {
             http_response_code(200);

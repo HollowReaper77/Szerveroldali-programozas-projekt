@@ -1,7 +1,7 @@
 
 <?php
 
-require_once __DIR__ . '/../models/FilmMufaj.php';
+require_once __DIR__ . '/../core/FilmMufaj.php';
 
 class FilmMufajController {
 
