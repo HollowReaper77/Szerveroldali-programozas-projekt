@@ -60,7 +60,7 @@ class Film{
         $this->idotartam =$row['idotartam'];
         $this->poszter_url =$row['poszter_url'];
         $this->leiras =$row['leiras'];
-        $this->kiadasi_ev =$row['kiadasev'];
+        $this->kiadasi_ev =$row['kiadasi_ev'];
 
         return $stmt;
     }
