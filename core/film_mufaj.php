@@ -1,22 +1,22 @@
 <?php
-// TODO: eldönteni, hogy megfelelnek-e teljesen az elnevezések
-class Szereplo {
+
+class FilmMufaj {
     private $conn;
-    private $table = "szerepel_benne";
+    private $table = "film_mufaj";
 
     public $film_id;
-    public $szinesz_id;
+    public $mufaj_id;
 
     public function __construct($dbConn){
         $this->conn = $dbConn;
     }
 
-    // GET all actors of a film
-    public function getActorsByFilm(){
-        $query = "SELECT s.szinesz_id, s.nev, s.szuletesi_datum, s.bio
-                  FROM szerepel_benne sb
-                  JOIN szineszek s ON sb.szinesz_id = s.szinesz_id
-                  WHERE sb.film_id = :film_id";
+    // GET all genres of a film
+    public function getGenresByFilm(){
+        $query = "SELECT m.mufaj_id, m.nev
+                  FROM film_mufaj fm
+                  JOIN mufajok m ON fm.mufaj_id = m.mufaj_id
+                  WHERE fm.film_id = :film_id";
 
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(':film_id', $this->film_id);
@@ -25,44 +25,44 @@ class Szereplo {
         return $stmt;
     }
 
-    // GET all films of an actor
-    public function getFilmsByActor(){
+    // GET all films of a genre
+    public function getFilmsByGenre(){
         $query = "SELECT f.film_id, f.cim, f.idotartam, f.poszter_url, f.leiras, f.kiadasi_ev
-                  FROM szerepel_benne sb
-                  JOIN film f ON sb.film_id = f.film_id
-                  WHERE sb.szinesz_id = :szinesz_id";
+                  FROM film_mufaj fm
+                  JOIN film f ON fm.film_id = f.film_id
+                  WHERE fm.mufaj_id = :mufaj_id";
 
         $stmt = $this->conn->prepare($query);
-        $stmt->bindParam(':szinesz_id', $this->szinesz_id);
+        $stmt->bindParam(':mufaj_id', $this->mufaj_id);
         $stmt->execute();
 
         return $stmt;
     }
 
-    // ADD actor to film
+    // ADD genre to film
     public function create(){
         $query = "INSERT INTO {$this->table}
                   SET film_id = :film_id,
-                      szinesz_id = :szinesz_id";
+                      mufaj_id = :mufaj_id";
 
         $stmt = $this->conn->prepare($query);
 
         $stmt->bindParam(':film_id', $this->film_id);
-        $stmt->bindParam(':szinesz_id', $this->szinesz_id);
+        $stmt->bindParam(':mufaj_id', $this->mufaj_id);
 
         return $stmt->execute();
     }
 
-    // REMOVE actor from film
+    // REMOVE genre from film
     public function delete(){
         $query = "DELETE FROM {$this->table}
                   WHERE film_id = :film_id
-                    AND szinesz_id = :szinesz_id";
+                    AND mufaj_id = :mufaj_id";
 
         $stmt = $this->conn->prepare($query);
 
         $stmt->bindParam(':film_id', $this->film_id);
-        $stmt->bindParam(':szinesz_id', $this->szinesz_id);
+        $stmt->bindParam(':mufaj_id', $this->mufaj_id);
 
         return $stmt->execute();
     }
