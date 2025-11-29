@@ -77,7 +77,6 @@ class Film{
         $this->kiadasi_ev =      htmlspecialchars(strip_tags($this->kiadasi_ev));
 
 
-        $stmt->bindParam(':film_id', $this->film_id);
         $stmt->bindParam(':cim', $this->cim);
         $stmt->bindParam(':idotartam', $this->idotartam);
         $stmt->bindParam(':poszter_url', $this->poszter_url);
