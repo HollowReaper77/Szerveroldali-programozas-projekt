@@ -17,6 +17,7 @@ require_once __DIR__ . '/../controllers/MufajController.php';
 require_once __DIR__ . '/../controllers/NemzetisegController.php';
 require_once __DIR__ . '/../controllers/SzereploController.php';
 require_once __DIR__ . '/../controllers/FilmMufajController.php';
+require_once __DIR__ . '/../controllers/RendezoController.php';
 
 
 
@@ -43,6 +44,7 @@ switch ($urlParts[0]) {
     // -----------------------------------------
     // FILMEK
     // -----------------------------------------
+    
     case "films":
         $controller = new FilmController($db);
         
@@ -73,6 +75,7 @@ switch ($urlParts[0]) {
     // -----------------------------------------
     // SZÍNÉSZEK
     // -----------------------------------------
+
     case "actors":
         $controller = new SzineszController($db);
 
@@ -101,6 +104,7 @@ switch ($urlParts[0]) {
     // -----------------------------------------
     // MŰFAJOK
     // -----------------------------------------
+
     case "genres":
         $controller = new MufajController($db);
 
@@ -129,6 +133,7 @@ switch ($urlParts[0]) {
     // -----------------------------------------
     // ORSZÁGOK
     // -----------------------------------------
+
     case "countries":
         $controller = new NemzetisegController($db);
 
@@ -157,6 +162,7 @@ switch ($urlParts[0]) {
     // -----------------------------------------
     // FILM–SZÍNÉSZ kapcsolat
     // -----------------------------------------
+
     case "film-actors":
         $controller = new SzereploController($db);
 
@@ -184,6 +190,7 @@ switch ($urlParts[0]) {
     // -----------------------------------------
     // FILM–MŰFAJ kapcsolat
     // -----------------------------------------
+
     case "film-genres":
         $controller = new FilmMufajController($db);
 
@@ -213,4 +220,34 @@ switch ($urlParts[0]) {
         http_response_code(404);
         echo json_encode(["message" => "Endpoint not found"]);
         break;
+
+
+
+    // -----------------------------------------
+    // RENDEZŐK
+    // -----------------------------------------
+case "directors":
+    $controller = new RendezoController($db);
+
+    if ($method === 'GET') {
+        if (isset($urlParts[1])) {
+            $controller->getDirector($urlParts[1]);
+        } else {
+            $controller->getAllDirectors();
+        }
+    }
+
+    if ($method === 'POST') {
+        $controller->createDirector();
+    }
+
+    if ($method === 'PUT') {
+        $controller->updateDirector($urlParts[1]);
+    }
+
+    if ($method === 'DELETE') {
+        $controller->deleteDirector($urlParts[1]);
+    }
+
+    break;
 }
