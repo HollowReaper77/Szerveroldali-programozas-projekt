@@ -11,7 +11,7 @@
     // a film előkészítése
     $film = new Film($dbConn);
 
-    $film->film_id = isset($_GET['id']) ? $_GET['ID'] : die();
+    $film->film_id = isset($_GET['id']) ? $_GET['id'] : die();
     $film->read_single();
 
     $film_arr = array(
@@ -20,7 +20,7 @@
         'idotartam' => $film->idotartam,
         'poszter_url' => $film->poszter_url,
         'leiras' => $film->leiras,
-        'kiadas_ev' => $film->kiadas_ev,
+        'kiadas_ev' => $film->kiadasi_ev,
     );
 
     print_r(json_encode($film_arr));
