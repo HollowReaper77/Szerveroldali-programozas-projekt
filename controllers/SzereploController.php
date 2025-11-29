@@ -1,6 +1,6 @@
 <?php
 
-require_once __DIR__ . '/../models/szereplo.php';
+require_once __DIR__ . '/../core/szereplo.php';
 
 class SzereploController {
 

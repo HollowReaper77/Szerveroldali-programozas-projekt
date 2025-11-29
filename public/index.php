@@ -19,7 +19,16 @@ require_once __DIR__ . '/../controllers/SzereploController.php';
 require_once __DIR__ . '/../controllers/FilmMufajController.php';
 
 
-require_once __DIR__ . '/../config/config.php'; 
+
+require_once __DIR__ . '/../core/film.php';
+require_once __DIR__ . '/../core/szinesz.php';
+require_once __DIR__ . '/../core/mufaj.php';
+require_once __DIR__ . '/../core/orszag.php';
+require_once __DIR__ . '/../core/szereplo.php';
+require_once __DIR__ . '/../core/film_mufaj.php';
+
+
+require_once __DIR__ . '/../include/config.php'; 
 $db = $dbConn;
 
 $url = isset($_GET['url']) ? rtrim($_GET['url'], '/') : '';

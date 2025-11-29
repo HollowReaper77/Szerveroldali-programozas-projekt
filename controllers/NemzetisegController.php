@@ -1,6 +1,6 @@
 <?php
 
-require_once __DIR__ . '/../models/orszag.php';
+require_once __DIR__ . '/../core/orszag.php';
 
 class NemzetisegController {
 

@@ -1,6 +1,6 @@
 <?php
 
-require_once __DIR__ . '/../models/mufaj.php';
+require_once __DIR__ . '/../core/mufaj.php';
 
 class MufajController {
 
