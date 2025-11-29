@@ -10,7 +10,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
 }
 
 // autoload
-require_once __DIR__ . '/../config/Database.php';
+//require_once __DIR__ . '/../include/config.php';
 require_once __DIR__ . '/../controllers/FilmController.php';
 require_once __DIR__ . '/../controllers/SzineszController.php';
 require_once __DIR__ . '/../controllers/MufajController.php';
@@ -18,8 +18,9 @@ require_once __DIR__ . '/../controllers/NemzetisegController.php';
 require_once __DIR__ . '/../controllers/SzereploController.php';
 require_once __DIR__ . '/../controllers/FilmMufajController.php';
 
-$database = new Database();
-$db = $database->connect();
+
+require_once __DIR__ . '/../config/config.php'; 
+$db = $dbConn;
 
 $url = isset($_GET['url']) ? rtrim($_GET['url'], '/') : '';
 $urlParts = explode('/', $url);
@@ -64,7 +65,7 @@ switch ($urlParts[0]) {
     // SZÍNÉSZEK
     // -----------------------------------------
     case "actors":
-        $controller = new ActorController($db);
+        $controller = new SzineszController($db);
 
         if ($method === 'GET') {
             if (isset($urlParts[1])) {
@@ -92,7 +93,7 @@ switch ($urlParts[0]) {
     // MŰFAJOK
     // -----------------------------------------
     case "genres":
-        $controller = new GenreController($db);
+        $controller = new MufajController($db);
 
         if ($method === 'GET') {
             if (isset($urlParts[1])) {
@@ -120,7 +121,7 @@ switch ($urlParts[0]) {
     // ORSZÁGOK
     // -----------------------------------------
     case "countries":
-        $controller = new CountryController($db);
+        $controller = new NemzetisegController($db);
 
         if ($method === 'GET') {
             if (isset($urlParts[1])) {
@@ -148,7 +149,7 @@ switch ($urlParts[0]) {
     // FILM–SZÍNÉSZ kapcsolat
     // -----------------------------------------
     case "film-actors":
-        $controller = new CastController($db);
+        $controller = new SzereploController($db);
 
         if ($method === 'GET') {
             // /film-actors/film/{id}
@@ -175,7 +176,7 @@ switch ($urlParts[0]) {
     // FILM–MŰFAJ kapcsolat
     // -----------------------------------------
     case "film-genres":
-        $controller = new FilmGenreController($db);
+        $controller = new FilmMufajController($db);
 
         if ($method === 'GET') {
             if ($urlParts[1] === "film") {
