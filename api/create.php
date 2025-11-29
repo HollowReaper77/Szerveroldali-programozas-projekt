@@ -3,7 +3,7 @@
 
     header('Access-Control-Allow-Origin: *');
     header('Content-Type: application/json');
-    header('Acces-Control-Allow-Methods: POST');
+    header('Access-Control-Allow-Methods: POST');
     header('Access-Control-Allow-Headers: Access-Control-Allow-Headers, Content-Type, Access-Control-Allow-Methods, Authorization,X-Requested-With');
 
     // előkészíteni az api-t
@@ -20,7 +20,7 @@
     $film->idotartam = $data->idotartam;
     $film->poszter_url = $data->poszter_url;
     $film->leiras = $data->leiras;
-    $film->kiadas_ev = $data->kiadas_ev;
+    $film->kiadasi_ev = $data->kiadasi_ev;
 
 
     if($film->create()){

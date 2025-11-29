@@ -10,6 +10,11 @@
     require_once(INC_PATH.DS."config.php");
 
     //fő (core) osztályok
-    require_once(CORE_PATH.DS."post.php");
-    
+    require_once(CORE_PATH.DS."film.php");
+    require_once(CORE_PATH.DS."film_mufaj.php");
+    require_once(CORE_PATH.DS."mufaj.php");
+    require_once(CORE_PATH.DS."orszag.php");
+    require_once(CORE_PATH.DS."rendezo.php");
+    require_once(CORE_PATH.DS."szereplo.php");
+    require_once(CORE_PATH.DS."szinesz.php");
 ?>

@@ -60,7 +60,7 @@ class Film{
         $this->idotartam =$row['idotartam'];
         $this->poszter_url =$row['poszter_url'];
         $this->leiras =$row['leiras'];
-        $this->kiadasi_ev =$row['kiadasev'];
+        $this->kiadasi_ev =$row['kiadasi_ev'];
 
         return $stmt;
     }
@@ -77,7 +77,6 @@ class Film{
         $this->kiadasi_ev =      htmlspecialchars(strip_tags($this->kiadasi_ev));
 
 
-        $stmt->bindParam(':film_id', $this->film_id);
         $stmt->bindParam(':cim', $this->cim);
         $stmt->bindParam(':idotartam', $this->idotartam);
         $stmt->bindParam(':poszter_url', $this->poszter_url);

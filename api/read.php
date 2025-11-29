@@ -29,11 +29,11 @@
                 'idotartam' => $idotartam,
                 'poszter_url' => $poszter_url,
                 'leiras' => $leiras,
-                'kiadas_ev' => $kiadas_ev
+                'kiadasi_ev' => $kiadasi_ev
             );
             array_push($film_arr['data'], $film_item);
         }
-        echo json_encode($film_item);
+        echo json_encode($film_arr);
     }else{
         echo json_encode(array('message' => 'Nem található film.'));
     }

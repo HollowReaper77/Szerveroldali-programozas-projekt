@@ -28,7 +28,7 @@ require_once __DIR__ . '/../core/szereplo.php';
 require_once __DIR__ . '/../core/film_mufaj.php';
 
 
-require_once __DIR__ . '/../include/config.php'; 
+require_once __DIR__ . '/../core/initialize.php'; 
 $db = $dbConn;
 
 $url = isset($_GET['url']) ? rtrim($_GET['url'], '/') : '';
