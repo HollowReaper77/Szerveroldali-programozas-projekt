@@ -1,6 +1,6 @@
 <?php
 
-require_once __DIR__ . '/../core/Film.php';
+require_once __DIR__ . '/../core/film.php';
 
 class FilmController {
 

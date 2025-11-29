@@ -7,7 +7,7 @@
     header('Access-Control-Allow-Headers: Access-Control-Allow-Headers, Content-Type, Access-Control-Allow-Methods, Authorization,X-Requested-With');
 
     // előkészíteni az api-t
-    include_once('../core/initialize.php');
+    include_once('../models/initialize.php');
 
 
     // a film előkészítése
