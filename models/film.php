@@ -93,7 +93,7 @@ class Film{
 
 
         public function update(){
-        $query = 'UPDATE' .$this->table. ' SET cim = : cim, idotartam = : idotartam, poszter_url = : poszter_url, leiras = : leiras, kiadasi_ev = : kiadasi_ev
+        $query = 'UPDATE' .$this->table. ' SET cim = :cim, idotartam = :idotartam, poszter_url = :poszter_url, leiras = :leiras, kiadasi_ev = :kiadasi_ev
         WHERE film_id = :film_id';
         $stmt = $this->conn->prepare($query);
 
@@ -123,7 +123,7 @@ class Film{
 
 
     public function delete(){
-        $query = 'DELETE FROM ' .$this->table. ' WHERE film_id = : film_id';
+        $query = 'DELETE FROM ' .$this->table. ' WHERE film_id = :film_id';
 
         $stmt = $this->conn->prepare($query);
 
