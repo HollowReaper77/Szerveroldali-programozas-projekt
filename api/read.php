@@ -31,7 +31,7 @@
                 'leiras' => $leiras,
                 'kiadas_ev' => $kiadas_ev
             );
-            array_push($film_arr['data'.$film_item]);
+            array_push($film_arr['data'], $film_item);
         }
         echo json_encode($film_item);
     }else{
