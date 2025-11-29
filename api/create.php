@@ -20,7 +20,7 @@
     $film->idotartam = $data->idotartam;
     $film->poszter_url = $data->poszter_url;
     $film->leiras = $data->leiras;
-    $film->kiadas_ev = $data->kiadas_ev;
+    $film->kiadasi_ev = $data->kiadasi_ev;
 
 
     if($film->create()){

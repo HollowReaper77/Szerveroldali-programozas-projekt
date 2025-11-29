@@ -20,7 +20,7 @@
         'idotartam' => $film->idotartam,
         'poszter_url' => $film->poszter_url,
         'leiras' => $film->leiras,
-        'kiadas_ev' => $film->kiadasi_ev,
+        'kiadasi_ev' => $film->kiadasi_ev,
     );
 
     print_r(json_encode($film_arr));
