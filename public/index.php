@@ -20,15 +20,15 @@ require_once __DIR__ . '/../controllers/FilmMufajController.php';
 
 
 
-require_once __DIR__ . '/../core/film.php';
-require_once __DIR__ . '/../core/szinesz.php';
-require_once __DIR__ . '/../core/mufaj.php';
-require_once __DIR__ . '/../core/orszag.php';
-require_once __DIR__ . '/../core/szereplo.php';
-require_once __DIR__ . '/../core/film_mufaj.php';
+require_once __DIR__ . '/../models/film.php';
+require_once __DIR__ . '/../models/szinesz.php';
+require_once __DIR__ . '/../models/mufaj.php';
+require_once __DIR__ . '/../models/orszag.php';
+require_once __DIR__ . '/../models/szereplo.php';
+require_once __DIR__ . '/../models/film_mufaj.php';
 
 
-require_once __DIR__ . '/../core/initialize.php'; 
+require_once __DIR__ . '/../models/initialize.php'; 
 $db = $dbConn;
 
 $url = isset($_GET['url']) ? rtrim($_GET['url'], '/') : '';

@@ -5,7 +5,7 @@
     header('Content-Type: application/json');
 
     // előkészíteni az api-t
-    include_once('../core/initialize.php');
+    include_once('../models/initialize.php');
 
 
     // a film előkészítése
