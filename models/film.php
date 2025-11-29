@@ -69,7 +69,6 @@ class Film{
         $query = 'INSERT INTO ' .$this->table. ' SET cim = :cim, idotartam = :idotartam, poszter_url = :poszter_url, leiras = :leiras, kiadasi_ev = :kiadasi_ev';
         $stmt = $this->conn->prepare($query);
 
-        $this->film_id =        htmlspecialchars(strip_tags($this->film_id));
         $this->cim =            htmlspecialchars(strip_tags($this->cim));
         $this->idotartam =      htmlspecialchars(strip_tags($this->idotartam));
         $this->poszter_url =    htmlspecialchars(strip_tags($this->poszter_url));
