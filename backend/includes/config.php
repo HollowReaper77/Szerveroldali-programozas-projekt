@@ -1,8 +1,8 @@
 <?php
     define("DBTYPE","mysql");
     define("DBHOST","localhost");
-    define("DBNAME","filmdb_temp_name");
-    define("DBCHARSET","utf8");
+    define("DBNAME","film");
+    define("DBCHARSET","utf8mb4");
     define("DBUSER","root");
     define("DBPASSWORD","");
     

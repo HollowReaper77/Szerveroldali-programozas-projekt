@@ -14,20 +14,24 @@ USE `film`;
 DROP TABLE IF EXISTS `felhasznalo`;
 CREATE TABLE IF NOT EXISTS `felhasznalo` (
   `felhasznalo_id` int(11) NOT NULL AUTO_INCREMENT,
-  `email` varchar(255) DEFAULT NULL,
-  `jelszo` varchar(255) DEFAULT NULL,
-  `regisztracio_ideje` date NOT NULL,
   `felhasznalonev` varchar(100) NOT NULL,
+  `email` varchar(255) NOT NULL,
+  `jelszo` varchar(255) NOT NULL,
+  `profilkep_url` varchar(300) DEFAULT NULL,
+  `szerep` ENUM('user', 'moderator', 'admin') NOT NULL DEFAULT 'user',
+  `regisztracio_ideje` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `aktiv` tinyint(1) NOT NULL DEFAULT 1,
   PRIMARY KEY (`felhasznalo_id`),
   UNIQUE KEY `felhasznalonev` (`felhasznalonev`),
   UNIQUE KEY `email` (`email`)
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 DELETE FROM `felhasznalo`;
-INSERT INTO `felhasznalo` (`felhasznalo_id`, `email`, `jelszo`, `regisztracio_ideje`, `felhasznalonev`) VALUES
-	(1, 'daegyu.lewis@gmailmail.com', 'p.r37.V0etwK', '2025-10-21', 'dale'),
-	(2, 'prinay.rice@gmail.com', '1ND)x2bT5Wpf', '2025-11-15', 'Kira'),
-	(3, 'bezalel.bryan@yahoo.com', '-Krm8(3u23v`', '2025-11-27', 'Brios');
+-- Jelszavak: admin123, moderator123, user123 (BCrypt hash-elt)
+INSERT INTO `felhasznalo` (`felhasznalo_id`, `felhasznalonev`, `email`, `jelszo`, `profilkep_url`, `szerep`, `regisztracio_ideje`, `aktiv`) VALUES
+	(1, 'Admin', 'admin@cinematar.hu', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', NULL, 'admin', '2025-10-21 00:00:00', 1),
+	(2, 'Moderator', 'moderator@cinematar.hu', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', NULL, 'moderator', '2025-11-15 00:00:00', 1),
+	(3, 'TestUser', 'user@test.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', NULL, 'user', '2025-11-27 00:00:00', 1);
 
 DROP TABLE IF EXISTS `film`;
 CREATE TABLE IF NOT EXISTS `film` (

@@ -109,5 +109,46 @@ const API = {
         apiRequest(`${API_CONFIG.ENDPOINTS.FILM_GENRES}/film/${filmId}`),
     
     getFilmsByGenre: (genreId) => 
-        apiRequest(`${API_CONFIG.ENDPOINTS.FILM_GENRES}/genre/${genreId}`)
+        apiRequest(`${API_CONFIG.ENDPOINTS.FILM_GENRES}/genre/${genreId}`),
+    
+    // Users (Authentication)
+    register: (userData) => 
+        apiRequest(`${API_CONFIG.ENDPOINTS.USERS}/register`, {
+            method: 'POST',
+            credentials: 'include',
+            body: JSON.stringify(userData)
+        }),
+    
+    login: (credentials) => 
+        apiRequest(`${API_CONFIG.ENDPOINTS.USERS}/login`, {
+            method: 'POST',
+            credentials: 'include',
+            body: JSON.stringify(credentials)
+        }),
+    
+    logout: () => 
+        apiRequest(`${API_CONFIG.ENDPOINTS.USERS}/logout`, {
+            method: 'POST',
+            credentials: 'include'
+        }),
+    
+    getProfile: () => 
+        apiRequest(`${API_CONFIG.ENDPOINTS.USERS}/profile`, {
+            method: 'GET',
+            credentials: 'include'
+        }),
+    
+    updateProfile: (userData) => 
+        apiRequest(`${API_CONFIG.ENDPOINTS.USERS}/profile`, {
+            method: 'PUT',
+            credentials: 'include',
+            body: JSON.stringify(userData)
+        }),
+    
+    changePassword: (passwordData) => 
+        apiRequest(`${API_CONFIG.ENDPOINTS.USERS}/change-password`, {
+            method: 'PUT',
+            credentials: 'include',
+            body: JSON.stringify(passwordData)
+        })
 };

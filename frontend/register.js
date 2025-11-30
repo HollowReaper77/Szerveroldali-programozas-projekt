@@ -45,7 +45,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 headers: API_CONFIG.HEADERS,
                 credentials: 'include',
                 body: JSON.stringify({
-                    nev: name,
+                    felhasznalonev: name,
                     email: email,
                     jelszo: password
                 })

@@ -44,13 +44,19 @@ function displayUserProfile(user) {
     // Név megjelenítése
     const nameElements = document.querySelectorAll('[data-user-name]');
     nameElements.forEach(el => {
-        el.textContent = user.nev || 'Felhasználó neve';
+        el.textContent = user.felhasznalonev || 'Felhasználó neve';
     });
 
     // Email megjelenítése
     const emailElements = document.querySelectorAll('[data-user-email]');
     emailElements.forEach(el => {
         el.textContent = user.email || 'user@domain.com';
+    });
+
+    // Szerepkör megjelenítése (ha van ilyen elem)
+    const roleElements = document.querySelectorAll('[data-user-role]');
+    roleElements.forEach(el => {
+        el.textContent = user.szerep || 'user';
     });
 
     // Profilkép megjelenítése
@@ -62,10 +68,10 @@ function displayUserProfile(user) {
     }
 
     // Form mezők kitöltése (ha van szerkesztő form)
-    const nameInput = document.querySelector('input[name="nev"]');
+    const nameInput = document.querySelector('input[name="felhasznalonev"]');
     const emailInput = document.querySelector('input[name="email"]');
     
-    if (nameInput) nameInput.value = user.nev || '';
+    if (nameInput) nameInput.value = user.felhasznalonev || '';
     if (emailInput) emailInput.value = user.email || '';
 }
 
@@ -101,7 +107,7 @@ async function updateProfile(formData) {
             headers: API_CONFIG.HEADERS,
             credentials: 'include',
             body: JSON.stringify({
-                nev: formData.get('nev'),
+                felhasznalonev: formData.get('felhasznalonev'),
                 email: formData.get('email'),
                 profilkep_url: formData.get('profilkep_url') || null
             })
@@ -112,7 +118,7 @@ async function updateProfile(formData) {
         if (response.ok) {
             // LocalStorage frissítése
             const user = JSON.parse(localStorage.getItem('user') || '{}');
-            user.nev = formData.get('nev');
+            user.felhasznalonev = formData.get('felhasznalonev');
             user.email = formData.get('email');
             localStorage.setItem('user', JSON.stringify(user));
 

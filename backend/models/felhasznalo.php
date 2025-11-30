@@ -1,15 +1,17 @@
 <?php
-class User {
+class Felhasznalo {
     private $conn;
-    private $table = "users";
+    private $table = "felhasznalo";
 
     // Mezők
-    public $id;
-    public $nev;
+    public $felhasznalo_id;
+    public $felhasznalonev;
     public $email;
     public $jelszo;
     public $profilkep_url;
-    public $letrehozva;
+    public $szerep; // 'user', 'moderator', 'admin'
+    public $regisztracio_ideje;
+    public $aktiv;
 
     public function __construct($db) {
         $this->conn = $db;
@@ -17,9 +19,10 @@ class User {
 
     // Összes felhasználó lekérése (admin funkció)
     public function read() {
-        $query = "SELECT id, nev, email, profilkep_url, letrehozva 
+        $query = "SELECT felhasznalo_id, felhasznalonev, email, profilkep_url, szerep, regisztracio_ideje, aktiv 
                   FROM " . $this->table . " 
-                  ORDER BY letrehozva DESC";
+                  WHERE aktiv = 1
+                  ORDER BY regisztracio_ideje DESC";
         
         $stmt = $this->conn->prepare($query);
         $stmt->execute();
@@ -28,22 +31,24 @@ class User {
 
     // Egy felhasználó lekérése ID alapján
     public function read_single() {
-        $query = "SELECT id, nev, email, profilkep_url, letrehozva 
+        $query = "SELECT felhasznalo_id, felhasznalonev, email, profilkep_url, szerep, regisztracio_ideje, aktiv 
                   FROM " . $this->table . " 
-                  WHERE id = :id 
+                  WHERE felhasznalo_id = :id 
                   LIMIT 1";
         
         $stmt = $this->conn->prepare($query);
-        $stmt->bindParam(':id', $this->id);
+        $stmt->bindParam(':id', $this->felhasznalo_id);
         $stmt->execute();
         
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         
         if ($row) {
-            $this->nev = $row['nev'];
+            $this->felhasznalonev = $row['felhasznalonev'];
             $this->email = $row['email'];
             $this->profilkep_url = $row['profilkep_url'];
-            $this->letrehozva = $row['letrehozva'];
+            $this->szerep = $row['szerep'];
+            $this->regisztracio_ideje = $row['regisztracio_ideje'];
+            $this->aktiv = $row['aktiv'];
             return true;
         }
         
@@ -52,7 +57,7 @@ class User {
 
     // Felhasználó lekérése email alapján (login-hoz)
     public function findByEmail() {
-        $query = "SELECT id, nev, email, jelszo, profilkep_url, letrehozva 
+        $query = "SELECT felhasznalo_id, felhasznalonev, email, jelszo, profilkep_url, szerep, regisztracio_ideje, aktiv 
                   FROM " . $this->table . " 
                   WHERE email = :email 
                   LIMIT 1";
@@ -64,12 +69,14 @@ class User {
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         
         if ($row) {
-            $this->id = $row['id'];
-            $this->nev = $row['nev'];
+            $this->felhasznalo_id = $row['felhasznalo_id'];
+            $this->felhasznalonev = $row['felhasznalonev'];
             $this->email = $row['email'];
             $this->jelszo = $row['jelszo'];
             $this->profilkep_url = $row['profilkep_url'];
-            $this->letrehozva = $row['letrehozva'];
+            $this->szerep = $row['szerep'];
+            $this->regisztracio_ideje = $row['regisztracio_ideje'];
+            $this->aktiv = $row['aktiv'];
             return true;
         }
         
@@ -79,27 +86,33 @@ class User {
     // Új felhasználó létrehozása (regisztráció)
     public function create() {
         $query = "INSERT INTO " . $this->table . " 
-                  (nev, email, jelszo, profilkep_url) 
-                  VALUES (:nev, :email, :jelszo, :profilkep_url)";
+                  (felhasznalonev, email, jelszo, profilkep_url, szerep) 
+                  VALUES (:felhasznalonev, :email, :jelszo, :profilkep_url, :szerep)";
         
         $stmt = $this->conn->prepare($query);
         
         // Input tisztítás
-        $this->nev = htmlspecialchars(strip_tags($this->nev));
+        $this->felhasznalonev = htmlspecialchars(strip_tags($this->felhasznalonev));
         $this->email = htmlspecialchars(strip_tags($this->email));
         $this->profilkep_url = htmlspecialchars(strip_tags($this->profilkep_url));
+        
+        // Alapértelmezett szerepkör: user
+        if (empty($this->szerep)) {
+            $this->szerep = 'user';
+        }
         
         // Jelszó hash
         $hashed_password = password_hash($this->jelszo, PASSWORD_DEFAULT);
         
         // Bind paraméterek
-        $stmt->bindParam(':nev', $this->nev);
+        $stmt->bindParam(':felhasznalonev', $this->felhasznalonev);
         $stmt->bindParam(':email', $this->email);
         $stmt->bindParam(':jelszo', $hashed_password);
         $stmt->bindParam(':profilkep_url', $this->profilkep_url);
+        $stmt->bindParam(':szerep', $this->szerep);
         
         if ($stmt->execute()) {
-            $this->id = $this->conn->lastInsertId();
+            $this->felhasznalo_id = $this->conn->lastInsertId();
             return true;
         }
         
@@ -109,24 +122,38 @@ class User {
     // Felhasználó adatok frissítése
     public function update() {
         $query = "UPDATE " . $this->table . " 
-                  SET nev = :nev, 
+                  SET felhasznalonev = :felhasznalonev, 
                       email = :email,
                       profilkep_url = :profilkep_url
-                  WHERE id = :id";
+                  WHERE felhasznalo_id = :id";
         
         $stmt = $this->conn->prepare($query);
         
         // Input tisztítás
-        $this->nev = htmlspecialchars(strip_tags($this->nev));
+        $this->felhasznalonev = htmlspecialchars(strip_tags($this->felhasznalonev));
         $this->email = htmlspecialchars(strip_tags($this->email));
         $this->profilkep_url = htmlspecialchars(strip_tags($this->profilkep_url));
-        $this->id = htmlspecialchars(strip_tags($this->id));
+        $this->felhasznalo_id = htmlspecialchars(strip_tags($this->felhasznalo_id));
         
         // Bind paraméterek
-        $stmt->bindParam(':nev', $this->nev);
+        $stmt->bindParam(':felhasznalonev', $this->felhasznalonev);
         $stmt->bindParam(':email', $this->email);
         $stmt->bindParam(':profilkep_url', $this->profilkep_url);
-        $stmt->bindParam(':id', $this->id);
+        $stmt->bindParam(':id', $this->felhasznalo_id);
+        
+        return $stmt->execute();
+    }
+
+    // Szerepkör frissítése (csak admin)
+    public function updateRole() {
+        $query = "UPDATE " . $this->table . " 
+                  SET szerep = :szerep 
+                  WHERE felhasznalo_id = :id";
+        
+        $stmt = $this->conn->prepare($query);
+        
+        $stmt->bindParam(':szerep', $this->szerep);
+        $stmt->bindParam(':id', $this->felhasznalo_id);
         
         return $stmt->execute();
     }
@@ -135,7 +162,7 @@ class User {
     public function updatePassword() {
         $query = "UPDATE " . $this->table . " 
                   SET jelszo = :jelszo 
-                  WHERE id = :id";
+                  WHERE felhasznalo_id = :id";
         
         $stmt = $this->conn->prepare($query);
         
@@ -143,25 +170,27 @@ class User {
         $hashed_password = password_hash($this->jelszo, PASSWORD_DEFAULT);
         
         $stmt->bindParam(':jelszo', $hashed_password);
-        $stmt->bindParam(':id', $this->id);
+        $stmt->bindParam(':id', $this->felhasznalo_id);
         
         return $stmt->execute();
     }
 
-    // Felhasználó törlése
+    // Felhasználó törlése (soft delete)
     public function delete() {
-        $query = "DELETE FROM " . $this->table . " WHERE id = :id";
+        $query = "UPDATE " . $this->table . " 
+                  SET aktiv = 0 
+                  WHERE felhasznalo_id = :id";
         
         $stmt = $this->conn->prepare($query);
-        $this->id = htmlspecialchars(strip_tags($this->id));
-        $stmt->bindParam(':id', $this->id);
+        $this->felhasznalo_id = htmlspecialchars(strip_tags($this->felhasznalo_id));
+        $stmt->bindParam(':id', $this->felhasznalo_id);
         
         return $stmt->execute();
     }
 
     // Email ellenőrzése (létezik-e már)
     public function emailExists() {
-        $query = "SELECT id FROM " . $this->table . " 
+        $query = "SELECT felhasznalo_id FROM " . $this->table . " 
                   WHERE email = :email 
                   LIMIT 1";
         
@@ -172,9 +201,37 @@ class User {
         return $stmt->rowCount() > 0;
     }
 
+    // Felhasználónév ellenőrzése
+    public function usernameExists() {
+        $query = "SELECT felhasznalo_id FROM " . $this->table . " 
+                  WHERE felhasznalonev = :felhasznalonev 
+                  LIMIT 1";
+        
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(':felhasznalonev', $this->felhasznalonev);
+        $stmt->execute();
+        
+        return $stmt->rowCount() > 0;
+    }
+
     // Jelszó ellenőrzése
     public function verifyPassword($password) {
         return password_verify($password, $this->jelszo);
+    }
+
+    // Szerepkör ellenőrzése
+    public function hasRole($role) {
+        return $this->szerep === $role;
+    }
+
+    // Admin jogosultság ellenőrzése
+    public function isAdmin() {
+        return $this->szerep === 'admin';
+    }
+
+    // Moderátor vagy magasabb jogosultság
+    public function isModerator() {
+        return in_array($this->szerep, ['moderator', 'admin']);
     }
 }
 ?>

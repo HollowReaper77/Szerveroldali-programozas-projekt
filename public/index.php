@@ -27,7 +27,7 @@ require_once __DIR__ . '/../backend/controllers/NemzetisegController.php';
 require_once __DIR__ . '/../backend/controllers/SzereploController.php';
 require_once __DIR__ . '/../backend/controllers/FilmMufajController.php';
 require_once __DIR__ . '/../backend/controllers/RendezoController.php';
-require_once __DIR__ . '/../backend/controllers/UserController.php';
+require_once __DIR__ . '/../backend/controllers/FelhasznaloController.php';
 
 // Modellek betöltése
 require_once __DIR__ . '/../backend/models/film.php';
@@ -37,7 +37,7 @@ require_once __DIR__ . '/../backend/models/orszag.php';
 require_once __DIR__ . '/../backend/models/rendezo.php';
 require_once __DIR__ . '/../backend/models/szereplo.php';
 require_once __DIR__ . '/../backend/models/film_mufaj.php';
-require_once __DIR__ . '/../backend/models/user.php';
+require_once __DIR__ . '/../backend/models/felhasznalo.php';
 
 // Adatbázis kapcsolat változó
 $db = $dbConn;
@@ -299,7 +299,7 @@ switch ($urlParts[0]) {
     // FELHASZNÁLÓK (Users)
     // -----------------------------------------
     case "users":
-        $controller = new UserController($db);
+        $controller = new FelhasznaloController($db);
 
         if ($method === 'POST') {
             if (isset($urlParts[1])) {
@@ -312,9 +312,6 @@ switch ($urlParts[0]) {
                         break;
                     case 'logout':
                         $controller->logout();
-                        break;
-                    case 'change-password':
-                        $controller->changePassword();
                         break;
                     default:
                         http_response_code(400);
@@ -329,6 +326,9 @@ switch ($urlParts[0]) {
         if ($method === 'GET') {
             if (isset($urlParts[1]) && $urlParts[1] === 'profile') {
                 $controller->getProfile();
+            } elseif (isset($urlParts[1]) && $urlParts[1] === 'all') {
+                // Admin: összes felhasználó listázása
+                $controller->getAllUsers();
             } else {
                 http_response_code(400);
                 echo json_encode(["message" => "Érvénytelen endpoint."]);
@@ -338,9 +338,24 @@ switch ($urlParts[0]) {
         if ($method === 'PUT') {
             if (isset($urlParts[1]) && $urlParts[1] === 'profile') {
                 $controller->updateProfile();
+            } elseif (isset($urlParts[1]) && $urlParts[1] === 'change-password') {
+                $controller->changePassword();
+            } elseif (isset($urlParts[1]) && $urlParts[1] === 'role' && isset($urlParts[2])) {
+                // Admin: felhasználó szerepkörének módosítása
+                $controller->updateUserRole($urlParts[2]);
             } else {
                 http_response_code(400);
                 echo json_encode(["message" => "Érvénytelen endpoint."]);
+            }
+        }
+
+        if ($method === 'DELETE') {
+            if (isset($urlParts[1])) {
+                // Admin: felhasználó törlése
+                $controller->deleteUser($urlParts[1]);
+            } else {
+                http_response_code(400);
+                echo json_encode(["message" => "Felhasználó ID hiányzik."]);
             }
         }
 
