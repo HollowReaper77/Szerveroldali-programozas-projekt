@@ -58,13 +58,15 @@ class MufajController {
     // POST /genres   (új műfaj)
     // -----------------------------------------------------------
     public function createGenre() {
-        $data = json_decode(file_get_contents("php://input"));
+        $data = getJsonInput();
 
         if (!isset($data->nev)) {
             http_response_code(400);
             echo json_encode(["message" => "A 'nev' mező kötelező."]);
             return;
         }
+
+        validateLength($data->nev, "Név", 1, 100);
 
         $this->genreModel->nev = $data->nev;
 
@@ -81,10 +83,22 @@ class MufajController {
     // PUT /genres/{id}
     // -----------------------------------------------------------
     public function updateGenre($id) {
-        $data = json_decode(file_get_contents("php://input"));
+        $data = getJsonInput();
 
+        // Ellenőrizd, hogy létezik-e
         $this->genreModel->mufaj_id = $id;
-        $this->genreModel->nev = $data->nev ?? null;
+        $stmt = $this->genreModel->read_single();
+        
+        if (!$stmt || $stmt->rowCount() === 0) {
+            http_response_code(404);
+            echo json_encode(["message" => "A műfaj nem található."]);
+            return;
+        }
+
+        if (isset($data->nev)) {
+            validateLength($data->nev, "Név", 1, 100);
+            $this->genreModel->nev = $data->nev;
+        }
 
         if ($this->genreModel->update()) {
             http_response_code(200);
@@ -99,7 +113,15 @@ class MufajController {
     // DELETE /genres/{id}
     // -----------------------------------------------------------
     public function deleteGenre($id) {
+        // Ellenőrizd, hogy létezik-e
         $this->genreModel->mufaj_id = $id;
+        $stmt = $this->genreModel->read_single();
+        
+        if (!$stmt || $stmt->rowCount() === 0) {
+            http_response_code(404);
+            echo json_encode(["message" => "A műfaj nem található."]);
+            return;
+        }
 
         if ($this->genreModel->delete()) {
             http_response_code(200);
@@ -110,3 +132,4 @@ class MufajController {
         }
     }
 }
+?>
