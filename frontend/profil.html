@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="hu">
+
+<head>
+    <meta charset="utf-8">
+    <title>Cinematár - Profil</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400;500;700;900&family=Sen:wght@400;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    
+    <style>
+        html, body {
+            overflow-y: hidden; 
+        }
+    </style>
+</head>
+
+<body>
+    <div class="navbar">
+        <div class="navbar-container">
+            <div class="logo-container">
+                <a href="index.html" class="logo-link">
+                    <h1 class="logo">Cinematár</h1>
+                </a>
+            </div>
+            
+            <div class="menu-container">
+                <ul class="menu-list">
+                    <li class="menu-list-item"><a href="kereses.html">Keresés</a></li>
+                    <li class="menu-list-item"><a href="bejelentkezes.html">Bejelentkezés</a></li>
+                    <li class="menu-list-item"><a href="regisztracio.html">Regisztráció</a></li>
+                </ul>
+            </div>
+            
+            <div class="profile-container">
+                <a href="profil.html">
+                    <img class="profile-picture" src="img/profil.jpg" alt="Profil">
+                </a>
+                <div class="toggle">
+                    <i class="fas fa-moon toggle-icon"></i>
+                    <i class="fas fa-sun toggle-icon"></i>
+                    <div class="toggle-ball"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="sidebar">
+            <a href="kereses.html"><i class="left-menu-icon fas fa-search"></i></a>
+            <a href="index.html"><i class="left-menu-icon fas fa-home"></i></a>
+            <a href="profil.html"><i class="left-menu-icon fas fa-user"></i></a>
+            <a href="bejelentkezes.html"><i class="left-menu-icon fas fa-key"></i></a>
+            <i class="left-menu-icon fas fa-bookmark"></i>
+        </div>
+
+        <div class="content-container" style="
+            padding-top: 50px; 
+            padding-bottom: 50px; 
+            min-height: calc(100vh - 50px);
+            /* HÁTTÉRKÉP ÉS SÖTÉT FEDŐRÉTEG */
+            background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('img/profil_hatterkep.jpg');
+            background-size: cover;
+            background-position: center;
+        ">
+            <div class="movie-list-container">
+                <h1 class="movie-list-title" style="margin-left: 20px;">PROFIL BEÁLLÍTÁSOK</h1>
+                
+                <div class="profile-details" style="padding: 20px; display: flex; flex-wrap: wrap; gap: 40px; align-items: flex-start;">
+                    
+                    <div style="padding: 15px; background-color: var(--card); border-radius: 10px;">
+                        <img class="profile-picture" src="img/profil.jpg" alt="Profilkép" style="width: 150px; height: 150px; border-radius: 50%; object-fit: cover; margin-bottom: 15px; border: 3px solid #4dbf00;">
+                        
+                        <input type="file" id="file-upload" accept="image/*" style="display: none;">
+                        <label for="file-upload" 
+                            class="featured-button" 
+                            style="
+                                display: block; 
+                                width: 150px; 
+                                background-color: #007AFF; 
+                                text-align: center; 
+                                padding: 10px 20px; 
+                                border-radius: 10px; 
+                                color: white; 
+                                font-weight: bold; 
+                                cursor: pointer;
+                            ">
+                            Kép feltöltése
+                        </label>
+                    </div>
+
+                    <div style="flex-grow: 1; max-width: 600px; background-color: var(--card); padding: 25px; border-radius: 10px;">
+                        <h2 style="font-size: 20px; color: #4dbf00; margin-bottom: 20px;">Felhasználói Információk</h2>
+                        <p style="color: lightgray; margin-bottom: 10px;"><strong style="color: white;">Név:</strong> Felhasználó neve</p>
+                        <p style="color: lightgray; margin-bottom: 10px;"><strong style="color: white;">Email:</strong> user@domain.com</p>
+                        
+                        <a href="jelszo_modositas.html" style="text-decoration: none;">
+                            <button 
+                                class="featured-button" 
+                                style="background-color: #FF3B3B; transition: opacity 0.2s ease; cursor: pointer;"
+                                onmouseover="this.style.opacity='0.8';"
+                                onmouseout="this.style.opacity='1';"
+                            >
+                                Jelszó módosítása
+                            </button>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="app.js"></script>
+</body>
+</html>

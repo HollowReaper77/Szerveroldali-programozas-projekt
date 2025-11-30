@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="hu">
+
+<head>
+    <meta charset="utf-8">
+    <title>Cinematár - Regisztráció</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400;500;700;900&family=Sen:wght@400;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    
+    <style>
+        html, body {
+            overflow-y: hidden; 
+        }
+    </style>
+</head>
+
+<body>
+    <div class="navbar">
+        <div class="navbar-container">
+            <div class="logo-container">
+    <a href="index.html" class="logo-link">
+        <h1 class="logo">Cinematár</h1>
+    </a>
+</div>
+            
+            <div class="menu-container">
+                <ul class="menu-list">
+                    <li class="menu-list-item"><a href="kereses.html">Keresés</a></li>
+                    <li class="menu-list-item"><a href="bejelentkezes.html">Bejelentkezés</a></li>
+                    <li class="menu-list-item active"><a href="regisztracio.html">Regisztráció</a></li>
+                </ul>
+            </div>
+            
+            <div class="profile-container">
+                <a href="profil.html">
+                    <img class="profile-picture" src="img/profil.jpg" alt="Profil">
+                </a>
+                <div class="toggle">
+                    <i class="fas fa-moon toggle-icon"></i>
+                    <i class="fas fa-sun toggle-icon"></i>
+                    <div class="toggle-ball"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="sidebar">
+            <a href="kereses.html"><i class="left-menu-icon fas fa-search"></i></a>
+            <a href="index.html"><i class="left-menu-icon fas fa-home"></i></a>
+            <a href="profil.html"><i class="left-menu-icon fas fa-user"></i></a>
+            <a href="bejelentkezes.html"><i class="left-menu-icon fas fa-key"></i></a>
+        </div>
+
+        <div class="content-container" style="
+    display: flex; 
+    justify-content: flex-start; /* JAVÍTVA: BALRA IGAZÍTÁS */
+    align-items: center; 
+    padding: 50px 20px;
+    padding-left: 100px; /* EXTRA HELY A HÁTTÉRKÉP LÁTHATÓSÁGÁÉRT */
+    
+    /* Háttérkép beállítások változatlanok */
+    background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('img/hatterkep.jpg');
+    background-size: cover;
+    background-position: center;
+    min-height: calc(100vh - 50px);
+">
+
+            <div class="auth-box" style="
+                /* Áttetsző SÖTÉT háttér a formra */
+                background-color: rgba(22, 27, 34, 0.95); 
+                padding: 30px; 
+                border-radius: 10px; 
+                max-width: 400px;
+                width: 100%;
+                border: 1px solid #1f2937;
+                box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    
+                /* ÚJ: FELFELÉ TOLÁS */
+                margin-top: -80px; 
+">
+                <h1 class="movie-list-title" style="margin-bottom: 20px; font-size: 28px;">REGISZTRÁCIÓ</h1>
+                
+                <p id="status" class="status"></p>
+                <form id="register-form">
+                    <label style="color: white; display: block; margin-bottom: 5px;">Név
+                        <input type="text" name="name" placeholder="Teljes név" required 
+                            style="padding: 10px; width: 100%; background-color: #333; color: white; border: none; border-radius: 5px; margin-bottom: 15px;"
+                        >
+                    </label>
+                    <label style="color: white; display: block; margin-bottom: 5px;">Email
+                      <input type="email" name="email" placeholder="email@example.com" required 
+                        style="padding: 10px; width: 100%; background-color: #333; color: white; border: none; border-radius: 5px; margin-bottom: 15px;"
+                      >
+                    </label>
+                    <label style="color: white; display: block; margin-bottom: 5px;">Jelszó
+                      <input type="password" name="password" required minlength="6"
+                        style="padding: 10px; width: 100%; background-color: #333; color: white; border: none; border-radius: 5px; margin-bottom: 15px;"
+                      >
+                    </label>
+                    <label style="color: white; display: block; margin-bottom: 5px;">Jelszó megerősítése
+                        <input type="password" name="password2" required minlength="6"
+                          style="padding: 10px; width: 100%; background-color: #333; color: white; border: none; border-radius: 5px; margin-bottom: 20px;"
+                        >
+                      </label>
+                    
+                    <div style="display:flex;justify-content:space-between;align-items:center;">
+                        <button type="submit" class="featured-button" style="width: 150px; background-color: #4dbf00; color: black; font-weight: bold; border: none; border-radius: 8px; padding: 10px;">Regisztráció</button>
+                        <small style="color: lightgray;">
+                            Már van fiókod? <a href="bejelentkezes.html" style="color: #4dbf00; text-decoration: none;">Jelentkezz be</a>
+                        </small>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <script src="app.js"></script>
+    <script src="register.js"></script>
+</body>
+</html>
