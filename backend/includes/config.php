@@ -15,12 +15,8 @@
         $dbConn->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
         $dbConn->setAttribute(PDO::MYSQL_ATTR_USE_BUFFERED_QUERY, true);
     } catch (PDOException $e){
-        $error = "Adatbázis kapcsolódási hiba: {$e->getMessage()}";
+        http_response_code(500);
+        echo json_encode(["message" => "Adatbázis kapcsolódási hiba: {$e->getMessage()}"]);
+        exit;
     }
-
-    //$dbConn->setAttribute(PDO::ATT);
-
-
-    
-
 ?>

@@ -56,6 +56,10 @@ class Rendezo {
 
         $stmt = $this->conn->prepare($query);
 
+        $this->nev = htmlspecialchars(strip_tags($this->nev));
+        $this->szuletesi_datum = htmlspecialchars(strip_tags($this->szuletesi_datum));
+        $this->bio = htmlspecialchars(strip_tags($this->bio));
+
         $stmt->bindParam(':nev', $this->nev);
         $stmt->bindParam(':szuletesi_datum', $this->szuletesi_datum);
         $stmt->bindParam(':bio', $this->bio);
@@ -72,6 +76,10 @@ class Rendezo {
                   WHERE rendezo_id = :rendezo_id";
 
         $stmt = $this->conn->prepare($query);
+
+        $this->nev = htmlspecialchars(strip_tags($this->nev));
+        $this->szuletesi_datum = htmlspecialchars(strip_tags($this->szuletesi_datum));
+        $this->bio = htmlspecialchars(strip_tags($this->bio));
 
         $stmt->bindParam(':nev', $this->nev);
         $stmt->bindParam(':szuletesi_datum', $this->szuletesi_datum);

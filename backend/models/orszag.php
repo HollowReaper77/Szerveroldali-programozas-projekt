@@ -1,10 +1,10 @@
 <?php
 
-class Mufaj {
+class Orszag {
     private $conn;
-    private $table = "mufajok";
+    private $table = "orszagok";
 
-    public $mufaj_id;
+    public $orszag_id;
     public $nev;
 
     public function __construct($dbConn){
@@ -13,7 +13,7 @@ class Mufaj {
 
     // READ ALL
     public function read(){
-        $query = "SELECT mufaj_id, nev
+        $query = "SELECT orszag_id, nev
                   FROM {$this->table}";
 
         $stmt = $this->conn->prepare($query);
@@ -24,20 +24,20 @@ class Mufaj {
 
     // READ ONE
     public function read_single(){
-        $query = "SELECT mufaj_id, nev
+        $query = "SELECT orszag_id, nev
                   FROM {$this->table}
-                  WHERE mufaj_id = ?
+                  WHERE orszag_id = ?
                   LIMIT 1";
 
         $stmt = $this->conn->prepare($query);
-        $stmt->bindParam(1, $this->mufaj_id);
+        $stmt->bindParam(1, $this->orszag_id);
         $stmt->execute();
 
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
 
         if($row){
-            $this->mufaj_id = $row['mufaj_id'];
-            $this->nev      = $row['nev'];
+            $this->orszag_id = $row['orszag_id'];
+            $this->nev       = $row['nev'];
         }
 
         return $stmt;
@@ -50,6 +50,8 @@ class Mufaj {
 
         $stmt = $this->conn->prepare($query);
 
+        $this->nev = htmlspecialchars(strip_tags($this->nev));
+
         $stmt->bindParam(':nev', $this->nev);
 
         return $stmt->execute();
@@ -59,12 +61,14 @@ class Mufaj {
     public function update(){
         $query = "UPDATE {$this->table}
                   SET nev = :nev
-                  WHERE mufaj_id = :mufaj_id";
+                  WHERE orszag_id = :orszag_id";
 
         $stmt = $this->conn->prepare($query);
 
+        $this->nev = htmlspecialchars(strip_tags($this->nev));
+
         $stmt->bindParam(':nev', $this->nev);
-        $stmt->bindParam(':mufaj_id', $this->mufaj_id);
+        $stmt->bindParam(':orszag_id', $this->orszag_id);
 
         return $stmt->execute();
     }
@@ -72,10 +76,10 @@ class Mufaj {
     // DELETE
     public function delete(){
         $query = "DELETE FROM {$this->table}
-                  WHERE mufaj_id = :mufaj_id";
+                  WHERE orszag_id = :orszag_id";
 
         $stmt = $this->conn->prepare($query);
-        $stmt->bindParam(':mufaj_id', $this->mufaj_id);
+        $stmt->bindParam(':orszag_id', $this->orszag_id);
 
         return $stmt->execute();
     }

@@ -38,6 +38,8 @@ class MufajController {
     // GET /genres/{id}
     // -----------------------------------------------------------
     public function getGenre($id) {
+        $id = validateId($id, "Műfaj ID");
+        
         $this->genreModel->mufaj_id = $id;
         $stmt = $this->genreModel->read_single();
 
@@ -58,7 +60,7 @@ class MufajController {
     // POST /genres   (új műfaj)
     // -----------------------------------------------------------
     public function createGenre() {
-        $data = json_decode(file_get_contents("php://input"));
+        $data = getJsonInput();
 
         if (!isset($data->nev)) {
             http_response_code(400);
@@ -66,14 +68,21 @@ class MufajController {
             return;
         }
 
+        validateLength($data->nev, "Név", 1, 100);
+
         $this->genreModel->nev = $data->nev;
 
-        if ($this->genreModel->create()) {
-            http_response_code(201);
-            echo json_encode(["message" => "Műfaj sikeresen létrehozva."]);
-        } else {
+        try {
+            if ($this->genreModel->create()) {
+                http_response_code(201);
+                echo json_encode(["message" => "Műfaj sikeresen létrehozva."]);
+            } else {
+                http_response_code(500);
+                echo json_encode(["message" => "Hiba történt a létrehozás során."]);
+            }
+        } catch (PDOException $e) {
             http_response_code(500);
-            echo json_encode(["message" => "Hiba történt a létrehozás során."]);
+            echo json_encode(["message" => "Adatbázis hiba: " . $e->getMessage()]);
         }
     }
 
@@ -81,17 +90,35 @@ class MufajController {
     // PUT /genres/{id}
     // -----------------------------------------------------------
     public function updateGenre($id) {
-        $data = json_decode(file_get_contents("php://input"));
+        $id = validateId($id, "Műfaj ID");
+        $data = getJsonInput();
 
+        // Ellenőrizd, hogy létezik-e és töltsd be az adatokat
         $this->genreModel->mufaj_id = $id;
-        $this->genreModel->nev = $data->nev ?? null;
+        $stmt = $this->genreModel->read_single();
+        
+        if (!$stmt || $stmt->rowCount() === 0) {
+            http_response_code(404);
+            echo json_encode(["message" => "A műfaj nem található."]);
+            return;
+        }
 
-        if ($this->genreModel->update()) {
-            http_response_code(200);
-            echo json_encode(["message" => "Műfaj sikeresen frissítve."]);
-        } else {
+        if (isset($data->nev)) {
+            validateLength($data->nev, "Név", 1, 100);
+            $this->genreModel->nev = $data->nev;
+        }
+
+        try {
+            if ($this->genreModel->update()) {
+                http_response_code(200);
+                echo json_encode(["message" => "Műfaj sikeresen frissítve."]);
+            } else {
+                http_response_code(500);
+                echo json_encode(["message" => "Hiba történt a frissítés során."]);
+            }
+        } catch (PDOException $e) {
             http_response_code(500);
-            echo json_encode(["message" => "Hiba történt a frissítés során."]);
+            echo json_encode(["message" => "Adatbázis hiba: " . $e->getMessage()]);
         }
     }
 
@@ -99,14 +126,30 @@ class MufajController {
     // DELETE /genres/{id}
     // -----------------------------------------------------------
     public function deleteGenre($id) {
+        $id = validateId($id, "Műfaj ID");
+        
+        // Ellenőrizd, hogy létezik-e
         $this->genreModel->mufaj_id = $id;
+        $stmt = $this->genreModel->read_single();
+        
+        if (!$stmt || $stmt->rowCount() === 0) {
+            http_response_code(404);
+            echo json_encode(["message" => "A műfaj nem található."]);
+            return;
+        }
 
-        if ($this->genreModel->delete()) {
-            http_response_code(200);
-            echo json_encode(["message" => "Műfaj törölve."]);
-        } else {
+        try {
+            if ($this->genreModel->delete()) {
+                http_response_code(200);
+                echo json_encode(["message" => "Műfaj törölve."]);
+            } else {
+                http_response_code(500);
+                echo json_encode(["message" => "Hiba történt a törlés során."]);
+            }
+        } catch (PDOException $e) {
             http_response_code(500);
-            echo json_encode(["message" => "Hiba történt a törlés során."]);
+            echo json_encode(["message" => "Adatbázis hiba: " . $e->getMessage()]);
         }
     }
 }
+?>

@@ -2,33 +2,38 @@
 header("Access-Control-Allow-Origin: *");
 header("Content-Type: application/json; charset=UTF-8");
 header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS");
-header("Access-Control-Allow-Headers: Content-Type, Authorization");
+header("Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With");
 
 if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
     http_response_code(200);
     exit;
 }
 
-// autoload
-//require_once __DIR__ . '/../include/config.php';
-require_once __DIR__ . '/../controllers/FilmController.php';
-require_once __DIR__ . '/../controllers/SzineszController.php';
-require_once __DIR__ . '/../controllers/MufajController.php';
-require_once __DIR__ . '/../controllers/NemzetisegController.php';
-require_once __DIR__ . '/../controllers/SzereploController.php';
-require_once __DIR__ . '/../controllers/FilmMufajController.php';
+// Konfiguráció és adatbázis kapcsolat
+require_once __DIR__ . '/../backend/includes/config.php';
 
+// Helper függvények betöltése
+require_once __DIR__ . '/../backend/includes/helpers.php';
 
+// Controllerek betöltése
+require_once __DIR__ . '/../backend/controllers/FilmController.php';
+require_once __DIR__ . '/../backend/controllers/SzineszController.php';
+require_once __DIR__ . '/../backend/controllers/MufajController.php';
+require_once __DIR__ . '/../backend/controllers/NemzetisegController.php';
+require_once __DIR__ . '/../backend/controllers/SzereploController.php';
+require_once __DIR__ . '/../backend/controllers/FilmMufajController.php';
+require_once __DIR__ . '/../backend/controllers/RendezoController.php';
 
-require_once __DIR__ . '/../models/film.php';
-require_once __DIR__ . '/../models/szinesz.php';
-require_once __DIR__ . '/../models/mufaj.php';
-require_once __DIR__ . '/../models/orszag.php';
-require_once __DIR__ . '/../models/szereplo.php';
-require_once __DIR__ . '/../models/film_mufaj.php';
+// Modellek betöltése
+require_once __DIR__ . '/../backend/models/film.php';
+require_once __DIR__ . '/../backend/models/szinesz.php';
+require_once __DIR__ . '/../backend/models/mufaj.php';
+require_once __DIR__ . '/../backend/models/orszag.php';
+require_once __DIR__ . '/../backend/models/rendezo.php';
+require_once __DIR__ . '/../backend/models/szereplo.php';
+require_once __DIR__ . '/../backend/models/film_mufaj.php';
 
-
-require_once __DIR__ . '/../models/initialize.php'; 
+// Adatbázis kapcsolat változó
 $db = $dbConn;
 
 $url = isset($_GET['url']) ? rtrim($_GET['url'], '/') : '';
@@ -48,10 +53,8 @@ switch ($urlParts[0]) {
         
         if ($method === 'GET') {
             if (isset($urlParts[1])) {
-                // /films/{id}
                 $controller->getFilm($urlParts[1]);
             } else {
-                // /films
                 $controller->getAllFilms();
             }
         }
@@ -61,10 +64,20 @@ switch ($urlParts[0]) {
         }
 
         if ($method === 'PUT') {
+            if (!isset($urlParts[1])) {
+                http_response_code(400);
+                echo json_encode(["message" => "Film ID hiányzik."]);
+                break;
+            }
             $controller->updateFilm($urlParts[1]);
         }
 
         if ($method === 'DELETE') {
+            if (!isset($urlParts[1])) {
+                http_response_code(400);
+                echo json_encode(["message" => "Film ID hiányzik."]);
+                break;
+            }
             $controller->deleteFilm($urlParts[1]);
         }
 
@@ -89,10 +102,20 @@ switch ($urlParts[0]) {
         }
 
         if ($method === 'PUT') {
+            if (!isset($urlParts[1])) {
+                http_response_code(400);
+                echo json_encode(["message" => "Színész ID hiányzik."]);
+                break;
+            }
             $controller->updateActor($urlParts[1]);
         }
 
         if ($method === 'DELETE') {
+            if (!isset($urlParts[1])) {
+                http_response_code(400);
+                echo json_encode(["message" => "Színész ID hiányzik."]);
+                break;
+            }
             $controller->deleteActor($urlParts[1]);
         }
 
@@ -117,10 +140,20 @@ switch ($urlParts[0]) {
         }
 
         if ($method === 'PUT') {
+            if (!isset($urlParts[1])) {
+                http_response_code(400);
+                echo json_encode(["message" => "Műfaj ID hiányzik."]);
+                break;
+            }
             $controller->updateGenre($urlParts[1]);
         }
 
         if ($method === 'DELETE') {
+            if (!isset($urlParts[1])) {
+                http_response_code(400);
+                echo json_encode(["message" => "Műfaj ID hiányzik."]);
+                break;
+            }
             $controller->deleteGenre($urlParts[1]);
         }
 
@@ -145,11 +178,59 @@ switch ($urlParts[0]) {
         }
 
         if ($method === 'PUT') {
+            if (!isset($urlParts[1])) {
+                http_response_code(400);
+                echo json_encode(["message" => "Ország ID hiányzik."]);
+                break;
+            }
             $controller->updateCountry($urlParts[1]);
         }
 
         if ($method === 'DELETE') {
+            if (!isset($urlParts[1])) {
+                http_response_code(400);
+                echo json_encode(["message" => "Ország ID hiányzik."]);
+                break;
+            }
             $controller->deleteCountry($urlParts[1]);
+        }
+
+        break;
+
+    // -----------------------------------------
+    // RENDEZŐK
+    // -----------------------------------------
+    case "directors":
+        $controller = new RendezoController($db);
+
+        if ($method === 'GET') {
+            if (isset($urlParts[1])) {
+                $controller->getDirector($urlParts[1]);
+            } else {
+                $controller->getAllDirectors();
+            }
+        }
+
+        if ($method === 'POST') {
+            $controller->createDirector();
+        }
+
+        if ($method === 'PUT') {
+            if (!isset($urlParts[1])) {
+                http_response_code(400);
+                echo json_encode(["message" => "Rendező ID hiányzik."]);
+                break;
+            }
+            $controller->updateDirector($urlParts[1]);
+        }
+
+        if ($method === 'DELETE') {
+            if (!isset($urlParts[1])) {
+                http_response_code(400);
+                echo json_encode(["message" => "Rendező ID hiányzik."]);
+                break;
+            }
+            $controller->deleteDirector($urlParts[1]);
         }
 
         break;
@@ -161,13 +242,13 @@ switch ($urlParts[0]) {
         $controller = new SzereploController($db);
 
         if ($method === 'GET') {
-            // /film-actors/film/{id}
-            if ($urlParts[1] === "film") {
+            if (isset($urlParts[1]) && $urlParts[1] === "film" && isset($urlParts[2])) {
                 $controller->getActorsByFilm($urlParts[2]);
-            }
-            // /film-actors/actor/{id}
-            if ($urlParts[1] === "actor") {
+            } elseif (isset($urlParts[1]) && $urlParts[1] === "actor" && isset($urlParts[2])) {
                 $controller->getFilmsByActor($urlParts[2]);
+            } else {
+                http_response_code(400);
+                echo json_encode(["message" => "Érvénytelen endpoint vagy hiányzó ID."]);
             }
         }
 
@@ -188,11 +269,13 @@ switch ($urlParts[0]) {
         $controller = new FilmMufajController($db);
 
         if ($method === 'GET') {
-            if ($urlParts[1] === "film") {
+            if (isset($urlParts[1]) && $urlParts[1] === "film" && isset($urlParts[2])) {
                 $controller->getGenresByFilm($urlParts[2]);
-            }
-            if ($urlParts[1] === "genre") {
+            } elseif (isset($urlParts[1]) && $urlParts[1] === "genre" && isset($urlParts[2])) {
                 $controller->getFilmsByGenre($urlParts[2]);
+            } else {
+                http_response_code(400);
+                echo json_encode(["message" => "Érvénytelen endpoint vagy hiányzó ID."]);
             }
         }
 
@@ -214,3 +297,4 @@ switch ($urlParts[0]) {
         echo json_encode(["message" => "Endpoint not found"]);
         break;
 }
+?>

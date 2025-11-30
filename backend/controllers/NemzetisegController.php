@@ -38,6 +38,8 @@ class NemzetisegController {
     // GET /countries/{id}
     // -----------------------------------------------------------
     public function getCountry($id) {
+        $id = validateId($id, "Ország ID");
+        
         $this->countryModel->orszag_id = $id;
         $stmt = $this->countryModel->read_single();
 
@@ -58,7 +60,7 @@ class NemzetisegController {
     // POST /countries  (új ország)
     // -----------------------------------------------------------
     public function createCountry() {
-        $data = json_decode(file_get_contents("php://input"));
+        $data = getJsonInput();
 
         if (!isset($data->nev)) {
             http_response_code(400);
@@ -66,14 +68,21 @@ class NemzetisegController {
             return;
         }
 
+        validateLength($data->nev, "Név", 1, 100);
+
         $this->countryModel->nev = $data->nev;
 
-        if ($this->countryModel->create()) {
-            http_response_code(201);
-            echo json_encode(["message" => "Ország sikeresen létrehozva."]);
-        } else {
+        try {
+            if ($this->countryModel->create()) {
+                http_response_code(201);
+                echo json_encode(["message" => "Ország sikeresen létrehozva."]);
+            } else {
+                http_response_code(500);
+                echo json_encode(["message" => "Hiba történt a létrehozás során."]);
+            }
+        } catch (PDOException $e) {
             http_response_code(500);
-            echo json_encode(["message" => "Hiba történt a létrehozás során."]);
+            echo json_encode(["message" => "Adatbázis hiba: " . $e->getMessage()]);
         }
     }
 
@@ -81,17 +90,35 @@ class NemzetisegController {
     // PUT /countries/{id}
     // -----------------------------------------------------------
     public function updateCountry($id) {
-        $data = json_decode(file_get_contents("php://input"));
+        $id = validateId($id, "Ország ID");
+        $data = getJsonInput();
 
+        // Ellenőrizd, hogy létezik-e és töltsd be az adatokat
         $this->countryModel->orszag_id = $id;
-        $this->countryModel->nev = $data->nev ?? null;
+        $stmt = $this->countryModel->read_single();
+        
+        if (!$stmt || $stmt->rowCount() === 0) {
+            http_response_code(404);
+            echo json_encode(["message" => "Az ország nem található."]);
+            return;
+        }
 
-        if ($this->countryModel->update()) {
-            http_response_code(200);
-            echo json_encode(["message" => "Ország sikeresen frissítve."]);
-        } else {
+        if (isset($data->nev)) {
+            validateLength($data->nev, "Név", 1, 100);
+            $this->countryModel->nev = $data->nev;
+        }
+
+        try {
+            if ($this->countryModel->update()) {
+                http_response_code(200);
+                echo json_encode(["message" => "Ország sikeresen frissítve."]);
+            } else {
+                http_response_code(500);
+                echo json_encode(["message" => "Hiba történt a frissítés során."]);
+            }
+        } catch (PDOException $e) {
             http_response_code(500);
-            echo json_encode(["message" => "Hiba történt a frissítés során."]);
+            echo json_encode(["message" => "Adatbázis hiba: " . $e->getMessage()]);
         }
     }
 
@@ -99,14 +126,30 @@ class NemzetisegController {
     // DELETE /countries/{id}
     // -----------------------------------------------------------
     public function deleteCountry($id) {
+        $id = validateId($id, "Ország ID");
+        
+        // Ellenőrizd, hogy létezik-e
         $this->countryModel->orszag_id = $id;
+        $stmt = $this->countryModel->read_single();
+        
+        if (!$stmt || $stmt->rowCount() === 0) {
+            http_response_code(404);
+            echo json_encode(["message" => "Az ország nem található."]);
+            return;
+        }
 
-        if ($this->countryModel->delete()) {
-            http_response_code(200);
-            echo json_encode(["message" => "Ország törölve."]);
-        } else {
+        try {
+            if ($this->countryModel->delete()) {
+                http_response_code(200);
+                echo json_encode(["message" => "Ország törölve."]);
+            } else {
+                http_response_code(500);
+                echo json_encode(["message" => "Hiba történt a törlés során."]);
+            }
+        } catch (PDOException $e) {
             http_response_code(500);
-            echo json_encode(["message" => "Hiba történt a törlés során."]);
+            echo json_encode(["message" => "Adatbázis hiba: " . $e->getMessage()]);
         }
     }
 }
+?>
