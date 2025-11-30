@@ -18,6 +18,8 @@ class FilmMufajController {
     // Egy filmhez tartozó műfajok
     // -----------------------------------------------------------
     public function getGenresByFilm($filmId) {
+        $filmId = validateId($filmId, "Film ID");
+        
         $this->model->film_id = $filmId;
         $result = $this->model->getGenresByFilm();
 
@@ -41,6 +43,8 @@ class FilmMufajController {
     // Egy műfajhoz tartozó filmek
     // -----------------------------------------------------------
     public function getFilmsByGenre($genreId) {
+        $genreId = validateId($genreId, "Műfaj ID");
+        
         $this->model->mufaj_id = $genreId;
         $result = $this->model->getFilmsByGenre();
 

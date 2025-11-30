@@ -105,3 +105,17 @@ function validateDate($date, $fieldName) {
     
     return true;
 }
+
+/**
+ * ID paraméter validálás
+ * Ellenőrzi, hogy az ID pozitív egész szám-e
+ */
+function validateId($id, $fieldName = "ID") {
+    if (!is_numeric($id) || $id <= 0 || $id != (int)$id) {
+        http_response_code(400);
+        echo json_encode(["message" => "{$fieldName} érvénytelen. Pozitív egész számnak kell lennie."]);
+        exit;
+    }
+    return (int)$id;
+}
+?>

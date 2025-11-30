@@ -63,6 +63,8 @@ class FilmController {
     // GET /films/{id}    (egy film)
     // -----------------------------------------------------------
     public function getFilm($id) {
+        $id = validateId($id, "Film ID");
+        
         $this->filmModel->film_id = $id;
         $stmt = $this->filmModel->read_single();
 
@@ -127,9 +129,10 @@ class FilmController {
     // PUT /films/{id}    (film frissítése)
     // -----------------------------------------------------------
     public function updateFilm($id) {
+        $id = validateId($id, "Film ID");
         $data = getJsonInput();
 
-        // Ellenőrizd, hogy létezik-e a film
+        // Ellenőrizd, hogy létezik-e a film és töltsd be az adatokat
         $this->filmModel->film_id = $id;
         $stmt = $this->filmModel->read_single();
         
@@ -139,31 +142,32 @@ class FilmController {
             return;
         }
 
-        // Ha van cím, validáld
+        // Ha van cím, validáld és frissítsd
         if (isset($data->cim)) {
             validateLength($data->cim, "Cím", 1, 255);
             $this->filmModel->cim = $data->cim;
         }
+        // különben megtartjuk a jelenlegi értéket (már be van töltve read_single()-ből)
 
-        // Ha van időtartam, validáld
+        // Ha van időtartam, validáld és frissítsd
         if (isset($data->idotartam)) {
             validateNumber($data->idotartam, "Időtartam", 1, 999);
             $this->filmModel->idotartam = $data->idotartam;
         }
 
-        // Ha van poszter URL, validáld
+        // Ha van poszter URL, validáld és frissítsd
         if (isset($data->poszter_url)) {
             validateUrl($data->poszter_url, "Poszter URL");
             $this->filmModel->poszter_url = $data->poszter_url;
         }
 
-        // Ha van leírás, validáld
+        // Ha van leírás, validáld és frissítsd
         if (isset($data->leiras)) {
             validateLength($data->leiras, "Leírás", 0, 2000);
             $this->filmModel->leiras = $data->leiras;
         }
 
-        // Ha van kiadási év, validáld
+        // Ha van kiadási év, validáld és frissítsd
         if (isset($data->kiadasi_ev)) {
             validateNumber($data->kiadasi_ev, "Kiadási év", 1888, date('Y') + 5);
             $this->filmModel->kiadasi_ev = $data->kiadasi_ev;
@@ -182,6 +186,8 @@ class FilmController {
     // DELETE /films/{id}
     // -----------------------------------------------------------
     public function deleteFilm($id) {
+        $id = validateId($id, "Film ID");
+        
         // Ellenőrizd, hogy létezik-e a film
         $this->filmModel->film_id = $id;
         $stmt = $this->filmModel->read_single();

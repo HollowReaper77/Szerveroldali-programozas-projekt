@@ -37,6 +37,8 @@ class RendezoController {
     // GET /directors/{id}
     // -----------------------------------------------------------
     public function getDirector($id) {
+        $id = validateId($id, "Rendező ID");
+        
         $this->directorModel->rendezo_id = $id;
         $stmt = $this->directorModel->read_single();
 
@@ -94,9 +96,10 @@ class RendezoController {
     // PUT /directors/{id}
     // -----------------------------------------------------------
     public function updateDirector($id) {
+        $id = validateId($id, "Rendező ID");
         $data = getJsonInput();
 
-        // Ellenőrizd, hogy létezik-e
+        // Ellenőrizd, hogy létezik-e és töltsd be az adatokat
         $this->directorModel->rendezo_id = $id;
         $stmt = $this->directorModel->read_single();
         
@@ -135,6 +138,8 @@ class RendezoController {
     // DELETE /directors/{id}
     // -----------------------------------------------------------
     public function deleteDirector($id) {
+        $id = validateId($id, "Rendező ID");
+        
         // Ellenőrizd, hogy létezik-e
         $this->directorModel->rendezo_id = $id;
         $stmt = $this->directorModel->read_single();

@@ -38,6 +38,8 @@ class MufajController {
     // GET /genres/{id}
     // -----------------------------------------------------------
     public function getGenre($id) {
+        $id = validateId($id, "Műfaj ID");
+        
         $this->genreModel->mufaj_id = $id;
         $stmt = $this->genreModel->read_single();
 
@@ -83,9 +85,10 @@ class MufajController {
     // PUT /genres/{id}
     // -----------------------------------------------------------
     public function updateGenre($id) {
+        $id = validateId($id, "Műfaj ID");
         $data = getJsonInput();
 
-        // Ellenőrizd, hogy létezik-e
+        // Ellenőrizd, hogy létezik-e és töltsd be az adatokat
         $this->genreModel->mufaj_id = $id;
         $stmt = $this->genreModel->read_single();
         
@@ -113,6 +116,8 @@ class MufajController {
     // DELETE /genres/{id}
     // -----------------------------------------------------------
     public function deleteGenre($id) {
+        $id = validateId($id, "Műfaj ID");
+        
         // Ellenőrizd, hogy létezik-e
         $this->genreModel->mufaj_id = $id;
         $stmt = $this->genreModel->read_single();

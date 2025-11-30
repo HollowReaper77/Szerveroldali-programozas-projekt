@@ -49,6 +49,9 @@ class Orszag {
                   SET nev = :nev";
 
         $stmt = $this->conn->prepare($query);
+
+        $this->nev = htmlspecialchars(strip_tags($this->nev));
+
         $stmt->bindParam(':nev', $this->nev);
 
         return $stmt->execute();
@@ -61,6 +64,8 @@ class Orszag {
                   WHERE orszag_id = :orszag_id";
 
         $stmt = $this->conn->prepare($query);
+
+        $this->nev = htmlspecialchars(strip_tags($this->nev));
 
         $stmt->bindParam(':nev', $this->nev);
         $stmt->bindParam(':orszag_id', $this->orszag_id);

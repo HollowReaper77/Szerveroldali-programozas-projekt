@@ -17,6 +17,8 @@ class SzereploController {
     // Színészek listája egy filmhez
     // -----------------------------------------------------------
     public function getActorsByFilm($filmId) {
+        $filmId = validateId($filmId, "Film ID");
+        
         $this->castModel->film_id = $filmId;
         $result = $this->castModel->getActorsByFilm();
 
@@ -40,6 +42,8 @@ class SzereploController {
     // Filmek listája egy színészhez
     // -----------------------------------------------------------
     public function getFilmsByActor($actorId) {
+        $actorId = validateId($actorId, "Színész ID");
+        
         $this->castModel->szinesz_id = $actorId;
         $result = $this->castModel->getFilmsByActor();
 

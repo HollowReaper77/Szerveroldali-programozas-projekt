@@ -38,6 +38,8 @@ class NemzetisegController {
     // GET /countries/{id}
     // -----------------------------------------------------------
     public function getCountry($id) {
+        $id = validateId($id, "Ország ID");
+        
         $this->countryModel->orszag_id = $id;
         $stmt = $this->countryModel->read_single();
 
@@ -83,9 +85,10 @@ class NemzetisegController {
     // PUT /countries/{id}
     // -----------------------------------------------------------
     public function updateCountry($id) {
+        $id = validateId($id, "Ország ID");
         $data = getJsonInput();
 
-        // Ellenőrizd, hogy létezik-e
+        // Ellenőrizd, hogy létezik-e és töltsd be az adatokat
         $this->countryModel->orszag_id = $id;
         $stmt = $this->countryModel->read_single();
         
@@ -113,6 +116,8 @@ class NemzetisegController {
     // DELETE /countries/{id}
     // -----------------------------------------------------------
     public function deleteCountry($id) {
+        $id = validateId($id, "Ország ID");
+        
         // Ellenőrizd, hogy létezik-e
         $this->countryModel->orszag_id = $id;
         $stmt = $this->countryModel->read_single();

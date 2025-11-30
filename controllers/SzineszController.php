@@ -60,6 +60,8 @@ class SzineszController {
     // GET /actors/{id}
     // -----------------------------------------------------------
     public function getActor($id) {
+        $id = validateId($id, "Színész ID");
+        
         $this->actorModel->szinesz_id = $id;
         $stmt = $this->actorModel->read_single();
 
@@ -117,9 +119,10 @@ class SzineszController {
     // PUT /actors/{id}
     // -----------------------------------------------------------
     public function updateActor($id) {
+        $id = validateId($id, "Színész ID");
         $data = getJsonInput();
 
-        // Ellenőrizd, hogy létezik-e
+        // Ellenőrizd, hogy létezik-e és töltsd be az adatokat
         $this->actorModel->szinesz_id = $id;
         $stmt = $this->actorModel->read_single();
         
@@ -158,6 +161,8 @@ class SzineszController {
     // DELETE /actors/{id}
     // -----------------------------------------------------------
     public function deleteActor($id) {
+        $id = validateId($id, "Színész ID");
+        
         // Ellenőrizd, hogy létezik-e
         $this->actorModel->szinesz_id = $id;
         $stmt = $this->actorModel->read_single();
