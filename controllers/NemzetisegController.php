@@ -58,13 +58,15 @@ class NemzetisegController {
     // POST /countries  (új ország)
     // -----------------------------------------------------------
     public function createCountry() {
-        $data = json_decode(file_get_contents("php://input"));
+        $data = getJsonInput();
 
         if (!isset($data->nev)) {
             http_response_code(400);
             echo json_encode(["message" => "A 'nev' mező kötelező."]);
             return;
         }
+
+        validateLength($data->nev, "Név", 1, 100);
 
         $this->countryModel->nev = $data->nev;
 
@@ -81,10 +83,22 @@ class NemzetisegController {
     // PUT /countries/{id}
     // -----------------------------------------------------------
     public function updateCountry($id) {
-        $data = json_decode(file_get_contents("php://input"));
+        $data = getJsonInput();
 
+        // Ellenőrizd, hogy létezik-e
         $this->countryModel->orszag_id = $id;
-        $this->countryModel->nev = $data->nev ?? null;
+        $stmt = $this->countryModel->read_single();
+        
+        if (!$stmt || $stmt->rowCount() === 0) {
+            http_response_code(404);
+            echo json_encode(["message" => "Az ország nem található."]);
+            return;
+        }
+
+        if (isset($data->nev)) {
+            validateLength($data->nev, "Név", 1, 100);
+            $this->countryModel->nev = $data->nev;
+        }
 
         if ($this->countryModel->update()) {
             http_response_code(200);
@@ -99,7 +113,15 @@ class NemzetisegController {
     // DELETE /countries/{id}
     // -----------------------------------------------------------
     public function deleteCountry($id) {
+        // Ellenőrizd, hogy létezik-e
         $this->countryModel->orszag_id = $id;
+        $stmt = $this->countryModel->read_single();
+        
+        if (!$stmt || $stmt->rowCount() === 0) {
+            http_response_code(404);
+            echo json_encode(["message" => "Az ország nem található."]);
+            return;
+        }
 
         if ($this->countryModel->delete()) {
             http_response_code(200);
@@ -110,3 +132,4 @@ class NemzetisegController {
         }
     }
 }
+?>
