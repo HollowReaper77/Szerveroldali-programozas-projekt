@@ -13,15 +13,28 @@ class Szinesz {
         $this->conn = $dbConn;
     }
 
-    // READ ALL
-    public function read(){
+    // READ ALL - pagination támogatással
+    public function read($limit = 50, $offset = 0){
         $query = "SELECT szinesz_id, nev, szuletesi_datum, bio
-                  FROM {$this->table}";
+                  FROM {$this->table}
+                  ORDER BY nev ASC
+                  LIMIT :limit OFFSET :offset";
 
         $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(':limit', $limit, PDO::PARAM_INT);
+        $stmt->bindParam(':offset', $offset, PDO::PARAM_INT);
         $stmt->execute();
 
         return $stmt;
+    }
+
+    // COUNT - összes színész száma
+    public function count() {
+        $query = "SELECT COUNT(*) as total FROM {$this->table}";
+        $stmt = $this->conn->prepare($query);
+        $stmt->execute();
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $row['total'];
     }
 
     // READ ONE
@@ -38,10 +51,10 @@ class Szinesz {
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
 
         if($row){
-            $this->szinesz_id      = $row['szinesz_id'];
-            $this->nev             = $row['nev'];
+            $this->szinesz_id = $row['szinesz_id'];
+            $this->nev = $row['nev'];
             $this->szuletesi_datum = $row['szuletesi_datum'];
-            $this->bio             = $row['bio'];
+            $this->bio = $row['bio'];
         }
 
         return $stmt;
@@ -55,6 +68,10 @@ class Szinesz {
                       bio = :bio";
 
         $stmt = $this->conn->prepare($query);
+
+        $this->nev = htmlspecialchars(strip_tags($this->nev));
+        $this->szuletesi_datum = htmlspecialchars(strip_tags($this->szuletesi_datum));
+        $this->bio = htmlspecialchars(strip_tags($this->bio));
 
         $stmt->bindParam(':nev', $this->nev);
         $stmt->bindParam(':szuletesi_datum', $this->szuletesi_datum);
@@ -72,6 +89,10 @@ class Szinesz {
                   WHERE szinesz_id = :szinesz_id";
 
         $stmt = $this->conn->prepare($query);
+
+        $this->nev = htmlspecialchars(strip_tags($this->nev));
+        $this->szuletesi_datum = htmlspecialchars(strip_tags($this->szuletesi_datum));
+        $this->bio = htmlspecialchars(strip_tags($this->bio));
 
         $stmt->bindParam(':nev', $this->nev);
         $stmt->bindParam(':szuletesi_datum', $this->szuletesi_datum);

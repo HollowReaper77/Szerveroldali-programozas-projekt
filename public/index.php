@@ -12,8 +12,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
 // Helper függvények betöltése
 require_once __DIR__ . '/../includes/helpers.php';
 
-// autoload
-//require_once __DIR__ . '/../include/config.php';
+// Controllerek betöltése
 require_once __DIR__ . '/../controllers/FilmController.php';
 require_once __DIR__ . '/../controllers/SzineszController.php';
 require_once __DIR__ . '/../controllers/MufajController.php';
@@ -22,8 +21,7 @@ require_once __DIR__ . '/../controllers/SzereploController.php';
 require_once __DIR__ . '/../controllers/FilmMufajController.php';
 require_once __DIR__ . '/../controllers/RendezoController.php';
 
-
-// modellek betöltése
+// Modellek betöltése
 require_once __DIR__ . '/../models/film.php';
 require_once __DIR__ . '/../models/szinesz.php';
 require_once __DIR__ . '/../models/mufaj.php';
@@ -31,7 +29,7 @@ require_once __DIR__ . '/../models/orszag.php';
 require_once __DIR__ . '/../models/szereplo.php';
 require_once __DIR__ . '/../models/film_mufaj.php';
 
-
+// Initialize.php betöltése (config + többi model)
 require_once __DIR__ . '/../models/initialize.php'; 
 $db = $dbConn;
 
@@ -47,16 +45,13 @@ switch ($urlParts[0]) {
     // -----------------------------------------
     // FILMEK
     // -----------------------------------------
-    
     case "films":
         $controller = new FilmController($db);
         
         if ($method === 'GET') {
             if (isset($urlParts[1])) {
-                // /films/{id}
                 $controller->getFilm($urlParts[1]);
             } else {
-                // /films
                 $controller->getAllFilms();
             }
         }
@@ -66,10 +61,20 @@ switch ($urlParts[0]) {
         }
 
         if ($method === 'PUT') {
+            if (!isset($urlParts[1])) {
+                http_response_code(400);
+                echo json_encode(["message" => "Film ID hiányzik."]);
+                break;
+            }
             $controller->updateFilm($urlParts[1]);
         }
 
         if ($method === 'DELETE') {
+            if (!isset($urlParts[1])) {
+                http_response_code(400);
+                echo json_encode(["message" => "Film ID hiányzik."]);
+                break;
+            }
             $controller->deleteFilm($urlParts[1]);
         }
 
@@ -78,7 +83,6 @@ switch ($urlParts[0]) {
     // -----------------------------------------
     // SZÍNÉSZEK
     // -----------------------------------------
-
     case "actors":
         $controller = new SzineszController($db);
 
@@ -95,10 +99,20 @@ switch ($urlParts[0]) {
         }
 
         if ($method === 'PUT') {
+            if (!isset($urlParts[1])) {
+                http_response_code(400);
+                echo json_encode(["message" => "Színész ID hiányzik."]);
+                break;
+            }
             $controller->updateActor($urlParts[1]);
         }
 
         if ($method === 'DELETE') {
+            if (!isset($urlParts[1])) {
+                http_response_code(400);
+                echo json_encode(["message" => "Színész ID hiányzik."]);
+                break;
+            }
             $controller->deleteActor($urlParts[1]);
         }
 
@@ -107,7 +121,6 @@ switch ($urlParts[0]) {
     // -----------------------------------------
     // MŰFAJOK
     // -----------------------------------------
-
     case "genres":
         $controller = new MufajController($db);
 
@@ -124,10 +137,20 @@ switch ($urlParts[0]) {
         }
 
         if ($method === 'PUT') {
+            if (!isset($urlParts[1])) {
+                http_response_code(400);
+                echo json_encode(["message" => "Műfaj ID hiányzik."]);
+                break;
+            }
             $controller->updateGenre($urlParts[1]);
         }
 
         if ($method === 'DELETE') {
+            if (!isset($urlParts[1])) {
+                http_response_code(400);
+                echo json_encode(["message" => "Műfaj ID hiányzik."]);
+                break;
+            }
             $controller->deleteGenre($urlParts[1]);
         }
 
@@ -136,7 +159,6 @@ switch ($urlParts[0]) {
     // -----------------------------------------
     // ORSZÁGOK
     // -----------------------------------------
-
     case "countries":
         $controller = new NemzetisegController($db);
 
@@ -153,11 +175,59 @@ switch ($urlParts[0]) {
         }
 
         if ($method === 'PUT') {
+            if (!isset($urlParts[1])) {
+                http_response_code(400);
+                echo json_encode(["message" => "Ország ID hiányzik."]);
+                break;
+            }
             $controller->updateCountry($urlParts[1]);
         }
 
         if ($method === 'DELETE') {
+            if (!isset($urlParts[1])) {
+                http_response_code(400);
+                echo json_encode(["message" => "Ország ID hiányzik."]);
+                break;
+            }
             $controller->deleteCountry($urlParts[1]);
+        }
+
+        break;
+
+    // -----------------------------------------
+    // RENDEZŐK
+    // -----------------------------------------
+    case "directors":
+        $controller = new RendezoController($db);
+
+        if ($method === 'GET') {
+            if (isset($urlParts[1])) {
+                $controller->getDirector($urlParts[1]);
+            } else {
+                $controller->getAllDirectors();
+            }
+        }
+
+        if ($method === 'POST') {
+            $controller->createDirector();
+        }
+
+        if ($method === 'PUT') {
+            if (!isset($urlParts[1])) {
+                http_response_code(400);
+                echo json_encode(["message" => "Rendező ID hiányzik."]);
+                break;
+            }
+            $controller->updateDirector($urlParts[1]);
+        }
+
+        if ($method === 'DELETE') {
+            if (!isset($urlParts[1])) {
+                http_response_code(400);
+                echo json_encode(["message" => "Rendező ID hiányzik."]);
+                break;
+            }
+            $controller->deleteDirector($urlParts[1]);
         }
 
         break;
@@ -165,18 +235,17 @@ switch ($urlParts[0]) {
     // -----------------------------------------
     // FILM–SZÍNÉSZ kapcsolat
     // -----------------------------------------
-
     case "film-actors":
         $controller = new SzereploController($db);
 
         if ($method === 'GET') {
-            // /film-actors/film/{id}
-            if ($urlParts[1] === "film") {
+            if (isset($urlParts[1]) && $urlParts[1] === "film" && isset($urlParts[2])) {
                 $controller->getActorsByFilm($urlParts[2]);
-            }
-            // /film-actors/actor/{id}
-            if ($urlParts[1] === "actor") {
+            } elseif (isset($urlParts[1]) && $urlParts[1] === "actor" && isset($urlParts[2])) {
                 $controller->getFilmsByActor($urlParts[2]);
+            } else {
+                http_response_code(400);
+                echo json_encode(["message" => "Érvénytelen endpoint vagy hiányzó ID."]);
             }
         }
 
@@ -193,16 +262,17 @@ switch ($urlParts[0]) {
     // -----------------------------------------
     // FILM–MŰFAJ kapcsolat
     // -----------------------------------------
-
     case "film-genres":
         $controller = new FilmMufajController($db);
 
         if ($method === 'GET') {
-            if ($urlParts[1] === "film") {
+            if (isset($urlParts[1]) && $urlParts[1] === "film" && isset($urlParts[2])) {
                 $controller->getGenresByFilm($urlParts[2]);
-            }
-            if ($urlParts[1] === "genre") {
+            } elseif (isset($urlParts[1]) && $urlParts[1] === "genre" && isset($urlParts[2])) {
                 $controller->getFilmsByGenre($urlParts[2]);
+            } else {
+                http_response_code(400);
+                echo json_encode(["message" => "Érvénytelen endpoint vagy hiányzó ID."]);
             }
         }
 
@@ -223,35 +293,5 @@ switch ($urlParts[0]) {
         http_response_code(404);
         echo json_encode(["message" => "Endpoint not found"]);
         break;
-
-
-
-    // -----------------------------------------
-    // RENDEZŐK
-    // -----------------------------------------
-case "directors":
-    $controller = new RendezoController($db);
-
-    if ($method === 'GET') {
-        if (isset($urlParts[1])) {
-            $controller->getDirector($urlParts[1]);
-        } else {
-            $controller->getAllDirectors();
-        }
-    }
-
-    if ($method === 'POST') {
-        $controller->createDirector();
-    }
-
-    if ($method === 'PUT') {
-        $controller->updateDirector($urlParts[1]);
-    }
-
-    if ($method === 'DELETE') {
-        $controller->deleteDirector($urlParts[1]);
-    }
-
-    break;
 }
 ?>

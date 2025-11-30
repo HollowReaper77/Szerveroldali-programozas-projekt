@@ -81,3 +81,27 @@ function validateLength($text, $fieldName, $min = 0, $max = null) {
     
     return true;
 }
+
+/**
+ * Dátum validálás
+ */
+function validateDate($date, $fieldName) {
+    // Ellenőrzi, hogy a dátum YYYY-MM-DD formátumú-e
+    $datePattern = '/^\d{4}-\d{2}-\d{2}$/';
+    
+    if (!preg_match($datePattern, $date)) {
+        http_response_code(400);
+        echo json_encode(["message" => "{$fieldName} formátuma érvénytelen. YYYY-MM-DD formátumot használj."]);
+        exit;
+    }
+    
+    // Ellenőrzi, hogy létező dátum-e
+    $parts = explode('-', $date);
+    if (!checkdate((int)$parts[1], (int)$parts[2], (int)$parts[0])) {
+        http_response_code(400);
+        echo json_encode(["message" => "{$fieldName} nem létező dátum."]);
+        exit;
+    }
+    
+    return true;
+}
