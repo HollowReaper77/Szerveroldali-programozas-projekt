@@ -111,7 +111,13 @@ class SzineszController {
         try {
             if ($this->szinesz->create()) {
                 http_response_code(201);
-                echo json_encode(["message" => "Színész sikeresen létrehozva."]);
+                echo json_encode([
+                    "message"         => "Színész sikeresen létrehozva.",
+                    "szinesz_id"      => $this->szinesz->szinesz_id,
+                    "nev"             => $this->szinesz->nev,
+                    "szuletesi_datum" => $this->szinesz->szuletesi_datum,
+                    "bio"             => $this->szinesz->bio
+                ]);
             } else {
                 http_response_code(500);
                 echo json_encode(["message" => "Hiba történt a létrehozás során."]);
@@ -181,7 +187,7 @@ class SzineszController {
         
         if (!$stmt || $stmt->rowCount() === 0) {
             http_response_code(404);
-            echo json_encode(["message" => "A színész nem található."]);
+            echo json_encode(["error" => "A színész nem található."]);
             return;
         }
 

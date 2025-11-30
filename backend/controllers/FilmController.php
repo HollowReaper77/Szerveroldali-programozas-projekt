@@ -50,15 +50,8 @@ class FilmController {
 
             http_response_code(200);
             echo json_encode([
-                "data" => $films,
-                "pagination" => [
-                    "current_page" => $page,
-                    "per_page" => $limit,
-                    "total_items" => $total,
-                    "total_pages" => $totalPages,
-                    "has_next" => $page < $totalPages,
-                    "has_prev" => $page > 1
-                ]
+                "filmek" => $films,
+                "count" => $total
             ]);
         } else {
             http_response_code(404);
@@ -78,12 +71,14 @@ class FilmController {
         if ($stmt && $stmt->rowCount() > 0) {
             http_response_code(200);
             echo json_encode([
-                "film_id" => $this->filmModel->film_id,
-                "cim" => $this->filmModel->cim,
-                "idotartam" => $this->filmModel->idotartam,
-                "poszter_url" => $this->filmModel->poszter_url,
-                "leiras" => $this->filmModel->leiras,
-                "kiadasi_ev" => $this->filmModel->kiadasi_ev
+                "film" => [
+                    "film_id" => $this->filmModel->film_id,
+                    "cim" => $this->filmModel->cim,
+                    "idotartam" => $this->filmModel->idotartam,
+                    "poszter_url" => $this->filmModel->poszter_url,
+                    "leiras" => $this->filmModel->leiras,
+                    "kiadasi_ev" => $this->filmModel->kiadasi_ev
+                ]
             ]);
         } else {
             http_response_code(404);
@@ -99,11 +94,11 @@ class FilmController {
 
         // Kötelező mezők ellenőrzése
         if (
-            !isset($data->cim) ||
-            !isset($data->idotartam) ||
-            !isset($data->poszter_url) ||
-            !isset($data->leiras) ||
-            !isset($data->kiadasi_ev)
+            !isset($data['cim']) ||
+            !isset($data['idotartam']) ||
+            !isset($data['poszter_url']) ||
+            !isset($data['leiras']) ||
+            !isset($data['kiadasi_ev'])
         ) {
             http_response_code(400);
             echo json_encode(["message" => "Hiányzó mezők."]);
@@ -111,22 +106,30 @@ class FilmController {
         }
 
         // Validálás helper függvényekkel
-        validateLength($data->cim, "Cím", 1, 255);
-        validateNumber($data->idotartam, "Időtartam", 1, 999);
-        validateNumber($data->kiadasi_ev, "Kiadási év", 1888, date('Y') + 5);
-        validateUrl($data->poszter_url, "Poszter URL");
-        validateLength($data->leiras, "Leírás", 0, 2000);
+        validateLength($data['cim'], "Cím", 1, 255);
+        validateNumber($data['idotartam'], "Időtartam", 1, 999);
+        validateNumber($data['kiadasi_ev'], "Kiadási év", 1888, date('Y') + 5);
+        validateUrl($data['poszter_url'], "Poszter URL");
+        validateLength($data['leiras'], "Leírás", 0, 2000);
 
-        $this->filmModel->cim = $data->cim;
-        $this->filmModel->idotartam = $data->idotartam;
-        $this->filmModel->poszter_url = $data->poszter_url;
-        $this->filmModel->leiras = $data->leiras;
-        $this->filmModel->kiadasi_ev = $data->kiadasi_ev;
+        $this->filmModel->cim = $data['cim'];
+        $this->filmModel->idotartam = $data['idotartam'];
+        $this->filmModel->poszter_url = $data['poszter_url'];
+        $this->filmModel->leiras = $data['leiras'];
+        $this->filmModel->kiadasi_ev = $data['kiadasi_ev'];
 
         try {
             if ($this->filmModel->create()) {
                 http_response_code(201);
-                echo json_encode(["message" => "Film sikeresen létrehozva."]);
+                echo json_encode([
+                    "message"     => "Film sikeresen létrehozva.",
+                    "film_id"     => $this->filmModel->film_id,
+                    "cim"         => $this->filmModel->cim,
+                    "idotartam"   => $this->filmModel->idotartam,
+                    "poszter_url" => $this->filmModel->poszter_url,
+                    "leiras"      => $this->filmModel->leiras,
+                    "kiadasi_ev"  => $this->filmModel->kiadasi_ev
+                ]);
             } else {
                 http_response_code(500);
                 echo json_encode(["message" => "Hiba a film létrehozása közben."]);
@@ -155,34 +158,34 @@ class FilmController {
         }
 
         // Ha van cím, validáld és frissítsd
-        if (isset($data->cim)) {
-            validateLength($data->cim, "Cím", 1, 255);
-            $this->filmModel->cim = $data->cim;
+        if (isset($data['cim'])) {
+            validateLength($data['cim'], "Cím", 1, 255);
+            $this->filmModel->cim = $data['cim'];
         }
         // különben megtartjuk a jelenlegi értéket (már be van töltve read_single()-ből)
 
         // Ha van időtartam, validáld és frissítsd
-        if (isset($data->idotartam)) {
-            validateNumber($data->idotartam, "Időtartam", 1, 999);
-            $this->filmModel->idotartam = $data->idotartam;
+        if (isset($data['idotartam'])) {
+            validateNumber($data['idotartam'], "Időtartam", 1, 999);
+            $this->filmModel->idotartam = $data['idotartam'];
         }
 
         // Ha van poszter URL, validáld és frissítsd
-        if (isset($data->poszter_url)) {
-            validateUrl($data->poszter_url, "Poszter URL");
-            $this->filmModel->poszter_url = $data->poszter_url;
+        if (isset($data['poszter_url'])) {
+            validateUrl($data['poszter_url'], "Poszter URL");
+            $this->filmModel->poszter_url = $data['poszter_url'];
         }
 
         // Ha van leírás, validáld és frissítsd
-        if (isset($data->leiras)) {
-            validateLength($data->leiras, "Leírás", 0, 2000);
-            $this->filmModel->leiras = $data->leiras;
+        if (isset($data['leiras'])) {
+            validateLength($data['leiras'], "Leírás", 0, 2000);
+            $this->filmModel->leiras = $data['leiras'];
         }
 
         // Ha van kiadási év, validáld és frissítsd
-        if (isset($data->kiadasi_ev)) {
-            validateNumber($data->kiadasi_ev, "Kiadási év", 1888, date('Y') + 5);
-            $this->filmModel->kiadasi_ev = $data->kiadasi_ev;
+        if (isset($data['kiadasi_ev'])) {
+            validateNumber($data['kiadasi_ev'], "Kiadási év", 1888, date('Y') + 5);
+            $this->filmModel->kiadasi_ev = $data['kiadasi_ev'];
         }
 
         try {
@@ -211,7 +214,7 @@ class FilmController {
         
         if (!$stmt || $stmt->rowCount() === 0) {
             http_response_code(404);
-            echo json_encode(["message" => "A film nem található."]);
+            echo json_encode(["error" => "A film nem található."]);
             return;
         }
 

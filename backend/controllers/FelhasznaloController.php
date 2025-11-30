@@ -65,7 +65,7 @@ class FelhasznaloController {
                 http_response_code(201);
                 echo json_encode([
                     "message" => "Sikeres regisztráció.",
-                    "user" => [
+                    "felhasznalo" => [
                         "id" => $this->felhasznalo->felhasznalo_id,
                         "felhasznalonev" => $this->felhasznalo->felhasznalonev,
                         "email" => $this->felhasznalo->email,
@@ -116,7 +116,7 @@ class FelhasznaloController {
                     http_response_code(200);
                     echo json_encode([
                         "message" => "Sikeres bejelentkezés.",
-                        "user" => [
+                        "felhasznalo" => [
                             "id" => $this->felhasznalo->felhasznalo_id,
                             "felhasznalonev" => $this->felhasznalo->felhasznalonev,
                             "email" => $this->felhasznalo->email,
@@ -161,7 +161,7 @@ class FelhasznaloController {
             if ($this->felhasznalo->read_single()) {
                 http_response_code(200);
                 echo json_encode([
-                    "user" => [
+                    "felhasznalo" => [
                         "id" => $this->felhasznalo->felhasznalo_id,
                         "felhasznalonev" => $this->felhasznalo->felhasznalonev,
                         "email" => $this->felhasznalo->email,
@@ -307,7 +307,7 @@ class FelhasznaloController {
             }
 
             http_response_code(200);
-            echo json_encode(["users" => $users]);
+            echo json_encode(["felhasznalok" => $users]);
         } catch (PDOException $e) {
             http_response_code(500);
             echo json_encode(["message" => "Adatbázis hiba: " . $e->getMessage()]);

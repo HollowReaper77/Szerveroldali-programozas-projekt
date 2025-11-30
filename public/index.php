@@ -290,7 +290,12 @@ switch ($urlParts[0]) {
         }
 
         if ($method === 'DELETE') {
-            $controller->removeGenreFromFilm();
+            if (isset($urlParts[1]) && $urlParts[1] === "film" && isset($urlParts[2]) &&
+                isset($urlParts[3]) && $urlParts[3] === "genre" && isset($urlParts[4])) {
+                $controller->removeGenreFromFilm($urlParts[2], $urlParts[4]);
+            } else {
+                $controller->removeGenreFromFilm();
+            }
         }
 
         break;
@@ -326,8 +331,8 @@ switch ($urlParts[0]) {
         if ($method === 'GET') {
             if (isset($urlParts[1]) && $urlParts[1] === 'profile') {
                 $controller->getProfile();
-            } elseif (isset($urlParts[1]) && $urlParts[1] === 'all') {
-                // Admin: összes felhasználó listázása
+            } elseif (!isset($urlParts[1]) || (isset($urlParts[1]) && $urlParts[1] === 'all')) {
+                // Admin: összes felhasználó listázása (GET /users vagy GET /users/all)
                 $controller->getAllUsers();
             } else {
                 http_response_code(400);
@@ -338,11 +343,11 @@ switch ($urlParts[0]) {
         if ($method === 'PUT') {
             if (isset($urlParts[1]) && $urlParts[1] === 'profile') {
                 $controller->updateProfile();
-            } elseif (isset($urlParts[1]) && $urlParts[1] === 'change-password') {
+            } elseif (isset($urlParts[1]) && ($urlParts[1] === 'password' || $urlParts[1] === 'change-password')) {
                 $controller->changePassword();
-            } elseif (isset($urlParts[1]) && $urlParts[1] === 'role' && isset($urlParts[2])) {
+            } elseif (isset($urlParts[1]) && is_numeric($urlParts[1]) && isset($urlParts[2]) && $urlParts[2] === 'role') {
                 // Admin: felhasználó szerepkörének módosítása
-                $controller->updateUserRole($urlParts[2]);
+                $controller->updateUserRole($urlParts[1]);
             } else {
                 http_response_code(400);
                 echo json_encode(["message" => "Érvénytelen endpoint."]);
