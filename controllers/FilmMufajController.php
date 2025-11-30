@@ -64,13 +64,16 @@ class FilmMufajController {
     // Műfaj hozzáadása filmhez
     // -----------------------------------------------------------
     public function addGenreToFilm() {
-        $data = json_decode(file_get_contents("php://input"));
+        $data = getJsonInput();
 
         if (!isset($data->film_id) || !isset($data->mufaj_id)) {
             http_response_code(400);
             echo json_encode(["message" => "A film_id és a mufaj_id mezők kötelezőek."]);
             return;
         }
+
+        validateNumber($data->film_id, "Film ID", 1);
+        validateNumber($data->mufaj_id, "Műfaj ID", 1);
 
         $this->model->film_id = $data->film_id;
         $this->model->mufaj_id = $data->mufaj_id;
@@ -80,7 +83,7 @@ class FilmMufajController {
             echo json_encode(["message" => "Műfaj sikeresen hozzáadva a filmhez."]);
         } else {
             http_response_code(500);
-            echo json_encode(["message" => "Hiba történt a hozzárendelés során."]);
+            echo json_encode(["message" => "Hiba történt a hozzárendelés során. (Lehet, hogy már hozzá van rendelve?)"]);
         }
     }
 
@@ -89,13 +92,16 @@ class FilmMufajController {
     // Műfaj eltávolítása egy filmből
     // -----------------------------------------------------------
     public function removeGenreFromFilm() {
-        $data = json_decode(file_get_contents("php://input"));
+        $data = getJsonInput();
 
         if (!isset($data->film_id) || !isset($data->mufaj_id)) {
             http_response_code(400);
             echo json_encode(["message" => "A film_id és a mufaj_id mezők kötelezőek a törléshez."]);
             return;
         }
+
+        validateNumber($data->film_id, "Film ID", 1);
+        validateNumber($data->mufaj_id, "Műfaj ID", 1);
 
         $this->model->film_id = $data->film_id;
         $this->model->mufaj_id = $data->mufaj_id;
@@ -104,8 +110,8 @@ class FilmMufajController {
             http_response_code(200);
             echo json_encode(["message" => "Műfaj eltávolítva a filmből."]);
         } else {
-            http_response_code(500);
-            echo json_encode(["message" => "Hiba történt az eltávolítás során."]);
+            http_response_code(404);
+            echo json_encode(["message" => "A kapcsolat nem található vagy már törölve lett."]);
         }
     }
 }
