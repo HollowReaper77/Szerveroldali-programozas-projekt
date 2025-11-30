@@ -79,15 +79,38 @@ class FilmMufajController {
         validateNumber($data->film_id, "Film ID", 1);
         validateNumber($data->mufaj_id, "Műfaj ID", 1);
 
+        // Ellenőrizd, hogy a film létezik-e
+        $filmCheck = $this->db->prepare("SELECT film_id FROM film WHERE film_id = ?");
+        $filmCheck->execute([$data->film_id]);
+        if ($filmCheck->rowCount() === 0) {
+            http_response_code(404);
+            echo json_encode(["message" => "A megadott film nem található."]);
+            return;
+        }
+
+        // Ellenőrizd, hogy a műfaj létezik-e
+        $genreCheck = $this->db->prepare("SELECT mufaj_id FROM mufajok WHERE mufaj_id = ?");
+        $genreCheck->execute([$data->mufaj_id]);
+        if ($genreCheck->rowCount() === 0) {
+            http_response_code(404);
+            echo json_encode(["message" => "A megadott műfaj nem található."]);
+            return;
+        }
+
         $this->model->film_id = $data->film_id;
         $this->model->mufaj_id = $data->mufaj_id;
 
-        if ($this->model->create()) {
-            http_response_code(201);
-            echo json_encode(["message" => "Műfaj sikeresen hozzáadva a filmhez."]);
-        } else {
+        try {
+            if ($this->model->create()) {
+                http_response_code(201);
+                echo json_encode(["message" => "Műfaj sikeresen hozzáadva a filmhez."]);
+            } else {
+                http_response_code(500);
+                echo json_encode(["message" => "Hiba történt a hozzárendelés során. (Lehet, hogy már hozzá van rendelve?)"]);
+            }
+        } catch (PDOException $e) {
             http_response_code(500);
-            echo json_encode(["message" => "Hiba történt a hozzárendelés során. (Lehet, hogy már hozzá van rendelve?)"]);
+            echo json_encode(["message" => "Adatbázis hiba: " . $e->getMessage()]);
         }
     }
 
@@ -110,12 +133,17 @@ class FilmMufajController {
         $this->model->film_id = $data->film_id;
         $this->model->mufaj_id = $data->mufaj_id;
 
-        if ($this->model->delete()) {
-            http_response_code(200);
-            echo json_encode(["message" => "Műfaj eltávolítva a filmből."]);
-        } else {
-            http_response_code(404);
-            echo json_encode(["message" => "A kapcsolat nem található vagy már törölve lett."]);
+        try {
+            if ($this->model->delete()) {
+                http_response_code(200);
+                echo json_encode(["message" => "Műfaj eltávolítva a filmből."]);
+            } else {
+                http_response_code(404);
+                echo json_encode(["message" => "A kapcsolat nem található vagy már törölve lett."]);
+            }
+        } catch (PDOException $e) {
+            http_response_code(500);
+            echo json_encode(["message" => "Adatbázis hiba: " . $e->getMessage()]);
         }
     }
 }

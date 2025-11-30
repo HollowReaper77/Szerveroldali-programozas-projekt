@@ -72,12 +72,17 @@ class MufajController {
 
         $this->genreModel->nev = $data->nev;
 
-        if ($this->genreModel->create()) {
-            http_response_code(201);
-            echo json_encode(["message" => "Műfaj sikeresen létrehozva."]);
-        } else {
+        try {
+            if ($this->genreModel->create()) {
+                http_response_code(201);
+                echo json_encode(["message" => "Műfaj sikeresen létrehozva."]);
+            } else {
+                http_response_code(500);
+                echo json_encode(["message" => "Hiba történt a létrehozás során."]);
+            }
+        } catch (PDOException $e) {
             http_response_code(500);
-            echo json_encode(["message" => "Hiba történt a létrehozás során."]);
+            echo json_encode(["message" => "Adatbázis hiba: " . $e->getMessage()]);
         }
     }
 
@@ -103,12 +108,17 @@ class MufajController {
             $this->genreModel->nev = $data->nev;
         }
 
-        if ($this->genreModel->update()) {
-            http_response_code(200);
-            echo json_encode(["message" => "Műfaj sikeresen frissítve."]);
-        } else {
+        try {
+            if ($this->genreModel->update()) {
+                http_response_code(200);
+                echo json_encode(["message" => "Műfaj sikeresen frissítve."]);
+            } else {
+                http_response_code(500);
+                echo json_encode(["message" => "Hiba történt a frissítés során."]);
+            }
+        } catch (PDOException $e) {
             http_response_code(500);
-            echo json_encode(["message" => "Hiba történt a frissítés során."]);
+            echo json_encode(["message" => "Adatbázis hiba: " . $e->getMessage()]);
         }
     }
 
@@ -128,12 +138,17 @@ class MufajController {
             return;
         }
 
-        if ($this->genreModel->delete()) {
-            http_response_code(200);
-            echo json_encode(["message" => "Műfaj törölve."]);
-        } else {
+        try {
+            if ($this->genreModel->delete()) {
+                http_response_code(200);
+                echo json_encode(["message" => "Műfaj törölve."]);
+            } else {
+                http_response_code(500);
+                echo json_encode(["message" => "Hiba történt a törlés során."]);
+            }
+        } catch (PDOException $e) {
             http_response_code(500);
-            echo json_encode(["message" => "Hiba történt a törlés során."]);
+            echo json_encode(["message" => "Adatbázis hiba: " . $e->getMessage()]);
         }
     }
 }

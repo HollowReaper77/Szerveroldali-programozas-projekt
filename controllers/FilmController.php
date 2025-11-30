@@ -26,13 +26,20 @@ class FilmController {
         
         $offset = ($page - 1) * $limit;
         
-        // Filmek lekérdezése
-        $result = $this->filmModel->read($limit, $offset);
-        $num = $result->rowCount();
-        
         // Összes film száma
         $total = $this->filmModel->count();
         $totalPages = ceil($total / $limit);
+        
+        // Ellenőrizd, hogy a page ne legyen nagyobb mint a maximális oldalszám
+        if ($totalPages > 0 && $page > $totalPages) {
+            http_response_code(400);
+            echo json_encode(["message" => "Az oldalszám túl nagy. Maximum {$totalPages} oldal létezik."]);
+            return;
+        }
+        
+        // Filmek lekérdezése
+        $result = $this->filmModel->read($limit, $offset);
+        $num = $result->rowCount();
 
         if ($num > 0) {
             $films = [];
@@ -116,12 +123,17 @@ class FilmController {
         $this->filmModel->leiras = $data->leiras;
         $this->filmModel->kiadasi_ev = $data->kiadasi_ev;
 
-        if ($this->filmModel->create()) {
-            http_response_code(201);
-            echo json_encode(["message" => "Film sikeresen létrehozva."]);
-        } else {
+        try {
+            if ($this->filmModel->create()) {
+                http_response_code(201);
+                echo json_encode(["message" => "Film sikeresen létrehozva."]);
+            } else {
+                http_response_code(500);
+                echo json_encode(["message" => "Hiba a film létrehozása közben."]);
+            }
+        } catch (PDOException $e) {
             http_response_code(500);
-            echo json_encode(["message" => "Hiba a film létrehozása közben."]);
+            echo json_encode(["message" => "Adatbázis hiba: " . $e->getMessage()]);
         }
     }
 
@@ -173,12 +185,17 @@ class FilmController {
             $this->filmModel->kiadasi_ev = $data->kiadasi_ev;
         }
 
-        if ($this->filmModel->update()) {
-            http_response_code(200);
-            echo json_encode(["message" => "Film sikeresen frissítve."]);
-        } else {
+        try {
+            if ($this->filmModel->update()) {
+                http_response_code(200);
+                echo json_encode(["message" => "Film sikeresen frissítve."]);
+            } else {
+                http_response_code(500);
+                echo json_encode(["message" => "Hiba a film frissítése közben."]);
+            }
+        } catch (PDOException $e) {
             http_response_code(500);
-            echo json_encode(["message" => "Hiba a film frissítése közben."]);
+            echo json_encode(["message" => "Adatbázis hiba: " . $e->getMessage()]);
         }
     }
 
@@ -198,12 +215,17 @@ class FilmController {
             return;
         }
 
-        if ($this->filmModel->delete()) {
-            http_response_code(200);
-            echo json_encode(["message" => "Film törölve."]);
-        } else {
+        try {
+            if ($this->filmModel->delete()) {
+                http_response_code(200);
+                echo json_encode(["message" => "Film törölve."]);
+            } else {
+                http_response_code(500);
+                echo json_encode(["message" => "Hiba a film törlése közben."]);
+            }
+        } catch (PDOException $e) {
             http_response_code(500);
-            echo json_encode(["message" => "Hiba a film törlése közben."]);
+            echo json_encode(["message" => "Adatbázis hiba: " . $e->getMessage()]);
         }
     }
 }

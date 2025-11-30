@@ -83,12 +83,17 @@ class RendezoController {
             validateLength($data->bio, "Bio", 0, 5000);
         }
 
-        if ($this->directorModel->create()) {
-            http_response_code(201);
-            echo json_encode(["message" => "Rendező sikeresen létrehozva."]);
-        } else {
+        try {
+            if ($this->directorModel->create()) {
+                http_response_code(201);
+                echo json_encode(["message" => "Rendező sikeresen létrehozva."]);
+            } else {
+                http_response_code(500);
+                echo json_encode(["message" => "Hiba történt a létrehozás során."]);
+            }
+        } catch (PDOException $e) {
             http_response_code(500);
-            echo json_encode(["message" => "Hiba történt a létrehozás során."]);
+            echo json_encode(["message" => "Adatbázis hiba: " . $e->getMessage()]);
         }
     }
 
@@ -125,12 +130,17 @@ class RendezoController {
             $this->directorModel->bio = $data->bio;
         }
 
-        if ($this->directorModel->update()) {
-            http_response_code(200);
-            echo json_encode(["message" => "Rendező sikeresen frissítve."]);
-        } else {
+        try {
+            if ($this->directorModel->update()) {
+                http_response_code(200);
+                echo json_encode(["message" => "Rendező sikeresen frissítve."]);
+            } else {
+                http_response_code(500);
+                echo json_encode(["message" => "Hiba a frissítés során."]);
+            }
+        } catch (PDOException $e) {
             http_response_code(500);
-            echo json_encode(["message" => "Hiba a frissítés során."]);
+            echo json_encode(["message" => "Adatbázis hiba: " . $e->getMessage()]);
         }
     }
 
@@ -150,12 +160,17 @@ class RendezoController {
             return;
         }
 
-        if ($this->directorModel->delete()) {
-            http_response_code(200);
-            echo json_encode(["message" => "Rendező törölve."]);
-        } else {
+        try {
+            if ($this->directorModel->delete()) {
+                http_response_code(200);
+                echo json_encode(["message" => "Rendező törölve."]);
+            } else {
+                http_response_code(500);
+                echo json_encode(["message" => "Hiba a törlés során."]);
+            }
+        } catch (PDOException $e) {
             http_response_code(500);
-            echo json_encode(["message" => "Hiba a törlés során."]);
+            echo json_encode(["message" => "Adatbázis hiba: " . $e->getMessage()]);
         }
     }
 }

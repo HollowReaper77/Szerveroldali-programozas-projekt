@@ -25,11 +25,18 @@ class SzineszController {
         
         $offset = ($page - 1) * $limit;
         
-        $result = $this->actorModel->read($limit, $offset);
-        $num = $result->rowCount();
-        
         $total = $this->actorModel->count();
         $totalPages = ceil($total / $limit);
+        
+        // Ellenőrizd, hogy a page ne legyen nagyobb mint a maximális oldalszám
+        if ($totalPages > 0 && $page > $totalPages) {
+            http_response_code(400);
+            echo json_encode(["message" => "Az oldalszám túl nagy. Maximum {$totalPages} oldal létezik."]);
+            return;
+        }
+        
+        $result = $this->actorModel->read($limit, $offset);
+        $num = $result->rowCount();
 
         if ($num > 0) {
             $actors = [];
@@ -106,12 +113,17 @@ class SzineszController {
             validateLength($data->bio, "Bio", 0, 5000);
         }
 
-        if ($this->actorModel->create()) {
-            http_response_code(201);
-            echo json_encode(["message" => "Színész sikeresen létrehozva."]);
-        } else {
+        try {
+            if ($this->actorModel->create()) {
+                http_response_code(201);
+                echo json_encode(["message" => "Színész sikeresen létrehozva."]);
+            } else {
+                http_response_code(500);
+                echo json_encode(["message" => "Hiba történt a létrehozás során."]);
+            }
+        } catch (PDOException $e) {
             http_response_code(500);
-            echo json_encode(["message" => "Hiba történt a létrehozás során."]);
+            echo json_encode(["message" => "Adatbázis hiba: " . $e->getMessage()]);
         }
     }
 
@@ -148,12 +160,17 @@ class SzineszController {
             $this->actorModel->bio = $data->bio;
         }
 
-        if ($this->actorModel->update()) {
-            http_response_code(200);
-            echo json_encode(["message" => "Színész sikeresen frissítve."]);
-        } else {
+        try {
+            if ($this->actorModel->update()) {
+                http_response_code(200);
+                echo json_encode(["message" => "Színész sikeresen frissítve."]);
+            } else {
+                http_response_code(500);
+                echo json_encode(["message" => "Hiba a frissítés során."]);
+            }
+        } catch (PDOException $e) {
             http_response_code(500);
-            echo json_encode(["message" => "Hiba a frissítés során."]);
+            echo json_encode(["message" => "Adatbázis hiba: " . $e->getMessage()]);
         }
     }
 
@@ -173,12 +190,17 @@ class SzineszController {
             return;
         }
 
-        if ($this->actorModel->delete()) {
-            http_response_code(200);
-            echo json_encode(["message" => "Színész törölve."]);
-        } else {
+        try {
+            if ($this->actorModel->delete()) {
+                http_response_code(200);
+                echo json_encode(["message" => "Színész törölve."]);
+            } else {
+                http_response_code(500);
+                echo json_encode(["message" => "Hiba a törlés során."]);
+            }
+        } catch (PDOException $e) {
             http_response_code(500);
-            echo json_encode(["message" => "Hiba a törlés során."]);
+            echo json_encode(["message" => "Adatbázis hiba: " . $e->getMessage()]);
         }
     }
 }
