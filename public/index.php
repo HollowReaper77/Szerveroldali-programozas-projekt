@@ -10,27 +10,27 @@ if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
 }
 
 // Helper függvények betöltése
-require_once __DIR__ . '/../includes/helpers.php';
+require_once __DIR__ . '/../backend/includes/helpers.php';
 
 // Controllerek betöltése
-require_once __DIR__ . '/../controllers/FilmController.php';
-require_once __DIR__ . '/../controllers/SzineszController.php';
-require_once __DIR__ . '/../controllers/MufajController.php';
-require_once __DIR__ . '/../controllers/NemzetisegController.php';
-require_once __DIR__ . '/../controllers/SzereploController.php';
-require_once __DIR__ . '/../controllers/FilmMufajController.php';
-require_once __DIR__ . '/../controllers/RendezoController.php';
+require_once __DIR__ . '/../backend/controllers/FilmController.php';
+require_once __DIR__ . '/../backend/controllers/SzineszController.php';
+require_once __DIR__ . '/../backend/controllers/MufajController.php';
+require_once __DIR__ . '/../backend/controllers/NemzetisegController.php';
+require_once __DIR__ . '/../backend/controllers/SzereploController.php';
+require_once __DIR__ . '/../backend/controllers/FilmMufajController.php';
+require_once __DIR__ . '/../backend/controllers/RendezoController.php';
 
 // Modellek betöltése
-require_once __DIR__ . '/../models/film.php';
-require_once __DIR__ . '/../models/szinesz.php';
-require_once __DIR__ . '/../models/mufaj.php';
-require_once __DIR__ . '/../models/orszag.php';
-require_once __DIR__ . '/../models/szereplo.php';
-require_once __DIR__ . '/../models/film_mufaj.php';
+require_once __DIR__ . '/../backend/models/film.php';
+require_once __DIR__ . '/../backend/models/szinesz.php';
+require_once __DIR__ . '/../backend/models/mufaj.php';
+require_once __DIR__ . '/../backend/models/orszag.php';
+require_once __DIR__ . '/../backend/models/szereplo.php';
+require_once __DIR__ . '/../backend/models/film_mufaj.php';
 
 // Initialize.php betöltése (config + többi model)
-require_once __DIR__ . '/../models/initialize.php'; 
+require_once __DIR__ . '/../backend/models/initialize.php'; 
 $db = $dbConn;
 
 $url = isset($_GET['url']) ? rtrim($_GET['url'], '/') : '';
