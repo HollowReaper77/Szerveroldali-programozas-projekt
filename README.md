@@ -58,13 +58,15 @@ Táblák:
 ### Automatikus tesztek Newman CLI-vel:
 
 ```bash
-# Minden teszt futtatása
-newman run tesztek/Film-API.postman_collection.json
+# Minden teszt futtatása cookie jar-ral (ajánlott)
+newman run tesztek/Film-API.postman_collection.json --cookie-jar tesztek/cookies.json
 
 # Adott kategória tesztelése
 newman run tesztek/Film-API.postman_collection.json --folder "Films"
-newman run tesztek/Film-API.postman_collection.json --folder "Authentication"
+newman run tesztek/Film-API.postman_collection.json --folder "Authentication" --cookie-jar tesztek/cookies.json
 ```
+
+**Fontos:** A `--cookie-jar` kapcsoló szükséges az autentikációs tesztekhez, hogy a session cookie-k megmaradjanak a kérések között.
 
 ### Teszt adatok beállítása:
 
