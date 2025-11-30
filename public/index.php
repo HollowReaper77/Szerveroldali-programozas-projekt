@@ -9,6 +9,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
     exit;
 }
 
+// Helper függvények betöltése
+require_once __DIR__ . '/../includes/helpers.php';
+
 // autoload
 //require_once __DIR__ . '/../include/config.php';
 require_once __DIR__ . '/../controllers/FilmController.php';
@@ -20,7 +23,7 @@ require_once __DIR__ . '/../controllers/FilmMufajController.php';
 require_once __DIR__ . '/../controllers/RendezoController.php';
 
 
-
+// modellek betöltése
 require_once __DIR__ . '/../models/film.php';
 require_once __DIR__ . '/../models/szinesz.php';
 require_once __DIR__ . '/../models/mufaj.php';
