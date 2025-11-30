@@ -9,7 +9,7 @@ class SzereploController {
 
     public function __construct($db) {
         $this->db = $db;
-        $this->castModel = new Szereplo($db);  // <-- jó modell
+        $this->castModel = new Szereplo($db);
     }
 
     // -----------------------------------------------------------
@@ -18,7 +18,7 @@ class SzereploController {
     // -----------------------------------------------------------
     public function getActorsByFilm($filmId) {
         $this->castModel->film_id = $filmId;
-        $result = $this->castModel->getActorsByFilm();   // <-- javítva!
+        $result = $this->castModel->getActorsByFilm();
 
         if ($result->rowCount() > 0) {
             $actors = [];
@@ -41,7 +41,7 @@ class SzereploController {
     // -----------------------------------------------------------
     public function getFilmsByActor($actorId) {
         $this->castModel->szinesz_id = $actorId;
-        $result = $this->castModel->getFilmsByActor();   // <-- javítva!
+        $result = $this->castModel->getFilmsByActor();
 
         if ($result->rowCount() > 0) {
             $films = [];
@@ -63,13 +63,17 @@ class SzereploController {
     // Színész hozzáadása egy filmhez
     // -----------------------------------------------------------
     public function addActorToFilm() {
-        $data = json_decode(file_get_contents("php://input"));
+        $data = getJsonInput();
 
         if (!isset($data->film_id) || !isset($data->szinesz_id)) {
             http_response_code(400);
             echo json_encode(["message" => "A film_id és szinesz_id mezők kötelezőek."]);
             return;
         }
+
+        // Validálás - számok legyenek
+        validateNumber($data->film_id, "Film ID", 1);
+        validateNumber($data->szinesz_id, "Színész ID", 1);
 
         $this->castModel->film_id = $data->film_id;
         $this->castModel->szinesz_id = $data->szinesz_id;
@@ -79,7 +83,7 @@ class SzereploController {
             echo json_encode(["message" => "Színész sikeresen hozzáadva a filmhez."]);
         } else {
             http_response_code(500);
-            echo json_encode(["message" => "Hiba történt a hozzárendelés során."]);
+            echo json_encode(["message" => "Hiba történt a hozzárendelés során. (Lehet, hogy már hozzá van rendelve?)"]);
         }
     }
 
@@ -88,13 +92,16 @@ class SzereploController {
     // Színész eltávolítása egy filmből
     // -----------------------------------------------------------
     public function removeActorFromFilm() {
-        $data = json_decode(file_get_contents("php://input"));
+        $data = getJsonInput();
 
         if (!isset($data->film_id) || !isset($data->szinesz_id)) {
             http_response_code(400);
             echo json_encode(["message" => "A film_id és szinesz_id mezők kötelezőek a törléshez."]);
             return;
         }
+
+        validateNumber($data->film_id, "Film ID", 1);
+        validateNumber($data->szinesz_id, "Színész ID", 1);
 
         $this->castModel->film_id = $data->film_id;
         $this->castModel->szinesz_id = $data->szinesz_id;
@@ -103,8 +110,8 @@ class SzereploController {
             http_response_code(200);
             echo json_encode(["message" => "Színész eltávolítva a filmből."]);
         } else {
-            http_response_code(500);
-            echo json_encode(["message" => "Hiba történt az eltávolítás során."]);
+            http_response_code(404);
+            echo json_encode(["message" => "A kapcsolat nem található vagy már törölve lett."]);
         }
     }
 }
