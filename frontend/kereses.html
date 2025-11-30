@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="hu">
+
+<head>
+    <meta charset="utf-8">
+    <title>Cinematár - Keresés</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400;500;700;900&family=Sen:wght@400;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    
+    <style>
+        html, body {
+            overflow-y: hidden; 
+        }
+    </style>
+</head>
+
+<body>
+    <div class="navbar">
+        <div class="navbar-container">
+            <div class="logo-container">
+    <a href="index.html" class="logo-link">
+        <h1 class="logo">Cinematár</h1>
+    </a>
+</div>
+            
+            <div class="menu-container">
+                <ul class="menu-list">
+                    <li class="menu-list-item active"><a href="search.html">Keresés</a></li>
+                    <li class="menu-list-item"><a href="bejelentkezes.html">Bejelentkezés</a></li>
+                    <li class="menu-list-item"><a href="regisztracio.html">Regisztráció</a></li>
+                </ul>
+            </div>
+            
+            <div class="profile-container">
+                <a href="profil.html">
+                    <img class="profile-picture" src="img/profil.jpg" alt="Profil">
+                </a>
+                <div class="toggle">
+                    <i class="fas fa-moon toggle-icon"></i>
+                    <i class="fas fa-sun toggle-icon"></i>
+                    <div class="toggle-ball"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="sidebar">
+            <a href="search.html"><i class="left-menu-icon fas fa-search"></i></a>
+            <a href="index.html"><i class="left-menu-icon fas fa-home"></i></a>
+            <a href="profil.html"><i class="left-menu-icon fas fa-user"></i></a>
+            <a href="bejelentkezes.html"><i class="left-menu-icon fas fa-key"></i></a>
+        </div>
+
+        <div class="content-container" style="
+            background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('img/kereses_hatterkep.jpg');
+            background-size: cover;
+            background-position: center;
+            min-height: calc(100vh - 50px);
+            padding-top: 50px;
+            padding-bottom: 50px;
+        ">
+            <div class="movie-list-container">
+                <h1 class="movie-list-title" style="margin-top: 0;">FILM KERESÉS</h1>
+                
+                <div class="search-input-group" style="display: flex; align-items: center; width: 100%; max-width: 600px; margin: 2rem 0;">
+                    <input 
+                        id="search" 
+                        type="search" 
+                        placeholder="Keresés cím vagy leírás alapján..." 
+                        class="search-input" 
+                        style="flex-grow: 1; padding: 0.65rem 1rem; border-radius: 10px 0 0 10px;"
+                    >
+                    <button id="search-button" type="submit" class="search-btn" style="
+                        border: none;
+                        padding: 0.6rem 1.0rem;
+                        border-radius: 0 5px 5px 0;
+                        height: 100%;
+                        display: flex;
+                        align-items: center;
+                        cursor: pointer; 
+                    ">
+                        <img src="img/search_icon.jpg" alt="Keresés" class="search-icon" style="width: 20px; height: 20px;">
+                    </button>
+                </div>
+
+                <div id="status" class="status" style="margin-bottom: 1rem; color: #4dbf00;"></div>
+                
+                <h2 class="movie-list-title" style="font-size: 24px; margin-top: 30px;">Találatok</h2>
+                <section id="films" class="card-grid"></section>
+            </div>
+        </div>
+    </div>
+    
+    <script src="app.js"></script>
+    <script src="search.js"></script>
+</body>
+</html>
