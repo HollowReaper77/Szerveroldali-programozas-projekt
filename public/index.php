@@ -1,8 +1,12 @@
 <?php
+// Session indítása (felhasználókezeléshez)
+session_start();
+
 header("Access-Control-Allow-Origin: *");
 header("Content-Type: application/json; charset=UTF-8");
 header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS");
 header("Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With");
+header("Access-Control-Allow-Credentials: true");
 
 if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
     http_response_code(200);
@@ -23,6 +27,7 @@ require_once __DIR__ . '/../backend/controllers/NemzetisegController.php';
 require_once __DIR__ . '/../backend/controllers/SzereploController.php';
 require_once __DIR__ . '/../backend/controllers/FilmMufajController.php';
 require_once __DIR__ . '/../backend/controllers/RendezoController.php';
+require_once __DIR__ . '/../backend/controllers/UserController.php';
 
 // Modellek betöltése
 require_once __DIR__ . '/../backend/models/film.php';
@@ -32,6 +37,7 @@ require_once __DIR__ . '/../backend/models/orszag.php';
 require_once __DIR__ . '/../backend/models/rendezo.php';
 require_once __DIR__ . '/../backend/models/szereplo.php';
 require_once __DIR__ . '/../backend/models/film_mufaj.php';
+require_once __DIR__ . '/../backend/models/user.php';
 
 // Adatbázis kapcsolat változó
 $db = $dbConn;
@@ -285,6 +291,57 @@ switch ($urlParts[0]) {
 
         if ($method === 'DELETE') {
             $controller->removeGenreFromFilm();
+        }
+
+        break;
+
+    // -----------------------------------------
+    // FELHASZNÁLÓK (Users)
+    // -----------------------------------------
+    case "users":
+        $controller = new UserController($db);
+
+        if ($method === 'POST') {
+            if (isset($urlParts[1])) {
+                switch ($urlParts[1]) {
+                    case 'register':
+                        $controller->register();
+                        break;
+                    case 'login':
+                        $controller->login();
+                        break;
+                    case 'logout':
+                        $controller->logout();
+                        break;
+                    case 'change-password':
+                        $controller->changePassword();
+                        break;
+                    default:
+                        http_response_code(400);
+                        echo json_encode(["message" => "Érvénytelen endpoint."]);
+                }
+            } else {
+                http_response_code(400);
+                echo json_encode(["message" => "Hiányzó action."]);
+            }
+        }
+
+        if ($method === 'GET') {
+            if (isset($urlParts[1]) && $urlParts[1] === 'profile') {
+                $controller->getProfile();
+            } else {
+                http_response_code(400);
+                echo json_encode(["message" => "Érvénytelen endpoint."]);
+            }
+        }
+
+        if ($method === 'PUT') {
+            if (isset($urlParts[1]) && $urlParts[1] === 'profile') {
+                $controller->updateProfile();
+            } else {
+                http_response_code(400);
+                echo json_encode(["message" => "Érvénytelen endpoint."]);
+            }
         }
 
         break;
