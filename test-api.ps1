@@ -1,6 +1,9 @@
 # API Teszt Script
 $baseUrl = "http://localhost/php/PHP%20projekt/Szerveroldali-programozas-projekt/public"
 
+# Session cookie tárolásához
+$session = New-Object Microsoft.PowerShell.Commands.WebRequestSession
+
 Write-Host "`n=== FILM API TESZT ===" -ForegroundColor Cyan
 
 # 1. Filmek listázása
@@ -36,7 +39,7 @@ $registerData = @{
 
 try {
     $response = Invoke-RestMethod -Uri "$baseUrl/users/register" -Method POST -Body $registerData -ContentType "application/json" -SessionVariable session
-    Write-Host "Sikeres regisztráció! Felhasználó: $($response.user.felhasznalonev), Szerepkör: $($response.user.szerep)" -ForegroundColor Green
+    Write-Host "Sikeres regisztráció! Felhasználó: $($response.user.felhasznalonev), Jogosultság: $($response.user.jogosultsag)" -ForegroundColor Green
     $testUserId = $response.user.id
 } catch {
     Write-Host "Hiba: $_" -ForegroundColor Red
@@ -45,13 +48,13 @@ try {
 # 4. Bejelentkezés teszt (admin)
 Write-Host "`n4. Bejelentkezés teszt admin-nal (POST /users/login)" -ForegroundColor Yellow
 $loginData = @{
-    email = "admin@filmdb.hu"
-    jelszo = "password123"
+    email = "admin@cinematar.hu"
+    jelszo = "admin123"
 } | ConvertTo-Json
 
 try {
-    $response = Invoke-RestMethod -Uri "$baseUrl/users/login" -Method POST -Body $loginData -ContentType "application/json" -SessionVariable adminSession
-    Write-Host "Sikeres bejelentkezés! Felhasználó: $($response.user.felhasznalonev), Szerepkör: $($response.user.szerep)" -ForegroundColor Green
+    $response = Invoke-RestMethod -Uri "$baseUrl/users/login" -Method POST -Body $loginData -ContentType "application/json" -WebSession $session
+    Write-Host "Sikeres bejelentkezés! Felhasználó: $($response.user.felhasznalonev), Jogosultság: $($response.user.jogosultsag)" -ForegroundColor Green
 } catch {
     Write-Host "Hiba: $_" -ForegroundColor Red
 }
@@ -59,7 +62,7 @@ try {
 # 5. Profil lekérdezés
 Write-Host "`n5. Profil lekérdezés (GET /users/profile)" -ForegroundColor Yellow
 try {
-    $response = Invoke-RestMethod -Uri "$baseUrl/users/profile" -Method GET -ContentType "application/json" -WebSession $adminSession
+    $response = Invoke-RestMethod -Uri "$baseUrl/users/profile" -Method GET -ContentType "application/json" -WebSession $session
     Write-Host "Sikeres! Bejelentkezett felhasználó: $($response.user.felhasznalonev)" -ForegroundColor Green
 } catch {
     Write-Host "Hiba: $_" -ForegroundColor Red

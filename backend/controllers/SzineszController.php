@@ -89,23 +89,23 @@ class SzineszController {
         $data = getJsonInput();
 
         // Kötelező mezők
-        if (!isset($data->nev) || !isset($data->szuletesi_datum)) {
+        if (!isset($data['nev']) || !isset($data['szuletesi_datum'])) {
             http_response_code(400);
             echo json_encode(["message" => "A 'nev' és 'szuletesi_datum' mezők kötelezőek."]);
             return;
         }
 
         // Validálás
-        validateLength($data->nev, "Név", 1, 255);
-        validateDate($data->szuletesi_datum, "Születési dátum");
+        validateLength($data['nev'], "Név", 1, 255);
+        validateDate($data['szuletesi_datum'], "Születési dátum");
 
-        $this->szinesz->nev = $data->nev;
-        $this->szinesz->szuletesi_datum = $data->szuletesi_datum;
-        $this->szinesz->bio = $data->bio ?? null;
+        $this->szinesz->nev = $data['nev'];
+        $this->szinesz->szuletesi_datum = $data['szuletesi_datum'];
+        $this->szinesz->bio = $data['bio'] ?? null;
 
         // Bio validálás, ha van
-        if (isset($data->bio)) {
-            validateLength($data->bio, "Bio", 0, 5000);
+        if (isset($data['bio'])) {
+            validateLength($data['bio'], "Bio", 0, 5000);
         }
 
         try {
@@ -140,19 +140,19 @@ class SzineszController {
         }
 
         // Validálás, ha vannak változások
-        if (isset($data->nev)) {
-            validateLength($data->nev, "Név", 1, 255);
-            $this->szinesz->nev = $data->nev;
+        if (isset($data['nev'])) {
+            validateLength($data['nev'], "Név", 1, 255);
+            $this->szinesz->nev = $data['nev'];
         }
 
-        if (isset($data->szuletesi_datum)) {
-            validateDate($data->szuletesi_datum, "Születési dátum");
-            $this->szinesz->szuletesi_datum = $data->szuletesi_datum;
+        if (isset($data['szuletesi_datum'])) {
+            validateDate($data['szuletesi_datum'], "Születési dátum");
+            $this->szinesz->szuletesi_datum = $data['szuletesi_datum'];
         }
 
-        if (isset($data->bio)) {
-            validateLength($data->bio, "Bio", 0, 5000);
-            $this->szinesz->bio = $data->bio;
+        if (isset($data['bio'])) {
+            validateLength($data['bio'], "Bio", 0, 5000);
+            $this->szinesz->bio = $data['bio'];
         }
 
         try {

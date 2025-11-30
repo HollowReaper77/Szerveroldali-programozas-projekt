@@ -1,2 +1,2 @@
-# Szerveroldali-programoz-s-projekt
+# Szerveroldali programozás projekt
 Filmadatbázis kezelő oldal

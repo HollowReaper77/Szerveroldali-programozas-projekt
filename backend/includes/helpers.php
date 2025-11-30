@@ -2,7 +2,7 @@
 
 /**
  * JSON input feldolgozás hibakezeléssel
- * @return object|null
+ * @return array Asszociatív tömb
  */
 function getJsonInput() {
     $input = file_get_contents("php://input");
@@ -13,7 +13,7 @@ function getJsonInput() {
         exit;
     }
     
-    $data = json_decode($input);
+    $data = json_decode($input, true); // true = asszociatív tömb
     
     if (json_last_error() !== JSON_ERROR_NONE) {
         http_response_code(400);
@@ -234,5 +234,56 @@ function isAdmin() {
 function isModerator() {
     $role = getCurrentUserRole();
     return in_array($role, ['moderator', 'admin']);
+}
+
+/**
+ * K�p URL feldolgoz�sa
+ * T�mogatja a teljes URL-eket, relat�v �tvonalakat �s lok�lis f�jlneveket
+ * @param string|null $imageUrl A k�p URL-je vagy f�jlneve
+ * @param string $type A k�p t�pusa ('poster' vagy 'profile')
+ * @return string|null A feldolgozott teljes URL vagy null
+ */
+function processImageUrl($imageUrl, $type = 'poster') {
+    if (empty($imageUrl)) {
+        return null;
+    }
+    
+    // Ha m�r teljes URL (http:// vagy https://), visszaadjuk v�ltozatlanul
+    if (preg_match('/^https?:\/\//', $imageUrl)) {
+        return $imageUrl;
+    }
+    
+    // Ha "/" -lel kezd�dik, relat�v �tvonal a szerverhez k�pest
+    if (strpos($imageUrl, '/') === 0) {
+        $baseUrl = 'http' . (isset($_SERVER['HTTPS']) ? 's' : '') . '://' . $_SERVER['HTTP_HOST'];
+        return $baseUrl . $imageUrl;
+    }
+    
+    // Ha csak f�jln�v, akkor hozz�adjuk az uploads mapp�hoz
+    $baseUrl = 'http' . (isset($_SERVER['HTTPS']) ? 's' : '') . '://' . $_SERVER['HTTP_HOST'];
+    $uploadPath = $type === 'poster' ? '/uploads/posters/' : '/uploads/profiles/';
+    
+    return $baseUrl . $uploadPath . $imageUrl;
+}
+
+/**
+ * K�p URL valid�l�sa
+ * @param string $imageUrl A k�p URL-je
+ * @param bool $allowExternal Enged�lyezi-e a k�ls� URL-eket
+ * @return bool True ha valid
+ */
+function validateImageUrl($imageUrl, $allowExternal = true) {
+    if (empty($imageUrl)) {
+        return true;
+    }
+    
+    if (preg_match('/^https?:\/\//', $imageUrl)) {
+        if (!$allowExternal) {
+            return false;
+        }
+        return filter_var($imageUrl, FILTER_VALIDATE_URL) !== false;
+    }
+    
+    return preg_match('/^[a-zA-Z0-9\/_.\-]+$/', $imageUrl);
 }
 ?>
