@@ -9,6 +9,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
     exit;
 }
 
+// Konfiguráció és adatbázis kapcsolat
+require_once __DIR__ . '/../backend/includes/config.php';
+
 // Helper függvények betöltése
 require_once __DIR__ . '/../backend/includes/helpers.php';
 
@@ -26,11 +29,11 @@ require_once __DIR__ . '/../backend/models/film.php';
 require_once __DIR__ . '/../backend/models/szinesz.php';
 require_once __DIR__ . '/../backend/models/mufaj.php';
 require_once __DIR__ . '/../backend/models/orszag.php';
+require_once __DIR__ . '/../backend/models/rendezo.php';
 require_once __DIR__ . '/../backend/models/szereplo.php';
 require_once __DIR__ . '/../backend/models/film_mufaj.php';
 
-// Initialize.php betöltése (config + többi model)
-require_once __DIR__ . '/../backend/models/initialize.php'; 
+// Adatbázis kapcsolat változó
 $db = $dbConn;
 
 $url = isset($_GET['url']) ? rtrim($_GET['url'], '/') : '';
