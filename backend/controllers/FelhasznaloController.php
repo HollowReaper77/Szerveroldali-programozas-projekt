@@ -52,7 +52,7 @@ class FelhasznaloController {
         // Felhasználó létrehozása
         $this->felhasznalo->jelszo = $data['jelszo'];
         $this->felhasznalo->profilkep_url = $data['profilkep_url'] ?? null;
-        $this->felhasznalo->szerep = 'user'; // Alapértelmezett szerepkör
+        $this->felhasznalo->jogosultsag = 'user'; // Alapértelmezett jogosultság
 
         try {
             if ($this->felhasznalo->create()) {
@@ -60,7 +60,7 @@ class FelhasznaloController {
                 $_SESSION['user_id'] = $this->felhasznalo->felhasznalo_id;
                 $_SESSION['username'] = $this->felhasznalo->felhasznalonev;
                 $_SESSION['user_email'] = $this->felhasznalo->email;
-                $_SESSION['user_role'] = $this->felhasznalo->szerep;
+                $_SESSION['user_role'] = $this->felhasznalo->jogosultsag;
 
                 http_response_code(201);
                 echo json_encode([
@@ -69,7 +69,7 @@ class FelhasznaloController {
                         "id" => $this->felhasznalo->felhasznalo_id,
                         "felhasznalonev" => $this->felhasznalo->felhasznalonev,
                         "email" => $this->felhasznalo->email,
-                        "szerep" => $this->felhasznalo->szerep
+                        "jogosultsag" => $this->felhasznalo->jogosultsag
                     ]
                 ]);
             } else {
@@ -111,7 +111,7 @@ class FelhasznaloController {
                     $_SESSION['user_id'] = $this->felhasznalo->felhasznalo_id;
                     $_SESSION['username'] = $this->felhasznalo->felhasznalonev;
                     $_SESSION['user_email'] = $this->felhasznalo->email;
-                    $_SESSION['user_role'] = $this->felhasznalo->szerep;
+                    $_SESSION['user_role'] = $this->felhasznalo->jogosultsag;
 
                     http_response_code(200);
                     echo json_encode([
@@ -121,7 +121,7 @@ class FelhasznaloController {
                             "felhasznalonev" => $this->felhasznalo->felhasznalonev,
                             "email" => $this->felhasznalo->email,
                             "profilkep_url" => $this->felhasznalo->profilkep_url,
-                            "szerep" => $this->felhasznalo->szerep
+                            "jogosultsag" => $this->felhasznalo->jogosultsag
                         ]
                     ]);
                 } else {
@@ -166,8 +166,8 @@ class FelhasznaloController {
                         "felhasznalonev" => $this->felhasznalo->felhasznalonev,
                         "email" => $this->felhasznalo->email,
                         "profilkep_url" => $this->felhasznalo->profilkep_url,
-                        "szerep" => $this->felhasznalo->szerep,
-                        "regisztracio_ideje" => $this->felhasznalo->regisztracio_ideje
+                        "jogosultsag" => $this->felhasznalo->jogosultsag,
+                        "regisztracio_ideje" => $this->felhasznalo->regisztracio_ideje,
                     ]
                 ]);
             } else {
@@ -300,7 +300,7 @@ class FelhasznaloController {
                     "id" => $row['felhasznalo_id'],
                     "felhasznalonev" => $row['felhasznalonev'],
                     "email" => $row['email'],
-                    "szerep" => $row['szerep'],
+                    "jogosultsag" => $row['jogosultsag'],
                     "regisztracio_ideje" => $row['regisztracio_ideje'],
                     "aktiv" => $row['aktiv']
                 ];
@@ -323,30 +323,30 @@ class FelhasznaloController {
 
         $data = getJsonInput();
 
-        if (empty($data['szerep'])) {
+        if (empty($data['jogosultsag'])) {
             http_response_code(400);
-            echo json_encode(["message" => "Szerepkör kötelező."]);
+            echo json_encode(["message" => "Jogosultság kötelező."]);
             return;
         }
 
-        // Szerepkör validáció
+        // Jogosultság validáció
         $valid_roles = ['user', 'moderator', 'admin'];
-        if (!in_array($data['szerep'], $valid_roles)) {
+        if (!in_array($data['jogosultsag'], $valid_roles)) {
             http_response_code(400);
-            echo json_encode(["message" => "Érvénytelen szerepkör. Lehetséges értékek: user, moderator, admin"]);
+            echo json_encode(["message" => "Érvénytelen jogosultság. Lehetséges értékek: user, moderator, admin"]);
             return;
         }
 
         $this->felhasznalo->felhasznalo_id = $user_id;
-        $this->felhasznalo->szerep = $data['szerep'];
+        $this->felhasznalo->jogosultsag = $data['jogosultsag'];
 
         try {
             if ($this->felhasznalo->updateRole()) {
                 http_response_code(200);
-                echo json_encode(["message" => "Szerepkör sikeresen frissítve."]);
+                echo json_encode(["message" => "Jogosultság sikeresen frissítve."]);
             } else {
                 http_response_code(500);
-                echo json_encode(["message" => "A szerepkör frissítése sikertelen."]);
+                echo json_encode(["message" => "A jogosultság frissítése sikertelen."]);
             }
         } catch (PDOException $e) {
             http_response_code(500);

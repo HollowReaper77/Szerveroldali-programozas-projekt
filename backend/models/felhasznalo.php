@@ -9,7 +9,7 @@ class Felhasznalo {
     public $email;
     public $jelszo;
     public $profilkep_url;
-    public $szerep; // 'user', 'moderator', 'admin'
+    public $jogosultsag; // 'user', 'moderator', 'admin'
     public $regisztracio_ideje;
     public $aktiv;
 
@@ -19,7 +19,7 @@ class Felhasznalo {
 
     // Összes felhasználó lekérése (admin funkció)
     public function read() {
-        $query = "SELECT felhasznalo_id, felhasznalonev, email, profilkep_url, szerep, regisztracio_ideje, aktiv 
+        $query = "SELECT felhasznalo_id, felhasznalonev, email, profilkep_url, jogosultsag, regisztracio_ideje, aktiv 
                   FROM " . $this->table . " 
                   WHERE aktiv = 1
                   ORDER BY regisztracio_ideje DESC";
@@ -31,7 +31,7 @@ class Felhasznalo {
 
     // Egy felhasználó lekérése ID alapján
     public function read_single() {
-        $query = "SELECT felhasznalo_id, felhasznalonev, email, profilkep_url, szerep, regisztracio_ideje, aktiv 
+        $query = "SELECT felhasznalo_id, felhasznalonev, email, profilkep_url, jogosultsag, regisztracio_ideje, aktiv 
                   FROM " . $this->table . " 
                   WHERE felhasznalo_id = :id 
                   LIMIT 1";
@@ -46,7 +46,7 @@ class Felhasznalo {
             $this->felhasznalonev = $row['felhasznalonev'];
             $this->email = $row['email'];
             $this->profilkep_url = $row['profilkep_url'];
-            $this->szerep = $row['szerep'];
+            $this->jogosultsag = $row['jogosultsag'];
             $this->regisztracio_ideje = $row['regisztracio_ideje'];
             $this->aktiv = $row['aktiv'];
             return true;
@@ -57,7 +57,7 @@ class Felhasznalo {
 
     // Felhasználó lekérése email alapján (login-hoz)
     public function findByEmail() {
-        $query = "SELECT felhasznalo_id, felhasznalonev, email, jelszo, profilkep_url, szerep, regisztracio_ideje, aktiv 
+        $query = "SELECT felhasznalo_id, felhasznalonev, email, jelszo, profilkep_url, jogosultsag, regisztracio_ideje, aktiv 
                   FROM " . $this->table . " 
                   WHERE email = :email 
                   LIMIT 1";
@@ -74,7 +74,7 @@ class Felhasznalo {
             $this->email = $row['email'];
             $this->jelszo = $row['jelszo'];
             $this->profilkep_url = $row['profilkep_url'];
-            $this->szerep = $row['szerep'];
+            $this->jogosultsag = $row['jogosultsag'];
             $this->regisztracio_ideje = $row['regisztracio_ideje'];
             $this->aktiv = $row['aktiv'];
             return true;
@@ -86,8 +86,8 @@ class Felhasznalo {
     // Új felhasználó létrehozása (regisztráció)
     public function create() {
         $query = "INSERT INTO " . $this->table . " 
-                  (felhasznalonev, email, jelszo, profilkep_url, szerep) 
-                  VALUES (:felhasznalonev, :email, :jelszo, :profilkep_url, :szerep)";
+                  (felhasznalonev, email, jelszo, profilkep_url, jogosultsag) 
+                  VALUES (:felhasznalonev, :email, :jelszo, :profilkep_url, :jogosultsag)";
         
         $stmt = $this->conn->prepare($query);
         
@@ -96,9 +96,9 @@ class Felhasznalo {
         $this->email = htmlspecialchars(strip_tags($this->email));
         $this->profilkep_url = htmlspecialchars(strip_tags($this->profilkep_url));
         
-        // Alapértelmezett szerepkör: user
-        if (empty($this->szerep)) {
-            $this->szerep = 'user';
+        // Alapértelmezett jogosultság: user
+        if (empty($this->jogosultsag)) {
+            $this->jogosultsag = 'user';
         }
         
         // Jelszó hash
@@ -109,7 +109,7 @@ class Felhasznalo {
         $stmt->bindParam(':email', $this->email);
         $stmt->bindParam(':jelszo', $hashed_password);
         $stmt->bindParam(':profilkep_url', $this->profilkep_url);
-        $stmt->bindParam(':szerep', $this->szerep);
+        $stmt->bindParam(':jogosultsag', $this->jogosultsag);
         
         if ($stmt->execute()) {
             $this->felhasznalo_id = $this->conn->lastInsertId();
@@ -144,15 +144,15 @@ class Felhasznalo {
         return $stmt->execute();
     }
 
-    // Szerepkör frissítése (csak admin)
+    // Jogosultság frissítése (csak admin)
     public function updateRole() {
         $query = "UPDATE " . $this->table . " 
-                  SET szerep = :szerep 
+                  SET jogosultsag = :jogosultsag 
                   WHERE felhasznalo_id = :id";
         
         $stmt = $this->conn->prepare($query);
         
-        $stmt->bindParam(':szerep', $this->szerep);
+        $stmt->bindParam(':jogosultsag', $this->jogosultsag);
         $stmt->bindParam(':id', $this->felhasznalo_id);
         
         return $stmt->execute();
@@ -219,19 +219,19 @@ class Felhasznalo {
         return password_verify($password, $this->jelszo);
     }
 
-    // Szerepkör ellenőrzése
+    // Jogosultság ellenőrzése
     public function hasRole($role) {
-        return $this->szerep === $role;
+        return $this->jogosultsag === $role;
     }
 
     // Admin jogosultság ellenőrzése
     public function isAdmin() {
-        return $this->szerep === 'admin';
+        return $this->jogosultsag === 'admin';
     }
 
     // Moderátor vagy magasabb jogosultság
     public function isModerator() {
-        return in_array($this->szerep, ['moderator', 'admin']);
+        return in_array($this->jogosultsag, ['moderator', 'admin']);
     }
 }
 ?>
