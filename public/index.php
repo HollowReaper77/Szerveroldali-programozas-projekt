@@ -1,8 +1,12 @@
 <?php
+// Session indítása (felhasználókezeléshez)
+session_start();
+
 header("Access-Control-Allow-Origin: *");
 header("Content-Type: application/json; charset=UTF-8");
 header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS");
 header("Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With");
+header("Access-Control-Allow-Credentials: true");
 
 if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
     http_response_code(200);
@@ -23,6 +27,7 @@ require_once __DIR__ . '/../backend/controllers/NemzetisegController.php';
 require_once __DIR__ . '/../backend/controllers/SzereploController.php';
 require_once __DIR__ . '/../backend/controllers/FilmMufajController.php';
 require_once __DIR__ . '/../backend/controllers/RendezoController.php';
+require_once __DIR__ . '/../backend/controllers/FelhasznaloController.php';
 
 // Modellek betöltése
 require_once __DIR__ . '/../backend/models/film.php';
@@ -32,6 +37,7 @@ require_once __DIR__ . '/../backend/models/orszag.php';
 require_once __DIR__ . '/../backend/models/rendezo.php';
 require_once __DIR__ . '/../backend/models/szereplo.php';
 require_once __DIR__ . '/../backend/models/film_mufaj.php';
+require_once __DIR__ . '/../backend/models/felhasznalo.php';
 
 // Adatbázis kapcsolat változó
 $db = $dbConn;
@@ -284,7 +290,78 @@ switch ($urlParts[0]) {
         }
 
         if ($method === 'DELETE') {
-            $controller->removeGenreFromFilm();
+            if (isset($urlParts[1]) && $urlParts[1] === "film" && isset($urlParts[2]) &&
+                isset($urlParts[3]) && $urlParts[3] === "genre" && isset($urlParts[4])) {
+                $controller->removeGenreFromFilm($urlParts[2], $urlParts[4]);
+            } else {
+                $controller->removeGenreFromFilm();
+            }
+        }
+
+        break;
+
+    // -----------------------------------------
+    // FELHASZNÁLÓK (Users)
+    // -----------------------------------------
+    case "users":
+        $controller = new FelhasznaloController($db);
+
+        if ($method === 'POST') {
+            if (isset($urlParts[1])) {
+                switch ($urlParts[1]) {
+                    case 'register':
+                        $controller->register();
+                        break;
+                    case 'login':
+                        $controller->login();
+                        break;
+                    case 'logout':
+                        $controller->logout();
+                        break;
+                    default:
+                        http_response_code(400);
+                        echo json_encode(["message" => "Érvénytelen endpoint."]);
+                }
+            } else {
+                http_response_code(400);
+                echo json_encode(["message" => "Hiányzó action."]);
+            }
+        }
+
+        if ($method === 'GET') {
+            if (isset($urlParts[1]) && $urlParts[1] === 'profile') {
+                $controller->getProfile();
+            } elseif (!isset($urlParts[1]) || (isset($urlParts[1]) && $urlParts[1] === 'all')) {
+                // Admin: összes felhasználó listázása (GET /users vagy GET /users/all)
+                $controller->getAllUsers();
+            } else {
+                http_response_code(400);
+                echo json_encode(["message" => "Érvénytelen endpoint."]);
+            }
+        }
+
+        if ($method === 'PUT') {
+            if (isset($urlParts[1]) && $urlParts[1] === 'profile') {
+                $controller->updateProfile();
+            } elseif (isset($urlParts[1]) && ($urlParts[1] === 'password' || $urlParts[1] === 'change-password')) {
+                $controller->changePassword();
+            } elseif (isset($urlParts[1]) && is_numeric($urlParts[1]) && isset($urlParts[2]) && $urlParts[2] === 'role') {
+                // Admin: felhasználó szerepkörének módosítása
+                $controller->updateUserRole($urlParts[1]);
+            } else {
+                http_response_code(400);
+                echo json_encode(["message" => "Érvénytelen endpoint."]);
+            }
+        }
+
+        if ($method === 'DELETE') {
+            if (isset($urlParts[1])) {
+                // Admin: felhasználó törlése
+                $controller->deleteUser($urlParts[1]);
+            } else {
+                http_response_code(400);
+                echo json_encode(["message" => "Felhasználó ID hiányzik."]);
+            }
         }
 
         break;

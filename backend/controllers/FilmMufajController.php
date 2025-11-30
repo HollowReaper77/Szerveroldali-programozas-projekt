@@ -31,7 +31,7 @@ class FilmMufajController {
             }
 
             http_response_code(200);
-            echo json_encode($genres);
+            echo json_encode(["mufajok" => $genres]);
         } else {
             http_response_code(404);
             echo json_encode(["message" => "Ehhez a filmhez nincs műfaj társítva."]);
@@ -56,7 +56,7 @@ class FilmMufajController {
             }
 
             http_response_code(200);
-            echo json_encode($films);
+            echo json_encode(["filmek" => $films]);
         } else {
             http_response_code(404);
             echo json_encode(["message" => "Ehhez a műfajhoz nincs film társítva."]);
@@ -70,18 +70,18 @@ class FilmMufajController {
     public function addGenreToFilm() {
         $data = getJsonInput();
 
-        if (!isset($data->film_id) || !isset($data->mufaj_id)) {
+        if (!isset($data['film_id']) || !isset($data['mufaj_id'])) {
             http_response_code(400);
             echo json_encode(["message" => "A film_id és a mufaj_id mezők kötelezőek."]);
             return;
         }
 
-        validateNumber($data->film_id, "Film ID", 1);
-        validateNumber($data->mufaj_id, "Műfaj ID", 1);
+        validateNumber($data['film_id'], "Film ID", 1);
+        validateNumber($data['mufaj_id'], "Műfaj ID", 1);
 
         // Ellenőrizd, hogy a film létezik-e
         $filmCheck = $this->db->prepare("SELECT film_id FROM film WHERE film_id = ?");
-        $filmCheck->execute([$data->film_id]);
+        $filmCheck->execute([$data['film_id']]);
         if ($filmCheck->rowCount() === 0) {
             http_response_code(404);
             echo json_encode(["message" => "A megadott film nem található."]);
@@ -90,15 +90,15 @@ class FilmMufajController {
 
         // Ellenőrizd, hogy a műfaj létezik-e
         $genreCheck = $this->db->prepare("SELECT mufaj_id FROM mufajok WHERE mufaj_id = ?");
-        $genreCheck->execute([$data->mufaj_id]);
+        $genreCheck->execute([$data['mufaj_id']]);
         if ($genreCheck->rowCount() === 0) {
             http_response_code(404);
             echo json_encode(["message" => "A megadott műfaj nem található."]);
             return;
         }
 
-        $this->model->film_id = $data->film_id;
-        $this->model->mufaj_id = $data->mufaj_id;
+        $this->model->film_id = $data['film_id'];
+        $this->model->mufaj_id = $data['mufaj_id'];
 
         try {
             if ($this->model->create()) {
@@ -115,23 +115,33 @@ class FilmMufajController {
     }
 
     // -----------------------------------------------------------
-    // DELETE /film-genres
+    // DELETE /film-genres vagy /film-genres/film/{film_id}/genre/{genre_id}
     // Műfaj eltávolítása egy filmből
     // -----------------------------------------------------------
-    public function removeGenreFromFilm() {
-        $data = getJsonInput();
+    public function removeGenreFromFilm($filmId = null, $genreId = null) {
+        // Ha URL paraméterek vannak, használd azokat
+        if ($filmId !== null && $genreId !== null) {
+            $filmId = validateId($filmId, "Film ID");
+            $genreId = validateId($genreId, "Műfaj ID");
+            
+            $this->model->film_id = $filmId;
+            $this->model->mufaj_id = $genreId;
+        } else {
+            // Különben JSON body-ból olvasd
+            $data = getJsonInput();
 
-        if (!isset($data->film_id) || !isset($data->mufaj_id)) {
-            http_response_code(400);
-            echo json_encode(["message" => "A film_id és a mufaj_id mezők kötelezőek a törléshez."]);
-            return;
+            if (!isset($data['film_id']) || !isset($data['mufaj_id'])) {
+                http_response_code(400);
+                echo json_encode(["message" => "A film_id és a mufaj_id mezők kötelezőek a törléshez."]);
+                return;
+            }
+
+            validateNumber($data['film_id'], "Film ID", 1);
+            validateNumber($data['mufaj_id'], "Műfaj ID", 1);
+
+            $this->model->film_id = $data['film_id'];
+            $this->model->mufaj_id = $data['mufaj_id'];
         }
-
-        validateNumber($data->film_id, "Film ID", 1);
-        validateNumber($data->mufaj_id, "Műfaj ID", 1);
-
-        $this->model->film_id = $data->film_id;
-        $this->model->mufaj_id = $data->mufaj_id;
 
         try {
             if ($this->model->delete()) {

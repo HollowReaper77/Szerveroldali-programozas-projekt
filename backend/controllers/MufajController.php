@@ -27,7 +27,7 @@ class MufajController {
             }
 
             http_response_code(200);
-            echo json_encode($genres);
+            echo json_encode(["mufajok" => $genres]);
         } else {
             http_response_code(404);
             echo json_encode(["message" => "Nincs egyetlen műfaj sem az adatbázisban."]);
@@ -47,8 +47,10 @@ class MufajController {
             http_response_code(200);
 
             echo json_encode([
-                "mufaj_id" => $this->genreModel->mufaj_id,
-                "nev"      => $this->genreModel->nev
+                "mufaj" => [
+                    "mufaj_id" => $this->genreModel->mufaj_id,
+                    "nev"      => $this->genreModel->nev
+                ]
             ]);
         } else {
             http_response_code(404);
@@ -62,20 +64,24 @@ class MufajController {
     public function createGenre() {
         $data = getJsonInput();
 
-        if (!isset($data->nev)) {
+        if (!isset($data['nev'])) {
             http_response_code(400);
             echo json_encode(["message" => "A 'nev' mező kötelező."]);
             return;
         }
 
-        validateLength($data->nev, "Név", 1, 100);
+        validateLength($data['nev'], "Név", 1, 100);
 
-        $this->genreModel->nev = $data->nev;
+        $this->genreModel->nev = $data['nev'];
 
         try {
             if ($this->genreModel->create()) {
                 http_response_code(201);
-                echo json_encode(["message" => "Műfaj sikeresen létrehozva."]);
+                echo json_encode([
+                    "message"  => "Műfaj sikeresen létrehozva.",
+                    "mufaj_id" => $this->genreModel->mufaj_id,
+                    "nev"      => $this->genreModel->nev
+                ]);
             } else {
                 http_response_code(500);
                 echo json_encode(["message" => "Hiba történt a létrehozás során."]);
@@ -103,9 +109,9 @@ class MufajController {
             return;
         }
 
-        if (isset($data->nev)) {
-            validateLength($data->nev, "Név", 1, 100);
-            $this->genreModel->nev = $data->nev;
+        if (isset($data['nev'])) {
+            validateLength($data['nev'], "Név", 1, 100);
+            $this->genreModel->nev = $data['nev'];
         }
 
         try {

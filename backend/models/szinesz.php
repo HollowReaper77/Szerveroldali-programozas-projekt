@@ -77,7 +77,11 @@ class Szinesz {
         $stmt->bindParam(':szuletesi_datum', $this->szuletesi_datum);
         $stmt->bindParam(':bio', $this->bio);
 
-        return $stmt->execute();
+        if($stmt->execute()) {
+            $this->szinesz_id = (int)$this->conn->lastInsertId();
+            return true;
+        }
+        return false;
     }
 
     // UPDATE

@@ -91,8 +91,8 @@
 
                     <div style="flex-grow: 1; max-width: 600px; background-color: var(--card); padding: 25px; border-radius: 10px;">
                         <h2 style="font-size: 20px; color: #4dbf00; margin-bottom: 20px;">Felhasználói Információk</h2>
-                        <p style="color: lightgray; margin-bottom: 10px;"><strong style="color: white;">Név:</strong> Felhasználó neve</p>
-                        <p style="color: lightgray; margin-bottom: 10px;"><strong style="color: white;">Email:</strong> user@domain.com</p>
+                        <p style="color: lightgray; margin-bottom: 10px;"><strong style="color: white;">Név:</strong> <span data-user-name>Felhasználó neve</span></p>
+                        <p style="color: lightgray; margin-bottom: 10px;"><strong style="color: white;">Email:</strong> <span data-user-email>user@domain.com</span></p>
                         
                         <a href="jelszo_modositas.html" style="text-decoration: none;">
                             <button 
@@ -104,12 +104,24 @@
                                 Jelszó módosítása
                             </button>
                         </a>
+                        
+                        <button 
+                            onclick="logout()"
+                            class="featured-button" 
+                            style="background-color: #555; margin-left: 10px; transition: opacity 0.2s ease; cursor: pointer;"
+                            onmouseover="this.style.opacity='0.8';"
+                            onmouseout="this.style.opacity='1';"
+                        >
+                            Kijelentkezés
+                        </button>
                     </div>
                 </div>
             </div>
         </div>
     </div>
     
+    <script src="config.js"></script>
     <script src="app.js"></script>
+    <script src="profile.js"></script>
 </body>
 </html>

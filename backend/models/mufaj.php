@@ -54,7 +54,11 @@ class Mufaj {
 
         $stmt->bindParam(':nev', $this->nev);
 
-        return $stmt->execute();
+        if($stmt->execute()) {
+            $this->mufaj_id = (int)$this->conn->lastInsertId();
+            return true;
+        }
+        return false;
     }
 
     // UPDATE

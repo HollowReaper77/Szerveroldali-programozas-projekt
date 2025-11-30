@@ -88,6 +88,7 @@ class Film{
         $stmt->bindParam(':kiadasi_ev', $this->kiadasi_ev);
 
         if($stmt->execute()){
+            $this->film_id = (int)$this->conn->lastInsertId();
             return true;
         }
 
