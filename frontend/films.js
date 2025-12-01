@@ -16,8 +16,8 @@ async function loadNewFilms() {
         // API hívás a filmekhez
         const result = await API.getFilms(1, 10); // Első 10 film
 
-        if (result.success && result.data.data) {
-            const films = result.data.data;
+        if (result.success && result.data.filmek) {
+            const films = result.data.filmek;
             
             // Meglévő tartalom törlése
             movieListContainer.innerHTML = '';
@@ -52,16 +52,10 @@ function createMovieItem(film) {
     div.className = 'movie-list-item';
     
     div.innerHTML = `
-        <img class="movie-list-item-img" src="${film.plakat_url || 'img/placeholder.jpg'}" alt="${film.cim}">
+        <img class="movie-list-item-img" src="${film.poszter_url || 'img/placeholder.jpg'}" alt="${film.cim}">
         <span class="movie-list-item-title">${film.cim}</span>
         <p class="movie-list-item-desc">${film.leiras ? film.leiras.substring(0, 80) + '...' : 'Nincs leírás'}</p>
-        ${film.trailer_url ? 
-            `<a href="${film.trailer_url}" target="_blank">
-                <button class="movie-list-item-button">Megnézem</button>
-            </a>` 
-            : 
-            `<button class="movie-list-item-button" disabled style="opacity: 0.5;">Nincs trailer</button>`
-        }
+        <p class="movie-list-item-desc" style="font-size: 12px; color: #ccc;">${film.kiadasi_ev || ''} ${film.idotartam ? '• ' + film.idotartam + ' perc' : ''}</p>
     `;
     
     return div;
@@ -76,9 +70,9 @@ async function loadFilmsByGenre(genreId, containerSelector) {
     try {
         const result = await API.getFilmsByGenre(genreId);
         
-        if (result.success && result.data.data) {
+        if (result.success && result.data.filmek) {
             container.innerHTML = '';
-            result.data.data.forEach(film => {
+            result.data.filmek.forEach(film => {
                 const movieItem = createMovieItem(film);
                 container.appendChild(movieItem);
             });

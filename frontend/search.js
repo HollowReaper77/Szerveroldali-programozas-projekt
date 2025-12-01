@@ -16,7 +16,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const result = await API.getFilms(1, 100); // Nagy limit, hogy minden filmet megkapjunk
 
         if (result.success) {
-            allFilms = result.data.data || [];
+            allFilms = result.data.filmek || [];
             displayFilms(allFilms);
             statusElement.textContent = `${allFilms.length} film betöltve`;
         } else {
@@ -42,7 +42,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 transition: transform 0.3s ease;
                 cursor: pointer;
             " onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
-                <img src="${film.plakat_url || 'img/placeholder.jpg'}" alt="${film.cim}" style="
+                <img src="${film.poszter_url || 'img/placeholder.jpg'}" alt="${film.cim}" style="
                     width: 100%;
                     height: 300px;
                     object-fit: cover;
@@ -50,21 +50,14 @@ document.addEventListener('DOMContentLoaded', function() {
                 <div style="padding: 15px;">
                     <h3 style="color: #4dbf00; margin: 0 0 10px 0; font-size: 18px;">${film.cim}</h3>
                     <p style="color: lightgray; font-size: 14px; margin: 5px 0;">
-                        <strong>Megjelenés:</strong> ${film.megjelenes_eve || 'Ismeretlen'}
+                        <strong>Megjelenés:</strong> ${film.kiadasi_ev || 'Ismeretlen'}
                     </p>
                     <p style="color: lightgray; font-size: 14px; margin: 5px 0;">
-                        <strong>Hossz:</strong> ${film.hossz || 'N/A'} perc
+                        <strong>Hossz:</strong> ${film.idotartam || 'N/A'} perc
                     </p>
                     <p style="color: lightgray; font-size: 13px; margin: 10px 0; line-height: 1.4;">
                         ${film.leiras ? (film.leiras.substring(0, 100) + '...') : 'Nincs leírás'}
                     </p>
-                    ${film.trailer_url ? `
-                        <a href="${film.trailer_url}" target="_blank" style="text-decoration: none;">
-                            <button class="featured-button" style="width: 100%; margin-top: 10px; background-color: #007AFF;">
-                                Trailer megtekintése
-                            </button>
-                        </a>
-                    ` : ''}
                 </div>
             </div>
         `).join('');

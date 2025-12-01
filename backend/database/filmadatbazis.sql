@@ -29,9 +29,9 @@ CREATE TABLE IF NOT EXISTS `felhasznalo` (
 DELETE FROM `felhasznalo`;
 -- Jelszavak: admin123, moderator123, user123 (BCrypt hash-elt)
 INSERT INTO `felhasznalo` (`felhasznalo_id`, `felhasznalonev`, `email`, `jelszo`, `profilkep_url`, `jogosultsag`, `regisztracio_ideje`, `aktiv`) VALUES
-	(1, 'Admin', 'admin@cinematar.hu', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', NULL, 'admin', '2025-10-21 00:00:00', 1),
-	(2, 'Moderator', 'moderator@cinematar.hu', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', NULL, 'moderator', '2025-11-15 00:00:00', 1),
-	(3, 'TestUser', 'user@test.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', NULL, 'user', '2025-11-27 00:00:00', 1);
+	(1, 'Admin', 'admin@cinematar.hu', '$2y$10$Fm7OjHa2cuE9Z8mPAnkoquoHaVQiCRWFXM0Uz4BsyP99l9gmcHecG', NULL, 'admin', '2025-10-21 00:00:00', 1),
+	(2, 'Moderator', 'moderator@cinematar.hu', '$2y$10$6SmBK6VIkS2HGFOVT68GTu5bV4Nj8KeuX9VZcymGfbIhzTGEzRXvC', NULL, 'moderator', '2025-11-15 00:00:00', 1),
+	(3, 'TestUser', 'user@test.com', '$2y$10$kBLkH/jaDVdIFqb2Ziem1eVC.qLNv/nMZfUYRiHH0UxruJ5QtmLiS', NULL, 'user', '2025-11-27 00:00:00', 1);
 
 DROP TABLE IF EXISTS `film`;
 CREATE TABLE IF NOT EXISTS `film` (

@@ -16,8 +16,8 @@ async function loadUserProfile() {
 
         const result = await response.json();
 
-        if (response.ok && result.user) {
-            displayUserProfile(result.user);
+        if (response.ok && result.felhasznalo) {
+            displayUserProfile(result.felhasznalo);
         } else {
             // Nincs bejelentkezve - átirányítás
             console.warn('Nincs bejelentkezve');
@@ -56,7 +56,7 @@ function displayUserProfile(user) {
     // Szerepkör megjelenítése (ha van ilyen elem)
     const roleElements = document.querySelectorAll('[data-user-role]');
     roleElements.forEach(el => {
-        el.textContent = user.szerep || 'user';
+        el.textContent = user.jogosultsag || 'user';
     });
 
     // Profilkép megjelenítése

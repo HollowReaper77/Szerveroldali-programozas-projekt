@@ -80,14 +80,14 @@ Ez létrehozza:
 
 ## Teszt eredmények
 
-**46/57 teszt sikeres (81%)**
+**47/57 teszt sikeres (82.5%)**
 
 - ✅ Films: 11/11 (100%)
 - ✅ Actors: 11/11 (100%)
 - ✅ Genres: 6/6 (100%)
 - ✅ Film-Genres: 6/6 (100%)
 - ⚠️ Authentication: 10/16 (63%)
-- ⚠️ Admin: 2/7 (29%)
+- ⚠️ Admin: 3/7 (43%)
 
 ### Ismert problémák
 
