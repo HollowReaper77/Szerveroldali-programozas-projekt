@@ -28,6 +28,7 @@ require_once __DIR__ . '/../backend/controllers/SzereploController.php';
 require_once __DIR__ . '/../backend/controllers/FilmMufajController.php';
 require_once __DIR__ . '/../backend/controllers/RendezoController.php';
 require_once __DIR__ . '/../backend/controllers/FelhasznaloController.php';
+require_once __DIR__ . '/../backend/controllers/FeltoltesController.php';
 
 // Modellek betöltése
 require_once __DIR__ . '/../backend/models/film.php';
@@ -362,6 +363,27 @@ switch ($urlParts[0]) {
                 http_response_code(400);
                 echo json_encode(["message" => "Felhasználó ID hiányzik."]);
             }
+        }
+
+        break;
+
+    // -----------------------------------------
+    // KÉPFELTÖLTÉS
+    // -----------------------------------------
+    case "upload":
+        $controller = new FeltoltesController();
+
+        if ($method === 'POST' && isset($urlParts[1]) && $urlParts[1] === 'image') {
+            $controller->uploadImage();
+        }
+
+        if ($method === 'DELETE' && isset($urlParts[1]) && $urlParts[1] === 'image' && isset($urlParts[2])) {
+            $controller->deleteImage($urlParts[2]);
+        }
+
+        if ($method !== 'POST' && $method !== 'DELETE') {
+            http_response_code(405);
+            echo json_encode(["message" => "Method not allowed"]);
         }
 
         break;

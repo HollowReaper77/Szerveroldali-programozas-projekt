@@ -12,7 +12,8 @@ const API_CONFIG = {
         COUNTRIES: '/countries',
         FILM_ACTORS: '/film-actors',
         FILM_GENRES: '/film-genres',
-        USERS: '/users'
+        USERS: '/users',
+        UPLOAD: '/upload'
     },
     
     // HTTP Headers

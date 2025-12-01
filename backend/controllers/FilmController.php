@@ -90,6 +90,11 @@ class FilmController {
     // POST /films      (új film)
     // -----------------------------------------------------------
     public function createFilm() {
+        // Jogosultság ellenőrzés - csak admin és moderátor
+        if (!requireRole('moderator')) {
+            return;
+        }
+
         $data = getJsonInput();
 
         // Kötelező mezők ellenőrzése
@@ -144,6 +149,11 @@ class FilmController {
     // PUT /films/{id}    (film frissítése)
     // -----------------------------------------------------------
     public function updateFilm($id) {
+        // Jogosultság ellenőrzés - csak admin és moderátor
+        if (!requireRole('moderator')) {
+            return;
+        }
+
         $id = validateId($id, "Film ID");
         $data = getJsonInput();
 
@@ -206,6 +216,11 @@ class FilmController {
     // DELETE /films/{id}
     // -----------------------------------------------------------
     public function deleteFilm($id) {
+        // Jogosultság ellenőrzés - csak admin és moderátor
+        if (!requireRole('moderator')) {
+            return;
+        }
+
         $id = validateId($id, "Film ID");
         
         // Ellenőrizd, hogy létezik-e a film

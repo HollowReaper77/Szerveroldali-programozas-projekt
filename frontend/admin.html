@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="hu">
+
+<head>
+    <meta charset="utf-8">
+    <title>Cinematár - Admin</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400;500;700;900&family=Sen:wght@400;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="navbar">
+        <div class="navbar-container">
+            <div class="logo-container">
+                <a href="index.html" class="logo-link">
+                    <h1 class="logo">Cinematár</h1>
+                </a>
+            </div>
+            
+            <div class="menu-container">
+                <ul class="menu-list">
+                    <li class="menu-list-item"><a href="index.html">Főoldal</a></li>
+                    <li class="menu-list-item"><a href="kereses.html">Keresés</a></li>
+                    <li class="menu-list-item active"><a href="admin.html">Admin</a></li>
+                    <li class="menu-list-item"><a href="profil.html">Profil</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="sidebar">
+        <a href="kereses.html"><i class="left-menu-icon fas fa-search"></i></a>
+        <a href="index.html"><i class="left-menu-icon fas fa-home"></i></a>
+        <a href="profil.html"><i class="left-menu-icon fas fa-user"></i></a>
+        <a href="admin.html"><i class="left-menu-icon fas fa-cog"></i></a>
+    </div>
+
+    <div class="container">
+        <div class="content-container" style="padding-top: 80px;">
+            
+            <!-- Hozzáférés megtagadva üzenet -->
+            <div id="access-denied" class="access-denied hidden">
+                <h1 style="color: #dc3545;">Hozzáférés megtagadva</h1>
+                <p>Csak admin vagy moderátor jogosultsággal férhet hozzá ehhez az oldalhoz.</p>
+                <a href="bejelentkezes.html"><button class="btn btn-primary">Bejelentkezés</button></a>
+            </div>
+
+            <!-- Admin tartalom -->
+            <div id="admin-content" class="admin-container hidden">
+                <h1 style="color: var(--primary);">Film Kezelés</h1>
+
+                <!-- Új film hozzáadása -->
+                <div class="admin-section">
+                    <h2>Új Film Hozzáadása</h2>
+                    <div id="add-status" class="status-message"></div>
+                    
+                    <form id="add-film-form">
+                        <div class="form-group">
+                            <label>Cím *</label>
+                            <input type="text" id="add-cim" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Leírás</label>
+                            <textarea id="add-leiras"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label>Kiadási év *</label>
+                            <input type="number" id="add-kiadasi-ev" min="1888" max="2030" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Időtartam (perc) *</label>
+                            <input type="number" id="add-idotartam" min="1" max="999" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Poszter URL</label>
+                            <input type="url" id="add-poszter-url">
+                        </div>
+                        <div class="form-group">
+                            <label>Vagy tölts fel képet</label>
+                            <input type="file" id="add-poszter-file">
+                            <small style="color: #ccc; font-size: 12px;">Maximum 5MB, JPG/PNG/GIF/WebP</small>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Film Hozzáadása</button>
+                    </form>
+                </div>
+
+                <!-- Film szerkesztése -->
+                <div class="admin-section">
+                    <h2>Film Szerkesztése</h2>
+                    <div id="edit-status" class="status-message"></div>
+                    
+                    <div class="form-group">
+                        <label>Válassz filmet</label>
+                        <select id="edit-film-select">
+                            <option value="">-- Válassz filmet --</option>
+                        </select>
+                    </div>
+
+                    <form id="edit-film-form" class="hidden">
+                        <input type="hidden" id="edit-film-id">
+                        <div class="form-group">
+                            <label>Cím *</label>
+                            <input type="text" id="edit-cim" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Leírás</label>
+                            <textarea id="edit-leiras"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label>Kiadási év *</label>
+                            <input type="number" id="edit-kiadasi-ev" min="1888" max="2030" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Időtartam (perc) *</label>
+                            <input type="number" id="edit-idotartam" min="1" max="999" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Poszter URL</label>
+                            <input type="url" id="edit-poszter-url">
+                        </div>
+                        <div class="form-group">
+                            <label>Vagy tölts fel új képet</label>
+                            <input type="file" id="edit-poszter-file">
+                            <small style="color: #ccc; font-size: 12px;">Maximum 5MB, JPG/PNG/GIF/WebP</small>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Film Frissítése</button>
+                        <button type="button" class="btn btn-secondary" onclick="cancelEdit()">Mégse</button>
+                    </form>
+                </div>
+
+                <!-- Filmek listája -->
+                <div class="admin-section">
+                    <h2>Filmek Listája</h2>
+                    <div id="list-status" class="status-message"></div>
+                    
+                    <table class="films-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Cím</th>
+                                <th>Kiadási év</th>
+                                <th>Időtartam</th>
+                                <th>Műveletek</th>
+                            </tr>
+                        </thead>
+                        <tbody id="films-list">
+                            <tr>
+                                <td colspan="5" style="text-align: center;">Betöltés...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    
+    <script src="config.js"></script>
+    <script src="app.js"></script>
+    <script src="admin.js"></script>
+</body>
+</html>

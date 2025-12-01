@@ -353,3 +353,129 @@ body {
         display: none;
     }
 }
+
+/* ---------------------------------------------------- */
+/* ADMIN STÍLUSOK */
+/* ---------------------------------------------------- */
+
+.admin-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    color: white;
+}
+
+.admin-section {
+    background-color: #1a1a1a;
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 30px;
+}
+
+.admin-section h2 {
+    color: #4dbf00;
+    margin-bottom: 20px;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+    color: #ccc;
+}
+
+.form-group input,
+.form-group textarea,
+.form-group select {
+    width: 100%;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #333;
+    background-color: #2a2a2a;
+    color: white;
+    font-size: 14px;
+}
+
+.form-group textarea {
+    min-height: 100px;
+    resize: vertical;
+}
+
+.btn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    margin-right: 10px;
+}
+
+.btn-primary {
+    background-color: #4dbf00;
+    color: white;
+}
+
+.btn-danger {
+    background-color: #dc3545;
+    color: white;
+}
+
+.btn-secondary {
+    background-color: #6c757d;
+    color: white;
+}
+
+.btn:hover {
+    opacity: 0.9;
+}
+
+.films-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+.films-table th,
+.films-table td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #333;
+}
+
+.films-table th {
+    background-color: #2a2a2a;
+    color: #4dbf00;
+}
+
+.films-table tr:hover {
+    background-color: #2a2a2a;
+}
+
+.status-message {
+    padding: 10px;
+    border-radius: 5px;
+    margin-bottom: 15px;
+    display: none;
+}
+
+.status-success {
+    background-color: #28a745;
+    color: white;
+}
+
+.status-error {
+    background-color: #dc3545;
+    color: white;
+}
+
+.access-denied {
+    text-align: center;
+    padding: 50px;
+}
+
+.hidden {
+    display: none;
+}

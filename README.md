@@ -14,10 +14,8 @@ REST API filmadatbázis kezeléséhez PHP-ban.
 1. **XAMPP indítása** (Apache + MySQL)
 
 2. **Adatbázis importálása:**
-```bash
-mysql -u root -e "CREATE DATABASE film;"
-mysql -u root film < backend/database/filmadatbazis.sql
-```
+   - Nyisd meg a phpMyAdmin-t: `http://localhost/phpmyadmin`
+   - Importáld a `backend/database/filmadatbazis.sql` fájlt
 
 3. **Alkalmazás elérése:**
    - API: `http://localhost/php/PHP projekt/Szerveroldali-programozas-projekt/public/`
