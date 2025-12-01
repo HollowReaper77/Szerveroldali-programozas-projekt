@@ -13,13 +13,13 @@ REST API filmadatbázis kezeléséhez PHP-ban.
 
 1. **XAMPP indítása** (Apache + MySQL)
 
-2. **Adatbázis létrehozása:**
+2. **Adatbázis importálása:**
 ```bash
 mysql -u root -e "CREATE DATABASE film;"
 mysql -u root film < backend/database/filmadatbazis.sql
 ```
 
-3. **Böngészőben megnyitni:**
+3. **Alkalmazás elérése:**
    - API: `http://localhost/php/PHP projekt/Szerveroldali-programozas-projekt/public/`
    - Frontend: `frontend/index.html`
 
