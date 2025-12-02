@@ -77,7 +77,7 @@
                 <div id="status" class="status" style="margin-bottom: 1rem; color: #4dbf00;"></div>
 
                 <h2 class="movie-list-title" style="font-size: 24px; margin-top: 30px;">Találatok</h2>
-                <section id="films" class="card-grid"></section>
+                <section id="films" class="search-results"></section>
             </div>
         </div>
     </div>
@@ -93,6 +93,13 @@
                     <div class="film-modal__tags">
                         <span id="film-modal-countries" class="film-modal__tag hidden"></span>
                         <span id="film-modal-views" class="film-modal__tag film-modal__tag--accent hidden"></span>
+                    </div>
+                    <div id="film-watch-wrapper" class="film-modal__watch hidden">
+                        <div class="film-modal__watch-toggle">
+                            <input type="checkbox" id="film-watch-toggle" />
+                            <label for="film-watch-toggle">Megnéztem már ezt a filmet</label>
+                        </div>
+                        <p id="film-watch-status" class="film-modal__watch-status"></p>
                     </div>
                     <p id="film-modal-description" class="film-modal__description"></p>
                     <div class="film-modal__credits">

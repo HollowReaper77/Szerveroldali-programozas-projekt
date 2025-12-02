@@ -1,0 +1,1539 @@
+{
+  "diagramType": 1,
+  "data": {
+    "nodes": [
+      {
+        "id": "429a4f64-cc25-4882-9423-02399cc36833",
+        "type": "Entity",
+        "position": {
+          "x": 116.59403714660095,
+          "y": 391.59480105681445
+        },
+        "data": {
+          "label": "Film",
+          "type": "Regular",
+          "isConnectable": false,
+          "isSelected": false
+        },
+        "measured": {
+          "width": 100,
+          "height": 50
+        },
+        "selected": false,
+        "dragging": false
+      },
+      {
+        "id": "f01d0408-8eac-4397-ab7c-d3ceea1f54f6",
+        "parentId": "429a4f64-cc25-4882-9423-02399cc36833",
+        "type": "Attribute",
+        "position": {
+          "x": -101.8096361238073,
+          "y": -57.77020437495952
+        },
+        "data": {
+          "label": "film_id",
+          "types": {
+            "Unique": true
+          },
+          "isSelected": false,
+          "isConnectable": false
+        },
+        "measured": {
+          "width": 100,
+          "height": 50
+        },
+        "selected": false,
+        "dragging": false
+      },
+      {
+        "id": "0b2dbe7c-e4e0-4d1f-bea8-4ae086ef6aa4",
+        "parentId": "429a4f64-cc25-4882-9423-02399cc36833",
+        "type": "Attribute",
+        "position": {
+          "x": -40.36065112489524,
+          "y": -111.2730447344203
+        },
+        "data": {
+          "label": "cim",
+          "types": [],
+          "isSelected": false,
+          "isConnectable": false
+        },
+        "measured": {
+          "width": 100,
+          "height": 50
+        },
+        "selected": false,
+        "dragging": false
+      },
+      {
+        "id": "dab55de3-f091-4450-a488-c0fa7eee1736",
+        "parentId": "429a4f64-cc25-4882-9423-02399cc36833",
+        "type": "Attribute",
+        "position": {
+          "x": 123.68625044390916,
+          "y": 93.67050159807326
+        },
+        "data": {
+          "label": "poszter_url",
+          "types": [],
+          "isSelected": false,
+          "isConnectable": false
+        },
+        "measured": {
+          "width": 100,
+          "height": 50
+        },
+        "selected": false,
+        "dragging": false
+      },
+      {
+        "id": "c4019b07-4a4f-4094-aab0-f3327ae43fb5",
+        "parentId": "429a4f64-cc25-4882-9423-02399cc36833",
+        "type": "Attribute",
+        "position": {
+          "x": -2.529226429817328,
+          "y": 107.05208715776024
+        },
+        "data": {
+          "label": "időtartam",
+          "types": [],
+          "isSelected": false,
+          "isConnectable": false
+        },
+        "measured": {
+          "width": 100,
+          "height": 50
+        },
+        "selected": false,
+        "dragging": false
+      },
+      {
+        "id": "18f17ab7-691e-4ae1-a443-30538c04acd4",
+        "parentId": "429a4f64-cc25-4882-9423-02399cc36833",
+        "type": "Attribute",
+        "position": {
+          "x": -70.32737637611862,
+          "y": 61.8961241565724
+        },
+        "data": {
+          "label": "leírás",
+          "types": [],
+          "isSelected": false,
+          "isConnectable": false
+        },
+        "measured": {
+          "width": 100,
+          "height": 50
+        },
+        "selected": false,
+        "dragging": false
+      },
+      {
+        "id": "75bb7368-8c8b-416d-9fc7-77e5f2dac22b",
+        "parentId": "429a4f64-cc25-4882-9423-02399cc36833",
+        "type": "Attribute",
+        "position": {
+          "x": -116.21577534581958,
+          "y": 11.859023303837091
+        },
+        "data": {
+          "label": "kiadási_év",
+          "types": [],
+          "isSelected": false,
+          "isConnectable": false
+        },
+        "measured": {
+          "width": 100,
+          "height": 50
+        },
+        "selected": false,
+        "dragging": false
+      },
+      {
+        "id": "13eee3cd-2a0f-4e65-84e0-434d4e3c9d2b",
+        "type": "Entity",
+        "position": {
+          "x": 234.34708406977416,
+          "y": 99.48016979109454
+        },
+        "data": {
+          "label": "Műfajok",
+          "type": "Regular",
+          "isConnectable": false,
+          "isSelected": false
+        },
+        "measured": {
+          "width": 100,
+          "height": 50
+        },
+        "selected": false,
+        "dragging": false
+      },
+      {
+        "id": "ed0aaff6-bde5-4a51-b20f-70e20701f0e5",
+        "parentId": "13eee3cd-2a0f-4e65-84e0-434d4e3c9d2b",
+        "type": "Attribute",
+        "position": {
+          "x": 122.99973470141475,
+          "y": -6.9334571393397795
+        },
+        "data": {
+          "label": "név",
+          "types": [],
+          "isSelected": false,
+          "isConnectable": false
+        },
+        "measured": {
+          "width": 100,
+          "height": 50
+        },
+        "selected": false,
+        "dragging": false
+      },
+      {
+        "id": "b975dc78-820e-4b57-ad3a-fd8e3c2303f9",
+        "parentId": "13eee3cd-2a0f-4e65-84e0-434d4e3c9d2b",
+        "type": "Attribute",
+        "position": {
+          "x": 94.83285039273835,
+          "y": -69.09955243254976
+        },
+        "data": {
+          "label": "műfaj_id",
+          "types": {
+            "Unique": true
+          },
+          "isSelected": false,
+          "isConnectable": false
+        },
+        "measured": {
+          "width": 100,
+          "height": 50
+        },
+        "selected": false,
+        "dragging": false
+      },
+      {
+        "id": "f5335c08-0a40-4e69-b5f8-17ae3540327f",
+        "type": "Relationship",
+        "position": {
+          "x": 164.3348577019478,
+          "y": 202.83412204214824
+        },
+        "data": {
+          "label": "műfajú",
+          "sourceEntityDetails": {
+            "id": "13eee3cd-2a0f-4e65-84e0-434d4e3c9d2b",
+            "maxCardinality": "Many"
+          },
+          "targetEntityDetails": {
+            "id": "429a4f64-cc25-4882-9423-02399cc36833",
+            "maxCardinality": "Many"
+          },
+          "isSelected": false,
+          "isConnectable": true
+        },
+        "measured": {
+          "width": 100,
+          "height": 50
+        },
+        "selected": false,
+        "dragging": false
+      },
+      {
+        "id": "14fb8e0a-7e32-47ac-8276-f0b2077d2a1f",
+        "type": "Entity",
+        "position": {
+          "x": 570.6548037098092,
+          "y": 80.90299663462443
+        },
+        "data": {
+          "label": "Színészek",
+          "type": "Regular",
+          "isConnectable": false,
+          "isSelected": false
+        },
+        "measured": {
+          "width": 100,
+          "height": 50
+        },
+        "selected": true,
+        "dragging": false
+      },
+      {
+        "id": "c1670423-2c09-4f0f-a3cd-65fd6d27c0f4",
+        "parentId": "14fb8e0a-7e32-47ac-8276-f0b2077d2a1f",
+        "type": "Attribute",
+        "position": {
+          "x": 106.05410950738491,
+          "y": -45.03871377943125
+        },
+        "data": {
+          "label": "név",
+          "types": [],
+          "isSelected": false,
+          "isConnectable": false
+        },
+        "measured": {
+          "width": 100,
+          "height": 50
+        },
+        "selected": false,
+        "dragging": false
+      },
+      {
+        "id": "5fc11224-1623-4acb-beca-348c9de7282e",
+        "parentId": "14fb8e0a-7e32-47ac-8276-f0b2077d2a1f",
+        "type": "Attribute",
+        "position": {
+          "x": -1.9196957821876026,
+          "y": -72.69180574281657
+        },
+        "data": {
+          "label": "színész_id",
+          "types": {
+            "Unique": true
+          },
+          "isSelected": false,
+          "isConnectable": false
+        },
+        "measured": {
+          "width": 100,
+          "height": 50
+        },
+        "selected": false,
+        "dragging": false
+      },
+      {
+        "id": "f61ff71b-f922-466f-b00c-27b45ce6720f",
+        "parentId": "14fb8e0a-7e32-47ac-8276-f0b2077d2a1f",
+        "type": "Attribute",
+        "position": {
+          "x": 120.10501940160123,
+          "y": 8.905227413463933
+        },
+        "data": {
+          "label": "születési_dátum",
+          "types": [],
+          "isSelected": false,
+          "isConnectable": false
+        },
+        "measured": {
+          "width": 100,
+          "height": 50
+        },
+        "selected": false,
+        "dragging": false
+      },
+      {
+        "id": "37e32d65-6f37-4e6c-a621-4358973faac9",
+        "type": "Relationship",
+        "position": {
+          "x": 428.4944416947511,
+          "y": 187.35629814962704
+        },
+        "data": {
+          "label": "szerepel_benne",
+          "sourceEntityDetails": {
+            "id": "429a4f64-cc25-4882-9423-02399cc36833",
+            "maxCardinality": "Many"
+          },
+          "targetEntityDetails": {
+            "id": "14fb8e0a-7e32-47ac-8276-f0b2077d2a1f",
+            "maxCardinality": "Many"
+          },
+          "isSelected": false,
+          "isConnectable": true
+        },
+        "measured": {
+          "width": 100,
+          "height": 50
+        },
+        "selected": false,
+        "dragging": false
+      },
+      {
+        "id": "56edd365-a74b-42fa-a0ae-e2422edfa751",
+        "type": "Entity",
+        "position": {
+          "x": 552.484333018347,
+          "y": 367.9533536443397
+        },
+        "data": {
+          "label": "Országok",
+          "type": "Regular",
+          "isConnectable": false,
+          "isSelected": false
+        },
+        "measured": {
+          "width": 100,
+          "height": 50
+        },
+        "selected": false,
+        "dragging": false
+      },
+      {
+        "id": "65a8a127-06f7-45e2-9fcd-a974fa396d59",
+        "parentId": "56edd365-a74b-42fa-a0ae-e2422edfa751",
+        "type": "Attribute",
+        "position": {
+          "x": 23.460627885410076,
+          "y": -59.478498757054126
+        },
+        "data": {
+          "label": "név",
+          "types": [],
+          "isSelected": false,
+          "isConnectable": false
+        },
+        "measured": {
+          "width": 100,
+          "height": 50
+        },
+        "selected": false,
+        "dragging": false
+      },
+      {
+        "id": "aa3ef394-0425-479e-bdae-234d43e0e555",
+        "parentId": "56edd365-a74b-42fa-a0ae-e2422edfa751",
+        "type": "Attribute",
+        "position": {
+          "x": 117.35008786801507,
+          "y": -0.0982726823641542
+        },
+        "data": {
+          "label": "orszag_id",
+          "types": {
+            "Unique": true
+          },
+          "isSelected": false,
+          "isConnectable": false
+        },
+        "measured": {
+          "width": 100,
+          "height": 50
+        },
+        "selected": false,
+        "dragging": false
+      },
+      {
+        "id": "a477f109-e91a-45de-b8e7-c6ea401e5704",
+        "type": "Relationship",
+        "position": {
+          "x": 353.03671958232985,
+          "y": 364.6479393422235
+        },
+        "data": {
+          "label": "gyártja_e",
+          "sourceEntityDetails": {
+            "id": "429a4f64-cc25-4882-9423-02399cc36833",
+            "maxCardinality": "Many"
+          },
+          "targetEntityDetails": {
+            "id": "56edd365-a74b-42fa-a0ae-e2422edfa751",
+            "maxCardinality": "Many"
+          },
+          "isSelected": false,
+          "isConnectable": true
+        },
+        "measured": {
+          "width": 100,
+          "height": 50
+        },
+        "selected": false,
+        "dragging": false
+      },
+      {
+        "id": "00e07c57-397e-43b8-a9ef-4d75f26ac87b",
+        "type": "Entity",
+        "position": {
+          "x": 358.1657856722521,
+          "y": 648.2118542125937
+        },
+        "data": {
+          "label": "Vélemények",
+          "type": "Regular",
+          "isConnectable": false,
+          "isSelected": false
+        },
+        "measured": {
+          "width": 100,
+          "height": 50
+        },
+        "selected": false,
+        "dragging": false
+      },
+      {
+        "id": "d0328345-9e9d-4089-a15a-66f4597d5def",
+        "parentId": "00e07c57-397e-43b8-a9ef-4d75f26ac87b",
+        "type": "Attribute",
+        "position": {
+          "x": -6.429395695523604e-15,
+          "y": -105
+        },
+        "data": {
+          "label": "vélemény_id",
+          "types": {
+            "Unique": true
+          },
+          "isSelected": false,
+          "isConnectable": false
+        },
+        "measured": {
+          "width": 100,
+          "height": 50
+        },
+        "selected": false
+      },
+      {
+        "id": "b54576d9-f6a3-408a-888f-2f43c4a1c1e1",
+        "parentId": "00e07c57-397e-43b8-a9ef-4d75f26ac87b",
+        "type": "Attribute",
+        "position": {
+          "x": 86.62283320673657,
+          "y": -68.61262656061723
+        },
+        "data": {
+          "label": "felhasználó_id",
+          "types": [],
+          "isSelected": false,
+          "isConnectable": false
+        },
+        "measured": {
+          "width": 100,
+          "height": 50
+        },
+        "selected": false,
+        "dragging": false
+      },
+      {
+        "id": "108a782d-cc3c-47cb-8584-580037fe8462",
+        "parentId": "00e07c57-397e-43b8-a9ef-4d75f26ac87b",
+        "type": "Attribute",
+        "position": {
+          "x": 114.38930910661702,
+          "y": -16.90075639191076
+        },
+        "data": {
+          "label": "film_id",
+          "types": [],
+          "isSelected": false,
+          "isConnectable": false
+        },
+        "measured": {
+          "width": 100,
+          "height": 50
+        },
+        "selected": false,
+        "dragging": false
+      },
+      {
+        "id": "30ea98f1-2f31-4e82-a588-9a6d78cbdbb7",
+        "parentId": "00e07c57-397e-43b8-a9ef-4d75f26ac87b",
+        "type": "Attribute",
+        "position": {
+          "x": 96.6527083064334,
+          "y": 64.95024528434533
+        },
+        "data": {
+          "label": "értékelés",
+          "types": [],
+          "isSelected": false,
+          "isConnectable": false
+        },
+        "measured": {
+          "width": 100,
+          "height": 50
+        },
+        "selected": false,
+        "dragging": false
+      },
+      {
+        "id": "bc2b9047-44ff-431b-bc6b-c1402ee15061",
+        "parentId": "00e07c57-397e-43b8-a9ef-4d75f26ac87b",
+        "type": "Attribute",
+        "position": {
+          "x": 1.928818708657081e-14,
+          "y": 105
+        },
+        "data": {
+          "label": "komment",
+          "types": [],
+          "isSelected": false,
+          "isConnectable": false
+        },
+        "measured": {
+          "width": 100,
+          "height": 50
+        },
+        "selected": false
+      },
+      {
+        "id": "39956b35-f056-4485-9448-41ff10893254",
+        "parentId": "00e07c57-397e-43b8-a9ef-4d75f26ac87b",
+        "type": "Attribute",
+        "position": {
+          "x": -72.78673191890607,
+          "y": 64.02985128481737
+        },
+        "data": {
+          "label": "létrehozás_ideje",
+          "types": [],
+          "isSelected": false,
+          "isConnectable": false
+        },
+        "measured": {
+          "width": 100,
+          "height": 50
+        },
+        "selected": false,
+        "dragging": false
+      },
+      {
+        "id": "c587855e-eab1-4319-b81d-8730021c5ea1",
+        "type": "Relationship",
+        "position": {
+          "x": 233.79014781767728,
+          "y": 575.5125319476258
+        },
+        "data": {
+          "label": "van_e",
+          "sourceEntityDetails": {
+            "id": "429a4f64-cc25-4882-9423-02399cc36833",
+            "maxCardinality": "Many"
+          },
+          "targetEntityDetails": {
+            "id": "00e07c57-397e-43b8-a9ef-4d75f26ac87b",
+            "maxCardinality": "One"
+          },
+          "isSelected": false,
+          "isConnectable": true
+        },
+        "measured": {
+          "width": 100,
+          "height": 50
+        },
+        "selected": false,
+        "dragging": false
+      },
+      {
+        "id": "c685807f-f2e2-4c77-91c3-bc581f41f2e3",
+        "type": "Entity",
+        "position": {
+          "x": 826.9933150382142,
+          "y": 162.33298674462145
+        },
+        "data": {
+          "label": "Rendezők",
+          "type": "Regular",
+          "isConnectable": false,
+          "isSelected": false
+        },
+        "measured": {
+          "width": 100,
+          "height": 50
+        },
+        "selected": false,
+        "dragging": false
+      },
+      {
+        "id": "9c4600d5-8dba-435b-8bbc-86d0b7785dbf",
+        "parentId": "c685807f-f2e2-4c77-91c3-bc581f41f2e3",
+        "type": "Attribute",
+        "position": {
+          "x": -6.429395695523604e-15,
+          "y": -105
+        },
+        "data": {
+          "label": "rendező_id",
+          "types": {
+            "Unique": true
+          },
+          "isSelected": false,
+          "isConnectable": false
+        },
+        "measured": {
+          "width": 100,
+          "height": 50
+        },
+        "selected": false
+      },
+      {
+        "id": "76eb287f-769a-407a-bc37-ed60686d35a4",
+        "parentId": "c685807f-f2e2-4c77-91c3-bc581f41f2e3",
+        "type": "Attribute",
+        "position": {
+          "x": 84.17925138320527,
+          "y": -61.002159546430526
+        },
+        "data": {
+          "label": "név",
+          "types": [],
+          "isSelected": false,
+          "isConnectable": false
+        },
+        "measured": {
+          "width": 100,
+          "height": 50
+        },
+        "selected": false,
+        "dragging": false
+      },
+      {
+        "id": "0070bd0f-fb8f-4691-aa6d-ab469a30d757",
+        "parentId": "c685807f-f2e2-4c77-91c3-bc581f41f2e3",
+        "type": "Attribute",
+        "position": {
+          "x": 105,
+          "y": -1.2858791391047208e-14
+        },
+        "data": {
+          "label": "születési_dátum",
+          "types": [],
+          "isSelected": false,
+          "isConnectable": false
+        },
+        "measured": {
+          "width": 100,
+          "height": 50
+        },
+        "selected": false
+      },
+      {
+        "id": "d77e082d-03d5-48cb-b0e8-69985c0c81f3",
+        "parentId": "c685807f-f2e2-4c77-91c3-bc581f41f2e3",
+        "type": "Attribute",
+        "position": {
+          "x": 74.2462120245875,
+          "y": 74.24621202458748
+        },
+        "data": {
+          "label": "bio",
+          "types": [],
+          "isSelected": false,
+          "isConnectable": false
+        },
+        "measured": {
+          "width": 100,
+          "height": 50
+        },
+        "selected": false
+      },
+      {
+        "id": "d4008117-7f63-445a-bac8-04cc3bbe8f2b",
+        "type": "Relationship",
+        "position": {
+          "x": 606.1455579748248,
+          "y": 202.3885569052543
+        },
+        "data": {
+          "label": "rendezte_e",
+          "sourceEntityDetails": {
+            "id": "c685807f-f2e2-4c77-91c3-bc581f41f2e3",
+            "maxCardinality": "Many"
+          },
+          "targetEntityDetails": {
+            "id": "429a4f64-cc25-4882-9423-02399cc36833",
+            "maxCardinality": "Many"
+          },
+          "isSelected": false,
+          "isConnectable": true
+        },
+        "measured": {
+          "width": 100,
+          "height": 50
+        },
+        "selected": false,
+        "dragging": false
+      },
+      {
+        "id": "fd944a72-9ad9-4e8e-8985-a885e8036298",
+        "type": "Entity",
+        "position": {
+          "x": 854.1476459401574,
+          "y": 407.0119197232707
+        },
+        "data": {
+          "label": "Megnézett_filmek",
+          "type": "Regular",
+          "isConnectable": false,
+          "isSelected": false
+        },
+        "measured": {
+          "width": 100,
+          "height": 50
+        },
+        "selected": false,
+        "dragging": false
+      },
+      {
+        "id": "31119576-a16c-400f-8495-04143e0d0752",
+        "parentId": "fd944a72-9ad9-4e8e-8985-a885e8036298",
+        "type": "Attribute",
+        "position": {
+          "x": -4.966519679308931,
+          "y": -83.47841472299496
+        },
+        "data": {
+          "label": "film_id",
+          "types": {
+            "Unique": true
+          },
+          "isSelected": false,
+          "isConnectable": false
+        },
+        "measured": {
+          "width": 100,
+          "height": 50
+        },
+        "selected": false,
+        "dragging": false
+      },
+      {
+        "id": "a97c59dc-4705-4352-9413-7ce48f9f1255",
+        "parentId": "fd944a72-9ad9-4e8e-8985-a885e8036298",
+        "type": "Attribute",
+        "position": {
+          "x": 104.0799294659189,
+          "y": -68.9566644946114
+        },
+        "data": {
+          "label": "felhasználó_id",
+          "types": {
+            "Unique": true
+          },
+          "isSelected": false,
+          "isConnectable": false
+        },
+        "measured": {
+          "width": 100,
+          "height": 50
+        },
+        "selected": false,
+        "dragging": false
+      },
+      {
+        "id": "f348a5b4-f7ba-4ae1-acf2-8eff7289abc0",
+        "parentId": "fd944a72-9ad9-4e8e-8985-a885e8036298",
+        "type": "Attribute",
+        "position": {
+          "x": 124.39500760991245,
+          "y": -3.526365019984098
+        },
+        "data": {
+          "label": "hozzáadás_dátuma",
+          "types": [],
+          "isSelected": false,
+          "isConnectable": false
+        },
+        "measured": {
+          "width": 100,
+          "height": 50
+        },
+        "selected": false,
+        "dragging": false
+      },
+      {
+        "id": "2d4d8058-7548-49aa-b313-36fe9996a691",
+        "parentId": "fd944a72-9ad9-4e8e-8985-a885e8036298",
+        "type": "Attribute",
+        "position": {
+          "x": 74.2462120245875,
+          "y": 74.24621202458748
+        },
+        "data": {
+          "label": "megnézve_e",
+          "types": [],
+          "isSelected": false,
+          "isConnectable": false
+        },
+        "measured": {
+          "width": 100,
+          "height": 50
+        },
+        "selected": false
+      },
+      {
+        "id": "18f57632-b400-458e-922e-22de0f645b80",
+        "parentId": "fd944a72-9ad9-4e8e-8985-a885e8036298",
+        "type": "Attribute",
+        "position": {
+          "x": -45.974102669864806,
+          "y": 83.13135741007159
+        },
+        "data": {
+          "label": "megjegyzés",
+          "types": [],
+          "isSelected": false,
+          "isConnectable": false
+        },
+        "measured": {
+          "width": 100,
+          "height": 50
+        },
+        "selected": false,
+        "dragging": false
+      },
+      {
+        "id": "df23fd5d-1e38-490c-b27e-f6c3dca8ebd7",
+        "type": "Relationship",
+        "position": {
+          "x": 602.4080909314223,
+          "y": 465.6392104085028
+        },
+        "data": {
+          "label": "szerepel_e",
+          "sourceEntityDetails": {
+            "id": "fd944a72-9ad9-4e8e-8985-a885e8036298",
+            "maxCardinality": "One"
+          },
+          "targetEntityDetails": {
+            "id": "429a4f64-cc25-4882-9423-02399cc36833",
+            "maxCardinality": "Many"
+          },
+          "isSelected": false,
+          "isConnectable": true
+        },
+        "measured": {
+          "width": 100,
+          "height": 50
+        },
+        "selected": false,
+        "dragging": false
+      },
+      {
+        "id": "b3c91c1f-a9bb-49a6-85df-e36fe1727a2b",
+        "type": "Entity",
+        "position": {
+          "x": 787.9617829514583,
+          "y": 711.6221600277348
+        },
+        "data": {
+          "label": "Felhasználó",
+          "type": "Regular",
+          "isConnectable": false,
+          "isSelected": false
+        },
+        "measured": {
+          "width": 100,
+          "height": 50
+        },
+        "selected": false,
+        "dragging": false
+      },
+      {
+        "id": "19c209b5-2a0c-4102-89f0-8704ddac8cb1",
+        "parentId": "b3c91c1f-a9bb-49a6-85df-e36fe1727a2b",
+        "type": "Attribute",
+        "position": {
+          "x": -6.429395695523604e-15,
+          "y": -105
+        },
+        "data": {
+          "label": "felhasználó_id",
+          "types": {
+            "Unique": true
+          },
+          "isSelected": false,
+          "isConnectable": false
+        },
+        "measured": {
+          "width": 100,
+          "height": 50
+        },
+        "selected": false
+      },
+      {
+        "id": "520b1cc3-831a-4cf9-a7f7-664df8eaf057",
+        "parentId": "b3c91c1f-a9bb-49a6-85df-e36fe1727a2b",
+        "type": "Attribute",
+        "position": {
+          "x": 74.24621202458748,
+          "y": -74.24621202458749
+        },
+        "data": {
+          "label": "email",
+          "types": [],
+          "isSelected": false,
+          "isConnectable": false
+        },
+        "measured": {
+          "width": 100,
+          "height": 50
+        },
+        "selected": false
+      },
+      {
+        "id": "b134120d-8738-4ce3-8802-6ea951353afe",
+        "parentId": "b3c91c1f-a9bb-49a6-85df-e36fe1727a2b",
+        "type": "Attribute",
+        "position": {
+          "x": 113,
+          "y": -16
+        },
+        "data": {
+          "label": "jelszó",
+          "types": [],
+          "isSelected": false,
+          "isConnectable": false
+        },
+        "measured": {
+          "width": 100,
+          "height": 50
+        },
+        "selected": false,
+        "dragging": false
+      },
+      {
+        "id": "a7602fb1-02d6-463b-a312-0584790e52ea",
+        "parentId": "b3c91c1f-a9bb-49a6-85df-e36fe1727a2b",
+        "type": "Attribute",
+        "position": {
+          "x": 103.57564313505873,
+          "y": 70.99767535816079
+        },
+        "data": {
+          "label": "regisztráció_ideje",
+          "types": [],
+          "isSelected": false,
+          "isConnectable": false
+        },
+        "measured": {
+          "width": 100,
+          "height": 50
+        },
+        "selected": false,
+        "dragging": false
+      },
+      {
+        "id": "4f1f3a83-e97f-4158-8308-1cea9d822c91",
+        "parentId": "b3c91c1f-a9bb-49a6-85df-e36fe1727a2b",
+        "type": "Attribute",
+        "position": {
+          "x": -14,
+          "y": 83
+        },
+        "data": {
+          "label": "jogosultság",
+          "types": [],
+          "isSelected": false,
+          "isConnectable": false
+        },
+        "measured": {
+          "width": 100,
+          "height": 50
+        },
+        "selected": false,
+        "dragging": false
+      },
+      {
+        "id": "2c176bed-87a4-4fa9-b261-a3590a218c5c",
+        "parentId": "b3c91c1f-a9bb-49a6-85df-e36fe1727a2b",
+        "type": "Attribute",
+        "position": {
+          "x": -98.08613464669816,
+          "y": 42.94910447679956
+        },
+        "data": {
+          "label": "felhasználónév",
+          "types": [],
+          "isSelected": false,
+          "isConnectable": false
+        },
+        "measured": {
+          "width": 100,
+          "height": 50
+        },
+        "selected": false,
+        "dragging": false
+      },
+      {
+        "id": "52add130-5cc6-4263-ac9d-f396619c9bb6",
+        "type": "Relationship",
+        "position": {
+          "x": 1012.5416244951064,
+          "y": 757.4989313681536
+        },
+        "data": {
+          "label": "hozzáadta_e",
+          "sourceEntityDetails": {
+            "id": "b3c91c1f-a9bb-49a6-85df-e36fe1727a2b",
+            "maxCardinality": "One"
+          },
+          "targetEntityDetails": {
+            "id": "fd944a72-9ad9-4e8e-8985-a885e8036298",
+            "maxCardinality": "Many"
+          },
+          "isSelected": false,
+          "isConnectable": true
+        },
+        "measured": {
+          "width": 100,
+          "height": 50
+        },
+        "selected": false,
+        "dragging": false
+      },
+      {
+        "id": "705f36a3-064a-45cf-a4c0-90c625d8b7a8",
+        "type": "Relationship",
+        "position": {
+          "x": 595.0334789778713,
+          "y": 699.1125873894434
+        },
+        "data": {
+          "label": "írt_e",
+          "sourceEntityDetails": {
+            "id": "b3c91c1f-a9bb-49a6-85df-e36fe1727a2b",
+            "maxCardinality": "Many"
+          },
+          "targetEntityDetails": {
+            "id": "00e07c57-397e-43b8-a9ef-4d75f26ac87b",
+            "maxCardinality": "One"
+          },
+          "isSelected": false,
+          "isConnectable": true
+        },
+        "measured": {
+          "width": 100,
+          "height": 50
+        },
+        "selected": false,
+        "dragging": false
+      },
+      {
+        "id": "93dfc24e-8ec3-461d-9c83-6b9a4ef7700c",
+        "parentId": "b3c91c1f-a9bb-49a6-85df-e36fe1727a2b",
+        "type": "Attribute",
+        "position": {
+          "x": -89.29483722274199,
+          "y": -70.06918777545786
+        },
+        "data": {
+          "label": "aktív",
+          "types": [],
+          "isSelected": false
+        },
+        "measured": {
+          "width": 100,
+          "height": 50
+        },
+        "selected": false,
+        "dragging": false
+      },
+      {
+        "id": "a156ed8f-4d23-4bf5-acaa-fbe60bc052c4",
+        "parentId": "14fb8e0a-7e32-47ac-8276-f0b2077d2a1f",
+        "type": "Attribute",
+        "position": {
+          "x": -106.321448450979,
+          "y": -34.672748186775436
+        },
+        "data": {
+          "label": "bio",
+          "types": [],
+          "isSelected": false
+        },
+        "measured": {
+          "width": 100,
+          "height": 50
+        },
+        "selected": false,
+        "dragging": false
+      }
+    ],
+    "edges": [
+      {
+        "id": "e7b02708-9f98-4638-8fef-700f08093d99",
+        "type": "Attribute",
+        "source": "429a4f64-cc25-4882-9423-02399cc36833",
+        "target": "f01d0408-8eac-4397-ab7c-d3ceea1f54f6"
+      },
+      {
+        "id": "3677a792-43ce-4f0f-a36b-f0cc5018a508",
+        "type": "Attribute",
+        "source": "429a4f64-cc25-4882-9423-02399cc36833",
+        "target": "0b2dbe7c-e4e0-4d1f-bea8-4ae086ef6aa4"
+      },
+      {
+        "id": "0950b1ec-8115-4cef-b808-88dd75b7c9f1",
+        "type": "Attribute",
+        "source": "429a4f64-cc25-4882-9423-02399cc36833",
+        "target": "dab55de3-f091-4450-a488-c0fa7eee1736"
+      },
+      {
+        "id": "db9d526f-cb4e-47ad-80be-fe8ee0e8f1cc",
+        "type": "Attribute",
+        "source": "429a4f64-cc25-4882-9423-02399cc36833",
+        "target": "c4019b07-4a4f-4094-aab0-f3327ae43fb5"
+      },
+      {
+        "id": "5d607c8a-4eaa-4f74-a4f9-0acf4546b406",
+        "type": "Attribute",
+        "source": "429a4f64-cc25-4882-9423-02399cc36833",
+        "target": "18f17ab7-691e-4ae1-a443-30538c04acd4"
+      },
+      {
+        "id": "d8df546d-1581-4be6-b321-6d818249e036",
+        "type": "Attribute",
+        "source": "429a4f64-cc25-4882-9423-02399cc36833",
+        "target": "75bb7368-8c8b-416d-9fc7-77e5f2dac22b"
+      },
+      {
+        "id": "7a3bbcc0-bdaf-4378-822c-e4e6e8d0a1d2",
+        "type": "Attribute",
+        "source": "13eee3cd-2a0f-4e65-84e0-434d4e3c9d2b",
+        "target": "ed0aaff6-bde5-4a51-b20f-70e20701f0e5"
+      },
+      {
+        "id": "c215bc5c-9d87-4c65-af16-673376533233",
+        "type": "Attribute",
+        "source": "13eee3cd-2a0f-4e65-84e0-434d4e3c9d2b",
+        "target": "b975dc78-820e-4b57-ad3a-fd8e3c2303f9"
+      },
+      {
+        "id": "f5335c08-0a40-4e69-b5f8-17ae3540327f->13eee3cd-2a0f-4e65-84e0-434d4e3c9d2b;13eee3cd-2a0f-4e65-84e0-434d4e3c9d2b->429a4f64-cc25-4882-9423-02399cc36833",
+        "type": "Relationship",
+        "source": "f5335c08-0a40-4e69-b5f8-17ae3540327f",
+        "target": "13eee3cd-2a0f-4e65-84e0-434d4e3c9d2b",
+        "data": {
+          "id": "f5335c08-0a40-4e69-b5f8-17ae3540327f->13eee3cd-2a0f-4e65-84e0-434d4e3c9d2b",
+          "maxCardinality": "Many"
+        }
+      },
+      {
+        "id": "f5335c08-0a40-4e69-b5f8-17ae3540327f->429a4f64-cc25-4882-9423-02399cc36833;13eee3cd-2a0f-4e65-84e0-434d4e3c9d2b->429a4f64-cc25-4882-9423-02399cc36833",
+        "type": "Relationship",
+        "source": "f5335c08-0a40-4e69-b5f8-17ae3540327f",
+        "target": "429a4f64-cc25-4882-9423-02399cc36833",
+        "data": {
+          "id": "f5335c08-0a40-4e69-b5f8-17ae3540327f->429a4f64-cc25-4882-9423-02399cc36833",
+          "maxCardinality": "Many"
+        }
+      },
+      {
+        "id": "5a199287-bfbe-451e-8da7-e95bef4615e2",
+        "type": "Attribute",
+        "source": "14fb8e0a-7e32-47ac-8276-f0b2077d2a1f",
+        "target": "c1670423-2c09-4f0f-a3cd-65fd6d27c0f4"
+      },
+      {
+        "id": "f5347ff0-cd0d-4b18-8f8f-2143961991fd",
+        "type": "Attribute",
+        "source": "14fb8e0a-7e32-47ac-8276-f0b2077d2a1f",
+        "target": "5fc11224-1623-4acb-beca-348c9de7282e"
+      },
+      {
+        "id": "34f30f79-aade-434d-9540-65a93b899b3b",
+        "type": "Attribute",
+        "source": "14fb8e0a-7e32-47ac-8276-f0b2077d2a1f",
+        "target": "f61ff71b-f922-466f-b00c-27b45ce6720f"
+      },
+      {
+        "id": "37e32d65-6f37-4e6c-a621-4358973faac9->429a4f64-cc25-4882-9423-02399cc36833;429a4f64-cc25-4882-9423-02399cc36833->14fb8e0a-7e32-47ac-8276-f0b2077d2a1f",
+        "type": "Relationship",
+        "source": "37e32d65-6f37-4e6c-a621-4358973faac9",
+        "target": "429a4f64-cc25-4882-9423-02399cc36833",
+        "data": {
+          "id": "37e32d65-6f37-4e6c-a621-4358973faac9->429a4f64-cc25-4882-9423-02399cc36833",
+          "maxCardinality": "Many"
+        }
+      },
+      {
+        "id": "37e32d65-6f37-4e6c-a621-4358973faac9->14fb8e0a-7e32-47ac-8276-f0b2077d2a1f;429a4f64-cc25-4882-9423-02399cc36833->14fb8e0a-7e32-47ac-8276-f0b2077d2a1f",
+        "type": "Relationship",
+        "source": "37e32d65-6f37-4e6c-a621-4358973faac9",
+        "target": "14fb8e0a-7e32-47ac-8276-f0b2077d2a1f",
+        "data": {
+          "id": "37e32d65-6f37-4e6c-a621-4358973faac9->14fb8e0a-7e32-47ac-8276-f0b2077d2a1f",
+          "maxCardinality": "Many"
+        }
+      },
+      {
+        "id": "923488c0-050c-473d-9a16-e8a6a91244fe",
+        "type": "Attribute",
+        "source": "56edd365-a74b-42fa-a0ae-e2422edfa751",
+        "target": "65a8a127-06f7-45e2-9fcd-a974fa396d59"
+      },
+      {
+        "id": "e22e2b2b-08a4-4e41-b346-a6d4d98ff7f5",
+        "type": "Attribute",
+        "source": "56edd365-a74b-42fa-a0ae-e2422edfa751",
+        "target": "aa3ef394-0425-479e-bdae-234d43e0e555"
+      },
+      {
+        "id": "a477f109-e91a-45de-b8e7-c6ea401e5704->429a4f64-cc25-4882-9423-02399cc36833;429a4f64-cc25-4882-9423-02399cc36833->56edd365-a74b-42fa-a0ae-e2422edfa751",
+        "type": "Relationship",
+        "source": "a477f109-e91a-45de-b8e7-c6ea401e5704",
+        "target": "429a4f64-cc25-4882-9423-02399cc36833",
+        "data": {
+          "id": "a477f109-e91a-45de-b8e7-c6ea401e5704->429a4f64-cc25-4882-9423-02399cc36833",
+          "maxCardinality": "Many"
+        }
+      },
+      {
+        "id": "a477f109-e91a-45de-b8e7-c6ea401e5704->56edd365-a74b-42fa-a0ae-e2422edfa751;429a4f64-cc25-4882-9423-02399cc36833->56edd365-a74b-42fa-a0ae-e2422edfa751",
+        "type": "Relationship",
+        "source": "a477f109-e91a-45de-b8e7-c6ea401e5704",
+        "target": "56edd365-a74b-42fa-a0ae-e2422edfa751",
+        "data": {
+          "id": "a477f109-e91a-45de-b8e7-c6ea401e5704->56edd365-a74b-42fa-a0ae-e2422edfa751",
+          "maxCardinality": "Many"
+        }
+      },
+      {
+        "id": "4d5b53ec-0de9-4699-b7ca-26443fa065a4",
+        "type": "Attribute",
+        "source": "00e07c57-397e-43b8-a9ef-4d75f26ac87b",
+        "target": "d0328345-9e9d-4089-a15a-66f4597d5def"
+      },
+      {
+        "id": "a4518192-3ea3-4fef-a726-881f33674526",
+        "type": "Attribute",
+        "source": "00e07c57-397e-43b8-a9ef-4d75f26ac87b",
+        "target": "b54576d9-f6a3-408a-888f-2f43c4a1c1e1"
+      },
+      {
+        "id": "66c68545-47a8-4cfb-a6d2-cfd9141bab14",
+        "type": "Attribute",
+        "source": "00e07c57-397e-43b8-a9ef-4d75f26ac87b",
+        "target": "108a782d-cc3c-47cb-8584-580037fe8462"
+      },
+      {
+        "id": "52b57266-25e6-4bbe-b6be-4c3d5f5dcd52",
+        "type": "Attribute",
+        "source": "00e07c57-397e-43b8-a9ef-4d75f26ac87b",
+        "target": "30ea98f1-2f31-4e82-a588-9a6d78cbdbb7"
+      },
+      {
+        "id": "07a94485-2035-471f-bcbc-5000845a1afb",
+        "type": "Attribute",
+        "source": "00e07c57-397e-43b8-a9ef-4d75f26ac87b",
+        "target": "bc2b9047-44ff-431b-bc6b-c1402ee15061"
+      },
+      {
+        "id": "6732a978-ab17-4d28-9d27-be143c96176e",
+        "type": "Attribute",
+        "source": "00e07c57-397e-43b8-a9ef-4d75f26ac87b",
+        "target": "39956b35-f056-4485-9448-41ff10893254"
+      },
+      {
+        "id": "c587855e-eab1-4319-b81d-8730021c5ea1->429a4f64-cc25-4882-9423-02399cc36833;429a4f64-cc25-4882-9423-02399cc36833->00e07c57-397e-43b8-a9ef-4d75f26ac87b",
+        "type": "Relationship",
+        "source": "c587855e-eab1-4319-b81d-8730021c5ea1",
+        "target": "429a4f64-cc25-4882-9423-02399cc36833",
+        "data": {
+          "id": "c587855e-eab1-4319-b81d-8730021c5ea1->429a4f64-cc25-4882-9423-02399cc36833",
+          "maxCardinality": "One"
+        }
+      },
+      {
+        "id": "c587855e-eab1-4319-b81d-8730021c5ea1->00e07c57-397e-43b8-a9ef-4d75f26ac87b;429a4f64-cc25-4882-9423-02399cc36833->00e07c57-397e-43b8-a9ef-4d75f26ac87b",
+        "type": "Relationship",
+        "source": "c587855e-eab1-4319-b81d-8730021c5ea1",
+        "target": "00e07c57-397e-43b8-a9ef-4d75f26ac87b",
+        "data": {
+          "id": "c587855e-eab1-4319-b81d-8730021c5ea1->00e07c57-397e-43b8-a9ef-4d75f26ac87b",
+          "maxCardinality": "Many"
+        }
+      },
+      {
+        "id": "3c5497cf-ca90-45c4-be33-9499c60da861",
+        "type": "Attribute",
+        "source": "c685807f-f2e2-4c77-91c3-bc581f41f2e3",
+        "target": "9c4600d5-8dba-435b-8bbc-86d0b7785dbf"
+      },
+      {
+        "id": "7276d6c7-6033-4333-937c-0f8b1bf26d2c",
+        "type": "Attribute",
+        "source": "c685807f-f2e2-4c77-91c3-bc581f41f2e3",
+        "target": "76eb287f-769a-407a-bc37-ed60686d35a4"
+      },
+      {
+        "id": "afa305bc-486c-4eb2-975c-c7c627854cb8",
+        "type": "Attribute",
+        "source": "c685807f-f2e2-4c77-91c3-bc581f41f2e3",
+        "target": "0070bd0f-fb8f-4691-aa6d-ab469a30d757"
+      },
+      {
+        "id": "c7ae501c-3d6b-4c1a-827d-83a04ff21dff",
+        "type": "Attribute",
+        "source": "c685807f-f2e2-4c77-91c3-bc581f41f2e3",
+        "target": "d77e082d-03d5-48cb-b0e8-69985c0c81f3"
+      },
+      {
+        "id": "d4008117-7f63-445a-bac8-04cc3bbe8f2b->c685807f-f2e2-4c77-91c3-bc581f41f2e3;c685807f-f2e2-4c77-91c3-bc581f41f2e3->429a4f64-cc25-4882-9423-02399cc36833",
+        "type": "Relationship",
+        "source": "d4008117-7f63-445a-bac8-04cc3bbe8f2b",
+        "target": "c685807f-f2e2-4c77-91c3-bc581f41f2e3",
+        "data": {
+          "id": "d4008117-7f63-445a-bac8-04cc3bbe8f2b->c685807f-f2e2-4c77-91c3-bc581f41f2e3",
+          "maxCardinality": "Many"
+        }
+      },
+      {
+        "id": "d4008117-7f63-445a-bac8-04cc3bbe8f2b->429a4f64-cc25-4882-9423-02399cc36833;c685807f-f2e2-4c77-91c3-bc581f41f2e3->429a4f64-cc25-4882-9423-02399cc36833",
+        "type": "Relationship",
+        "source": "d4008117-7f63-445a-bac8-04cc3bbe8f2b",
+        "target": "429a4f64-cc25-4882-9423-02399cc36833",
+        "data": {
+          "id": "d4008117-7f63-445a-bac8-04cc3bbe8f2b->429a4f64-cc25-4882-9423-02399cc36833",
+          "maxCardinality": "Many"
+        }
+      },
+      {
+        "id": "956a4099-8687-4d7a-86ba-1d515ac82ec5",
+        "type": "Attribute",
+        "source": "fd944a72-9ad9-4e8e-8985-a885e8036298",
+        "target": "31119576-a16c-400f-8495-04143e0d0752"
+      },
+      {
+        "id": "ddd067c5-defa-435b-8308-582b8482f69f",
+        "type": "Attribute",
+        "source": "fd944a72-9ad9-4e8e-8985-a885e8036298",
+        "target": "a97c59dc-4705-4352-9413-7ce48f9f1255"
+      },
+      {
+        "id": "791af5fc-902d-4822-afb7-25ee7d8910fc",
+        "type": "Attribute",
+        "source": "fd944a72-9ad9-4e8e-8985-a885e8036298",
+        "target": "f348a5b4-f7ba-4ae1-acf2-8eff7289abc0"
+      },
+      {
+        "id": "b835c085-f200-4ae6-8523-c9ee1e6f2174",
+        "type": "Attribute",
+        "source": "fd944a72-9ad9-4e8e-8985-a885e8036298",
+        "target": "2d4d8058-7548-49aa-b313-36fe9996a691"
+      },
+      {
+        "id": "d31b394a-dc54-496e-8efa-eafce32e8c9c",
+        "type": "Attribute",
+        "source": "fd944a72-9ad9-4e8e-8985-a885e8036298",
+        "target": "18f57632-b400-458e-922e-22de0f645b80"
+      },
+      {
+        "id": "df23fd5d-1e38-490c-b27e-f6c3dca8ebd7->fd944a72-9ad9-4e8e-8985-a885e8036298;fd944a72-9ad9-4e8e-8985-a885e8036298->429a4f64-cc25-4882-9423-02399cc36833",
+        "type": "Relationship",
+        "source": "df23fd5d-1e38-490c-b27e-f6c3dca8ebd7",
+        "target": "fd944a72-9ad9-4e8e-8985-a885e8036298",
+        "data": {
+          "id": "df23fd5d-1e38-490c-b27e-f6c3dca8ebd7->fd944a72-9ad9-4e8e-8985-a885e8036298",
+          "maxCardinality": "Many"
+        }
+      },
+      {
+        "id": "df23fd5d-1e38-490c-b27e-f6c3dca8ebd7->429a4f64-cc25-4882-9423-02399cc36833;fd944a72-9ad9-4e8e-8985-a885e8036298->429a4f64-cc25-4882-9423-02399cc36833",
+        "type": "Relationship",
+        "source": "df23fd5d-1e38-490c-b27e-f6c3dca8ebd7",
+        "target": "429a4f64-cc25-4882-9423-02399cc36833",
+        "data": {
+          "id": "df23fd5d-1e38-490c-b27e-f6c3dca8ebd7->429a4f64-cc25-4882-9423-02399cc36833",
+          "maxCardinality": "One"
+        }
+      },
+      {
+        "id": "872adb7f-ed24-42df-a4e5-74d288b434e8",
+        "type": "Attribute",
+        "source": "b3c91c1f-a9bb-49a6-85df-e36fe1727a2b",
+        "target": "19c209b5-2a0c-4102-89f0-8704ddac8cb1"
+      },
+      {
+        "id": "32c4e2b3-b8d4-4dac-9408-aa9c6c041767",
+        "type": "Attribute",
+        "source": "b3c91c1f-a9bb-49a6-85df-e36fe1727a2b",
+        "target": "520b1cc3-831a-4cf9-a7f7-664df8eaf057"
+      },
+      {
+        "id": "a29770d8-97cb-43a1-b0b2-1b405923155c",
+        "type": "Attribute",
+        "source": "b3c91c1f-a9bb-49a6-85df-e36fe1727a2b",
+        "target": "b134120d-8738-4ce3-8802-6ea951353afe"
+      },
+      {
+        "id": "ab936667-f360-464b-8060-e132c72ad2a6",
+        "type": "Attribute",
+        "source": "b3c91c1f-a9bb-49a6-85df-e36fe1727a2b",
+        "target": "a7602fb1-02d6-463b-a312-0584790e52ea"
+      },
+      {
+        "id": "801095b8-ee2f-47de-a523-3eff636061a8",
+        "type": "Attribute",
+        "source": "b3c91c1f-a9bb-49a6-85df-e36fe1727a2b",
+        "target": "4f1f3a83-e97f-4158-8308-1cea9d822c91"
+      },
+      {
+        "id": "da5f5e4e-40d3-4ea9-adb2-58cdb8aedb00",
+        "type": "Attribute",
+        "source": "b3c91c1f-a9bb-49a6-85df-e36fe1727a2b",
+        "target": "2c176bed-87a4-4fa9-b261-a3590a218c5c"
+      },
+      {
+        "id": "52add130-5cc6-4263-ac9d-f396619c9bb6->b3c91c1f-a9bb-49a6-85df-e36fe1727a2b;b3c91c1f-a9bb-49a6-85df-e36fe1727a2b->fd944a72-9ad9-4e8e-8985-a885e8036298",
+        "type": "Relationship",
+        "source": "52add130-5cc6-4263-ac9d-f396619c9bb6",
+        "target": "b3c91c1f-a9bb-49a6-85df-e36fe1727a2b",
+        "data": {
+          "id": "52add130-5cc6-4263-ac9d-f396619c9bb6->b3c91c1f-a9bb-49a6-85df-e36fe1727a2b",
+          "maxCardinality": "One"
+        }
+      },
+      {
+        "id": "52add130-5cc6-4263-ac9d-f396619c9bb6->fd944a72-9ad9-4e8e-8985-a885e8036298;b3c91c1f-a9bb-49a6-85df-e36fe1727a2b->fd944a72-9ad9-4e8e-8985-a885e8036298",
+        "type": "Relationship",
+        "source": "52add130-5cc6-4263-ac9d-f396619c9bb6",
+        "target": "fd944a72-9ad9-4e8e-8985-a885e8036298",
+        "data": {
+          "id": "52add130-5cc6-4263-ac9d-f396619c9bb6->fd944a72-9ad9-4e8e-8985-a885e8036298",
+          "maxCardinality": "Many"
+        }
+      },
+      {
+        "id": "705f36a3-064a-45cf-a4c0-90c625d8b7a8->b3c91c1f-a9bb-49a6-85df-e36fe1727a2b;b3c91c1f-a9bb-49a6-85df-e36fe1727a2b->00e07c57-397e-43b8-a9ef-4d75f26ac87b",
+        "type": "Relationship",
+        "source": "705f36a3-064a-45cf-a4c0-90c625d8b7a8",
+        "target": "b3c91c1f-a9bb-49a6-85df-e36fe1727a2b",
+        "data": {
+          "id": "705f36a3-064a-45cf-a4c0-90c625d8b7a8->b3c91c1f-a9bb-49a6-85df-e36fe1727a2b",
+          "maxCardinality": "One"
+        }
+      },
+      {
+        "id": "705f36a3-064a-45cf-a4c0-90c625d8b7a8->00e07c57-397e-43b8-a9ef-4d75f26ac87b;b3c91c1f-a9bb-49a6-85df-e36fe1727a2b->00e07c57-397e-43b8-a9ef-4d75f26ac87b",
+        "type": "Relationship",
+        "source": "705f36a3-064a-45cf-a4c0-90c625d8b7a8",
+        "target": "00e07c57-397e-43b8-a9ef-4d75f26ac87b",
+        "data": {
+          "id": "705f36a3-064a-45cf-a4c0-90c625d8b7a8->00e07c57-397e-43b8-a9ef-4d75f26ac87b",
+          "maxCardinality": "Many"
+        }
+      },
+      {
+        "id": "438c76e2-1484-4f0c-b225-59e2ab5e07b7",
+        "type": "Attribute",
+        "source": "b3c91c1f-a9bb-49a6-85df-e36fe1727a2b",
+        "target": "93dfc24e-8ec3-461d-9c83-6b9a4ef7700c"
+      },
+      {
+        "id": "84d20d0f-636d-4524-b1eb-f8a121df8372",
+        "type": "Attribute",
+        "source": "14fb8e0a-7e32-47ac-8276-f0b2077d2a1f",
+        "target": "a156ed8f-4d23-4bf5-acaa-fbe60bc052c4"
+      }
+    ],
+    "viewport": {
+      "x": 339.5525654249232,
+      "y": 68.25825362419633,
+      "zoom": 0.5821576890916479
+    }
+  },
+  "name": "Film",
+  "folder": {
+    "name": "Diagrams",
+    "folderType": 1,
+    "depth": 0,
+    "id": 158198
+  },
+  "id": 185509,
+  "updatedAtTimestamp": 1764697568
+}

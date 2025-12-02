@@ -31,6 +31,7 @@ require_once __DIR__ . '/../backend/controllers/RendezoController.php';
 require_once __DIR__ . '/../backend/controllers/FelhasznaloController.php';
 require_once __DIR__ . '/../backend/controllers/FeltoltesController.php';
 require_once __DIR__ . '/../backend/controllers/VelemenyController.php';
+require_once __DIR__ . '/../backend/controllers/MegnezettFilmController.php';
 
 // Modellek betöltése
 require_once __DIR__ . '/../backend/models/film.php';
@@ -43,6 +44,7 @@ require_once __DIR__ . '/../backend/models/film_mufaj.php';
 require_once __DIR__ . '/../backend/models/film_rendezo.php';
 require_once __DIR__ . '/../backend/models/felhasznalo.php';
 require_once __DIR__ . '/../backend/models/velemeny.php';
+require_once __DIR__ . '/../backend/models/megnezett_film.php';
 
 // Adatbázis kapcsolat változó
 $db = $dbConn;
@@ -448,6 +450,31 @@ switch ($urlParts[0]) {
             echo json_encode(["message" => "Method not allowed"]);
         }
 
+        break;
+
+    // -----------------------------------------
+    // MEGNÉZETT FILMEK
+    // -----------------------------------------
+    case "watched":
+        $controller = new MegnezettFilmController($db);
+
+        if ($method === 'GET') {
+            $controller->getWatchedFilms();
+            break;
+        }
+
+        if ($method === 'PUT') {
+            if (!isset($urlParts[1])) {
+                http_response_code(400);
+                echo json_encode(["message" => "Film ID hiányzik."]);
+                break;
+            }
+            $controller->updateStatus($urlParts[1]);
+            break;
+        }
+
+        http_response_code(405);
+        echo json_encode(["message" => "Method not allowed"]);
         break;
 
     // -----------------------------------------

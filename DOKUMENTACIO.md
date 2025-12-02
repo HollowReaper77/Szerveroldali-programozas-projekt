@@ -4,27 +4,73 @@
 
 ---
 
-## 1. Projekt áttekintése
+## 1. Specifikáció
 
-**CinemaTár** - Filmadatbázis kezelő REST API és webalkalmazás.
+### Projekt célja
+Egy modern, felhasználóbarát filmadatbázis kezelő webalkalmazás és REST API fejlesztése, amely lehetővé teszi filmek böngészését, keresését, értékelését és adminisztrálását különböző jogosultsági szintekkel.
 
-### Funkciók
-- Filmek böngészése, keresése (cím, műfaj, színész, rendező)
-- Felhasználói regisztráció és bejelentkezés (session)
-- Profil és jelszó kezelés
-- Film CRUD műveletek (moderátor/admin)
-- Felhasználó kezelés (admin)
-- Kép feltöltés (URL vagy fájl)
+### Funkcionális követelmények
 
-### Technológiák
-- **Backend:** PHP 8.x, MySQL 5.7+, MVC architektúra
-- **Frontend:** HTML5, CSS3, JavaScript (Fetch API)
-- **Biztonság:** BCrypt hash, session auth, prepared statements
-- **Szerver:** Apache (XAMPP)
+**Vendég felhasználók számára:**
+- Filmek böngészése a főoldalon (kiemelt slider + carousel)
+- Filmek keresése cím, műfaj, színész vagy rendező alapján
+- Film részleteinek megtekintése
+- Vélemények olvasása
+- Regisztráció és bejelentkezés
+
+**Bejelentkezett felhasználók számára:**
+- Minden vendég funkció
+- Saját profil szerkesztése
+- Jelszó módosítása
+- Vélemények írása filmekhez (1-5 csillag + szöveges értékelés)
+- Filmek megjelölése "megnézettként"
+- Saját megnézett filmek listájának megtekintése
+
+**Moderátorok számára:**
+- Minden bejelentkezett felhasználói funkció
+- Új filmek hozzáadása
+- Meglévő filmek szerkesztése
+- Filmek törlése
+- Képek feltöltése (URL vagy fájl)
+
+**Adminisztrátorok számára:**
+- Minden moderátori funkció
+- Felhasználók szerepköreinek módosítása
+- Felhasználók törlése
+- Teljes rendszer felügyelet
+
+### Nem-funkcionális követelmények
+
+**Biztonság:**
+- BCrypt jelszó hashelés
+- Session-alapú autentikáció
+- Prepared statements SQL injection ellen
+- Jogosultság-ellenőrzés minden védett végponton
+- Fájl feltöltés validáció (típus, méret)
+
+**Teljesítmény:**
+- Lapozás a film listáknál (max 20 elem/oldal)
+- Optimalizált adatbázis lekérdezések (JOIN-ok helyett indexek)
+- Kliens oldali cache (localStorage témabeállítás)
+
+**Használhatóság:**
+- Responsive design (mobil, tablet, desktop)
+- Intuitív navigáció
+- Sötét/világos téma választás
+- Vizuális visszajelzések (hover, loading, error státuszok)
+
+**Karbantarthatóság:**
+- MVC architektúra (Model-View-Controller)
+- Egyértelmű kódszervezés (controllers, models, includes)
+- Részletes dokumentáció
 
 ---
 
-## 2. Adatbázis modell
+## 2. Adatbázis modell (Rendszerterv)
+
+### ER-diagram
+
+![Adatbázis ER-diagram](backend/database/ER-diagram.jpg)
 
 ### Fő táblák
 
@@ -34,7 +80,8 @@
 **rendezok** - Rendezők (név, születési dátum, bio)  
 **mufajok** - Műfajok (horror, sci-fi, dráma, stb.)  
 **orszagok** - Gyártó országok  
-**velemenyek** - Felhasználói értékelések filmekhez
+**velemenyek** - Felhasználói értékelések filmekhez  
+**megnezett_filmek** - Felhasználók megnézett filmjei (N:M kapcsolótábla)
 
 ### Kapcsolótáblák
 
@@ -42,42 +89,29 @@
 - `film_szineszek` - Film ↔ Színész (N:M)
 - `film_rendezok` - Film ↔ Rendező (N:M)
 - `film_orszagok` - Film ↔ Ország (N:M)
+- `megnezett_filmek` - Felhasználó ↔ Film (N:M)
 
 ---
 
 ## 3. API végpontok
 
-### Autentikáció
 | Metódus | Végpont | Leírás | Jogosultság |
 |---------|---------|--------|-------------|
 | POST | `/users/register` | Regisztráció | - |
 | POST | `/users/login` | Bejelentkezés | - |
-| POST | `/users/logout` | Kijelentkezés | Bejelentkezett |
-| GET | `/users/profile` | Profil lekérése | Bejelentkezett |
-| PUT | `/users/profile` | Profil módosítása | Bejelentkezett |
+| GET/PUT | `/users/profile` | Profil lekérése/módosítása | Bejelentkezett |
 | PUT | `/users/password` | Jelszó módosítása | Bejelentkezett |
+| GET | `/films` | Filmek listája | - |
+| POST/PUT/DELETE | `/films` | Film CRUD | Moderátor+ |
+| GET/POST | `/reviews` | Vélemények | - / Bejelentkezett |
+| GET/POST/DELETE | `/watched-films` | Megnézett filmek | Bejelentkezett |
+| GET/PUT/DELETE | `/users` | Felhasználó kezelés | Admin |
 
-### Filmek
-| Metódus | Végpont | Leírás | Jogosultság |
-|---------|---------|--------|-------------|
-| GET | `/films` | Filmek listája (lapozással) | - |
-| GET | `/films/{id}` | Film részletei | - |
-| POST | `/films` | Új film | Moderátor+ |
-| PUT | `/films/{id}` | Film módosítása | Moderátor+ |
-| DELETE | `/films/{id}` | Film törlése | Moderátor+ |
-
-### Admin
-| Metódus | Végpont | Leírás | Jogosultság |
-|---------|---------|--------|-------------|
-| GET | `/users` | Összes felhasználó | Admin |
-| PUT | `/users/{id}/role` | Szerepkör módosítása | Admin |
-| DELETE | `/users/{id}` | Felhasználó törlése | Admin |
-
-**További végpontok:** Színészek (`/actors`), Műfajok (`/genres`), Rendezők (`/directors`), Film-műfaj kapcsolatok (`/film-genres`)
+**További végpontok:** `/actors`, `/genres`, `/directors`, `/countries`
 
 ---
 
-## 4. Telepítés
+## 4. Telepítési és üzemeltetési útmutató
 
 ### 1. XAMPP telepítése
 1. Töltsd le: https://www.apachefriends.org/
@@ -94,30 +128,26 @@ C:\xampp\htdocs\php\PHP projekt\Szerveroldali-programozas-projekt\
 2. Importáld: `backend/database/filmadatbazis.sql`
 3. Ellenőrzés: `film` adatbázis, 11 tábla, tesztadatok
 
-### 4. Konfiguráció
-
-**Backend** (`backend/includes/config.php`):
-```php
-$host = 'localhost';
-$db_name = 'film';
-$username = 'root';
-$password = '';
-```
-
-**Frontend** (`frontend/config.js`):
-```javascript
-const API_CONFIG = {
-    BASE_URL: 'http://localhost/php/PHP projekt/Szerveroldali-programozas-projekt/public'
-};
-```
-
-### 5. Indítás
+### 4. Indítás
 - **API:** `http://localhost/php/PHP projekt/Szerveroldali-programozas-projekt/public/films`
 - **Frontend:** Nyisd meg `frontend/index.html` böngészőben
 
+### 5. Frontend oldalak
+
+| Fájl | Leírás | Jogosultság |
+|------|--------|-------------|
+| `index.html` | Főoldal kiemelt filmekkel és carousel | Mindenki |
+| `kereses.html` | Filmkeresés + vélemények modal | Mindenki |
+| `filmek.html` | Saját megnézett filmek listája | Bejelentkezett |
+| `profil.html` | Profil szerkesztése | Bejelentkezett |
+| `jelszo_modositas.html` | Jelszó módosítása | Bejelentkezett |
+| `admin.html` | Film és felhasználó adminisztráció | Moderátor/Admin |
+| `regisztracio.html` | Új felhasználó regisztráció | Vendég |
+| `bejelentkezes.html` | Bejelentkezés | Vendég |
+
 ---
 
-## 5. Tesztelési adatok
+## 6. Tesztelési adatok
 
 ### Teszt felhasználók
 
@@ -132,19 +162,16 @@ const API_CONFIG = {
 2. Importáld: `tesztek/Film-API.postman_environment.json`
 ---
 
-## 6. Használat
+## 6. UI/UX Funkciók
 
-### Főbb funkciók
+- **Dinamikus főoldal:** Kiemelt filmek slider (automatikus váltás) + legújabb filmek carousel (kétirányú navigáció)
+- **Téma váltás:** Sötét/világos mód (localStorage perzisztencia)
+- **Megnézett filmek:** Jelölés checkbox-szal, saját lista megtekintése (`filmek.html`)
+- **Responsive design:** Mobil, tablet, desktop optimalizált
 
-**Filmek böngészése** - `index.html` (vendég is elérheti)  
-**Keresés** - `kereses.html` (cím, műfaj, színész, rendező alapján)  
-**Regisztráció** - `regisztracio.html`  
-**Bejelentkezés** - `bejelentkezes.html`  
-**Profil kezelés** - `profil.html` (bejelentkezés szükséges)  
-**Jelszó módosítás** - `jelszo_modositas.html` (bejelentkezés szükséges)  
-**Admin felület** - `admin.html` (moderátor/admin jogosultság)
-  - **Film kezelés** - Új film hozzáadása, szerkesztése, törlése, képfeltöltés
-  - **Felhasználó kezelés** - Szerepkör módosítása, felhasználó törlése (csak admin)
+---
+
+## 7. Felhasználói dokumentáció
 
 ### Jogosultságok
 
@@ -157,31 +184,4 @@ const API_CONFIG = {
 | Film CRUD | - | - | Igen | Igen |
 | Képfeltöltés | - | - | Igen | Igen |
 | Felhasználó kezelés | - | - | - | Igen |
-
-### Képfeltöltés
-- **Módok:** URL megadása vagy fájl feltöltése (max 5MB)
-- **Formátumok:** JPG, PNG, GIF, WebP
-- **Tárolt hely:** `uploads/` mappa
-- **Jogosultság:** Moderátor vagy admin
-
----
-
-## 7. Projekt állapot
-
-### ✅ Kész funkciók
-- REST API teljes CRUD műveletekkel (filmek, színészek, műfajok, rendezők, országok)
-- Felhasználókezelés (regisztráció, bejelentkezés, session)
-- Profil és jelszó módosítás
-- Film kezelés admin felületen (hozzáadás, szerkesztés, törlés)
-- Képfeltöltés (URL vagy fájl)
-- Felhasználó kezelés admin felületen (szerepkör módosítás, törlés)
-- Keresési funkció (cím, műfaj, színész, rendező alapján)
-- Dinamikus navigációs menü (jogosultság alapján)
-- Sötét/világos téma váltás
-- Selenium tesztek (20 db)
-- Teljes dokumentáció
-
-### 🎯 Projekt célja teljesítve
-A CinemaTár weboldal és API **100%-ban kész** és használatra alkalmas!
-
 

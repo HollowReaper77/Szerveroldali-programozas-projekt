@@ -1,5 +1,8 @@
-const arrows = document.querySelectorAll(".arrow");
-const movieLists = document.querySelectorAll(".movie-list");
+if (typeof API !== 'undefined' && typeof API.configureBaseUrlFromLocation === 'function') {
+  API.configureBaseUrlFromLocation();
+}
+
+const movieListWrappers = document.querySelectorAll(".movie-list-wrapper");
 
 // A toggle gomb és a stílusozott elemek meghatározása
 const ball = document.querySelector(".toggle-ball");
@@ -7,27 +10,45 @@ const items = document.querySelectorAll(
   ".container,.movie-list-title,.navbar-container,.sidebar,.left-menu-icon,.toggle"
 );
 
-// Nyilak logikája (nem változott)
-arrows.forEach((arrow, i) => {
-  const itemNumber = movieLists[i].querySelectorAll("img").length;
-  let clickCounter = 0;
-  arrow.addEventListener("click", () => {
-    const ratio = Math.floor(window.innerWidth / 270);
-    clickCounter++;
-    if (itemNumber - (4 + clickCounter) + (4 - ratio) >= 0) {
-      // Kompatibilis transform lekérés
-      const computedStyle = window.getComputedStyle(movieLists[i]);
-      const matrix = new DOMMatrix(computedStyle.transform);
-      const currentX = matrix.m41; // translateX értéke
-      
-      movieLists[i].style.transform = `translateX(${currentX - 300}px)`;
-    } else {
-      movieLists[i].style.transform = "translateX(0)";
-      clickCounter = 0;
-    }
+// Nyilak logikája
+movieListWrappers.forEach((wrapper) => {
+  const movieList = wrapper.querySelector(".movie-list");
+  if (!movieList) return;
+
+  let currentIndex = 0;
+
+  const getVisibleRatio = () => {
+    const visibleSlots = Math.floor(wrapper.clientWidth / 270);
+    return Math.max(1, Math.min(visibleSlots, 4));
+  };
+
+  const getTotalItems = () => movieList.querySelectorAll(".movie-list-item").length;
+
+  const updatePosition = () => {
+    movieList.style.transform = `translateX(${-currentIndex * 300}px)`;
+  };
+
+  const clampIndex = () => {
+    const maxIndex = Math.max(0, getTotalItems() - getVisibleRatio());
+    currentIndex = Math.min(currentIndex, maxIndex);
+  };
+
+  wrapper.querySelectorAll(".arrow").forEach((arrow) => {
+    const direction = arrow.classList.contains("arrow-right") ? 1 : -1;
+    arrow.addEventListener("click", () => {
+      const maxIndex = Math.max(0, getTotalItems() - getVisibleRatio());
+      currentIndex = Math.min(
+        Math.max(currentIndex + direction, 0),
+        maxIndex
+      );
+      updatePosition();
+    });
   });
 
-  console.log(Math.floor(window.innerWidth / 270));
+  window.addEventListener("resize", () => {
+    clampIndex();
+    updatePosition();
+  });
 });
 
 
@@ -101,7 +122,7 @@ async function updateNavigationMenu() {
       // Film lista (csak bejelentkezett)
       const filmsItem = document.createElement('li');
       filmsItem.className = 'menu-list-item';
-      filmsItem.innerHTML = '<a href="filmek.html">Filmek</a>';
+      filmsItem.innerHTML = '<a href="filmek.html">Megnézett filmek</a>';
       menuList.appendChild(filmsItem);
       
       // Admin (csak moderátor/admin)
@@ -237,9 +258,24 @@ function updateSidebarForGuest() {
   homeIcon.href = 'index.html';
   homeIcon.innerHTML = '<i class="left-menu-icon fas fa-home"></i>';
   sidebar.appendChild(homeIcon);
-  
-  // NINCS Profil, Bejelentkezés, Regisztráció ikon
-  // (Ezek a navbar-ban jelennek meg)
+
+  // Film lista ikon (vendégek is böngészhetik a listát)
+  const filmsIcon = document.createElement('a');
+  filmsIcon.href = 'filmek.html';
+  filmsIcon.innerHTML = '<i class="left-menu-icon fas fa-film"></i>';
+  sidebar.appendChild(filmsIcon);
+
+  // Bejelentkezés ikon
+  const loginIcon = document.createElement('a');
+  loginIcon.href = 'bejelentkezes.html';
+  loginIcon.innerHTML = '<i class="left-menu-icon fas fa-sign-in-alt"></i>';
+  sidebar.appendChild(loginIcon);
+
+  // Regisztráció ikon
+  const registerIcon = document.createElement('a');
+  registerIcon.href = 'regisztracio.html';
+  registerIcon.innerHTML = '<i class="left-menu-icon fas fa-user-plus"></i>';
+  sidebar.appendChild(registerIcon);
 }
 
 

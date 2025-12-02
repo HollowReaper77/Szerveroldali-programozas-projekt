@@ -1,5 +1,9 @@
 // Film keresés + hozzászólás funkciók
 document.addEventListener('DOMContentLoaded', function() {
+    if (typeof API !== 'undefined' && typeof API.configureBaseUrlFromLocation === 'function') {
+        API.configureBaseUrlFromLocation();
+    }
+
     const searchInput = document.getElementById('search');
     const searchButton = document.getElementById('search-button');
     const filmsContainer = document.getElementById('films');
@@ -18,6 +22,9 @@ document.addEventListener('DOMContentLoaded', function() {
     const modalViews = document.getElementById('film-modal-views');
     const modalDirectors = document.getElementById('film-modal-directors');
     const modalActors = document.getElementById('film-modal-actors');
+    const watchWrapper = document.getElementById('film-watch-wrapper');
+    const watchToggle = document.getElementById('film-watch-toggle');
+    const watchStatus = document.getElementById('film-watch-status');
     const placeholderPoster = 'img/placeholder.jpg';
 
     const escapeHtml = (value = '') =>
@@ -35,51 +42,24 @@ document.addEventListener('DOMContentLoaded', function() {
 
     let allFilms = [];
     let visibleFilms = [];
-    let currentUser = null;
     let selectedFilm = null;
-    let initialQuery = new URLSearchParams(window.location.search).get('title') || '';
+    let commentWatchCheckbox = null;
+    let currentUser = null;
+    let isUpdatingWatch = false;
+    let isSyncingWatchInputs = false;
+    const watchedMap = new Map();
+    const initialQueryParams = new URLSearchParams(window.location.search);
 
-    async function init() {
-        await loadProfile();
-        await loadFilms();
-    }
-
-    async function loadProfile() {
-        const profileResult = await API.getProfile();
-        if (profileResult.success && profileResult.data && profileResult.data.user) {
-            currentUser = profileResult.data.user;
-        } else {
-            currentUser = null;
+    function updateStatus(message, color = '#b3b3b3') {
+        if (!statusElement) {
+            return;
         }
+        statusElement.textContent = message;
+        statusElement.style.color = color;
     }
 
-    // Filmek betöltése az API-ból
-    async function loadFilms() {
-        statusElement.textContent = 'Filmek betöltése...';
-        statusElement.style.color = '#4dbf00';
-
-        const result = await API.getFilms(1, 200);
-
-        if (result.success) {
-            allFilms = result.data.filmek || [];
-            displayFilms(allFilms);
-            statusElement.textContent = `${allFilms.length} film betöltve`;
-
-            if (initialQuery) {
-                searchInput.value = initialQuery;
-                searchFilms();
-                initialQuery = '';
-            }
-        } else {
-            statusElement.textContent = 'Hiba: ' + result.error;
-            statusElement.style.color = '#ff3b3b';
-            filmsContainer.innerHTML = '<p style="color: white;">Nem sikerült betölteni a filmeket.</p>';
-        }
-    }
-
-    // Filmek megjelenítése
-    function displayFilms(films) {
-        visibleFilms = films || [];
+    function displayFilms(films = []) {
+        visibleFilms = Array.isArray(films) ? films : [];
 
         if (!visibleFilms.length) {
             filmsContainer.innerHTML = '<p style="color: white; padding: 20px;">Nincs találat.</p>';
@@ -99,6 +79,8 @@ document.addEventListener('DOMContentLoaded', function() {
             );
             const poster = film.poszter_url || placeholderPoster;
             const posterAlt = escapeHtml(film.cim || 'Film poszter');
+            const isWatchedByUser = isFilmWatched(film.film_id);
+            const metaStyle = 'style="color: lightgray; font-size: 14px; margin: 5px 0;"';
 
             return `
             <div class="movie-card" style="
@@ -108,6 +90,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 box-shadow: 0 4px 8px rgba(0,0,0,0.3);
                 transition: transform 0.3s ease;
                 cursor: pointer;
+                ${isWatchedByUser ? 'border: 1px solid rgba(77,191,0,0.5); box-shadow: 0 6px 14px rgba(77,191,0,0.25);' : ''}
             " onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
                 <img src="${poster}" alt="${posterAlt}" style="
                     width: 100%;
@@ -122,10 +105,10 @@ document.addEventListener('DOMContentLoaded', function() {
                     <p style="color: lightgray; font-size: 14px; margin: 5px 0;">
                         <strong>Hossz:</strong> ${runtime}
                     </p>
-                    <p class="movie-card-meta">
+                    <p class="movie-card-meta" ${metaStyle}>
                         <strong>Gyártás:</strong> ${countries}
                     </p>
-                    <p class="movie-card-meta">
+                    <p class="movie-card-meta" ${metaStyle}>
                         <strong>Megnézte:</strong> ${watchText}
                     </p>
                     <p style="color: lightgray; font-size: 13px; margin: 10px 0; line-height: 1.4;">
@@ -151,7 +134,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         if (!searchTerm) {
             displayFilms(allFilms);
-            statusElement.textContent = `${allFilms.length} film`;
+            updateStatus(`${allFilms.length} film`, '#4dbf00');
             return;
         }
 
@@ -162,7 +145,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
 
         displayFilms(filteredFilms);
-        statusElement.textContent = `${filteredFilms.length} találat`;
+        updateStatus(`${filteredFilms.length} találat`, '#4dbf00');
     }
 
     async function loadComments(filmId) {
@@ -219,6 +202,8 @@ document.addEventListener('DOMContentLoaded', function() {
     function renderCommentForm() {
         if (!modalFormContainer) return;
 
+        commentWatchCheckbox = null;
+
         if (!currentUser) {
             modalFormContainer.innerHTML = '<p class="film-modal__empty">A hozzászóláshoz kérlek jelentkezz be.</p>';
             return;
@@ -242,6 +227,12 @@ document.addEventListener('DOMContentLoaded', function() {
                         </select>
                     </div>
                 </div>
+                <div class="film-modal__form-row film-modal__form-row--inline film-modal__form-row--checkbox">
+                    <label class="film-modal__watch-form">
+                        <input type="checkbox" id="comment-watch-toggle">
+                        <span>Megjelölöm megnézettként</span>
+                    </label>
+                </div>
                 <p class="film-modal__form-note">Légy társszerzője a Cinematár közösségének – a visszajelzéseddel másoknak is segítesz.</p>
                 <div class="film-modal__form-actions">
                     <button type="submit">Vélemény elküldése</button>
@@ -258,6 +249,12 @@ document.addEventListener('DOMContentLoaded', function() {
         const commentForm = document.getElementById('comment-form');
         if (commentForm) {
             commentForm.addEventListener('submit', handleCommentSubmit);
+        }
+
+        commentWatchCheckbox = document.getElementById('comment-watch-toggle');
+        if (commentWatchCheckbox) {
+            commentWatchCheckbox.checked = selectedFilm ? isFilmWatched(selectedFilm.film_id) : false;
+            commentWatchCheckbox.addEventListener('change', (event) => handleWatchInputChange(event.target, 'comment'));
         }
     }
 
@@ -315,6 +312,7 @@ document.addEventListener('DOMContentLoaded', function() {
     function openFilmModal(film) {
         if (!film || !modal) return;
         selectedFilm = film;
+        updateWatchControls(film.film_id);
 
         modalTitle.textContent = film.cim;
         const year = film.kiadasi_ev || 'ismeretlen év';
@@ -378,6 +376,11 @@ document.addEventListener('DOMContentLoaded', function() {
         if (modalActors) {
             modalActors.textContent = 'Nincs adat';
         }
+        if (watchWrapper) {
+            watchWrapper.classList.add('hidden');
+        }
+        setWatchStatus('');
+        commentWatchCheckbox = null;
     }
 
     function formatDate(dateStr) {
@@ -411,6 +414,222 @@ document.addEventListener('DOMContentLoaded', function() {
         return entries.join(', ');
     }
 
+    function isFilmWatched(filmId) {
+        if (!filmId) {
+            return false;
+        }
+        const record = watchedMap.get(filmId);
+        return Boolean(record && record.megnezve_e);
+    }
+
+    function setWatchStatus(message, isError = false) {
+        if (!watchStatus) return;
+        watchStatus.textContent = message || '';
+        watchStatus.style.color = isError ? '#ff8a8a' : '#a5b29a';
+    }
+
+    function setWatchInputsDisabled(disabled) {
+        const finalState = disabled || !currentUser;
+        if (watchToggle) {
+            watchToggle.disabled = finalState;
+        }
+        if (commentWatchCheckbox) {
+            commentWatchCheckbox.disabled = finalState;
+        }
+    }
+
+    function setWatchInputValues(isWatched) {
+        isSyncingWatchInputs = true;
+        if (watchToggle) {
+            watchToggle.checked = Boolean(isWatched);
+        }
+        if (commentWatchCheckbox) {
+            commentWatchCheckbox.checked = Boolean(isWatched);
+        }
+        isSyncingWatchInputs = false;
+    }
+
+    function updateWatchControls(filmId) {
+        if (!watchWrapper) return;
+
+        if (!selectedFilm) {
+            watchWrapper.classList.add('hidden');
+            setWatchStatus('');
+            return;
+        }
+
+        watchWrapper.classList.remove('hidden');
+
+        if (!currentUser) {
+            setWatchInputsDisabled(true);
+            setWatchInputValues(false);
+            setWatchStatus('A megjelöléshez jelentkezz be.', true);
+            return;
+        }
+
+        const watched = isFilmWatched(filmId);
+        setWatchInputsDisabled(isUpdatingWatch);
+        setWatchInputValues(watched);
+        setWatchStatus(watched ? 'Megjelölted megnézettként.' : 'Még nem jelölted meg megnézettként.');
+    }
+
+    async function handleWatchInputChange(target, source = 'toggle') {
+        if (isSyncingWatchInputs) {
+            return;
+        }
+
+        if (!currentUser) {
+            isSyncingWatchInputs = true;
+            target.checked = false;
+            isSyncingWatchInputs = false;
+            setWatchStatus('A megjelöléshez be kell jelentkezned.', true);
+            return;
+        }
+
+        if (!selectedFilm) {
+            return;
+        }
+
+        const desiredState = target.checked;
+
+        try {
+            await persistWatchState(desiredState, { source });
+        } catch (error) {
+            isSyncingWatchInputs = true;
+            target.checked = !desiredState;
+            isSyncingWatchInputs = false;
+        }
+    }
+
+    async function persistWatchState(isWatched, { silent = false } = {}) {
+        if (!currentUser || !selectedFilm) {
+            throw new Error('auth-required');
+        }
+
+        const currentState = isFilmWatched(selectedFilm.film_id);
+        if (currentState === isWatched) {
+            updateWatchControls(selectedFilm.film_id);
+            return;
+        }
+
+        if (!silent) {
+            setWatchStatus('Állapot frissítése...');
+        }
+
+        isUpdatingWatch = true;
+        setWatchInputsDisabled(true);
+
+        const result = await API.updateWatchedStatus(selectedFilm.film_id, isWatched);
+
+        isUpdatingWatch = false;
+        setWatchInputsDisabled(false);
+
+        if (!result.success) {
+            if (!silent) {
+                setWatchStatus(result.error || 'Nem sikerült frissíteni.', true);
+            }
+            throw new Error(result.error || 'watch-update-failed');
+        }
+
+        const record = result.data && result.data.record ? result.data.record : null;
+        watchedMap.set(selectedFilm.film_id, {
+            film_id: selectedFilm.film_id,
+            megnezve_e: record && record.megnezve_e ? 1 : (isWatched ? 1 : 0),
+            hozzaadas_datuma: record ? record.hozzaadas_datuma : null
+        });
+
+        displayFilms(visibleFilms);
+        updateWatchControls(selectedFilm.film_id);
+
+        if (!silent) {
+            setWatchStatus(isWatched ? 'Megjelölted megnézettként.' : 'Eltávolítottad a jelölést.');
+        }
+    }
+
+    async function loadCurrentUser() {
+        currentUser = null;
+        try {
+            const result = await API.getProfile();
+            if (result.success && result.data && result.data.user) {
+                currentUser = result.data.user;
+            }
+        } catch (error) {
+            currentUser = null;
+        }
+    }
+
+    async function loadWatchedFilms() {
+        watchedMap.clear();
+        try {
+            const result = await API.getWatchedFilms({ includeAll: true });
+            if (result.success && result.data && Array.isArray(result.data.watched)) {
+                result.data.watched.forEach(record => {
+                    if (record && record.film_id) {
+                        watchedMap.set(record.film_id, record);
+                    }
+                });
+            }
+        } catch (error) {
+            // Vendég felhasználónál nem szükséges hibát jelezni
+        }
+    }
+
+    async function loadAllFilms() {
+        const collected = [];
+        const limit = 100;
+        let page = 1;
+        let totalPages = 1;
+
+        while (page <= totalPages) {
+            const result = await API.getFilms(page, limit);
+            if (!result.success || !result.data) {
+                throw new Error(result.error || 'Nem sikerült betölteni a filmeket.');
+            }
+
+            const films = Array.isArray(result.data.filmek) ? result.data.filmek : [];
+            collected.push(...films);
+
+            const totalCount = Number(result.data.count || films.length);
+            totalPages = Math.max(totalPages, Math.ceil(totalCount / limit));
+
+            if (films.length < limit) {
+                break;
+            }
+
+            page += 1;
+        }
+
+        allFilms = collected;
+        displayFilms(allFilms);
+        updateStatus(`${allFilms.length} film`, '#4dbf00');
+    }
+
+    function applyInitialSearchTerm() {
+        const initialTitle = initialQueryParams.get('title');
+        if (initialTitle) {
+            searchInput.value = initialTitle;
+            searchFilms();
+        }
+    }
+
+    async function init() {
+        updateStatus('Filmek betöltése...');
+        try {
+            await loadCurrentUser();
+            if (currentUser) {
+                await loadWatchedFilms();
+            } else {
+                watchedMap.clear();
+            }
+            await loadAllFilms();
+            applyInitialSearchTerm();
+        } catch (error) {
+            console.error('Search init error:', error);
+            updateStatus('Nem sikerült betölteni a filmeket.', '#ff3b3b');
+            filmsContainer.innerHTML = '<p style="color: white;">Nem sikerült betölteni a filmeket.</p>';
+        }
+    }
+
     // Event listeners
     searchButton.addEventListener('click', searchFilms);
     searchInput.addEventListener('keypress', function(e) {
@@ -434,6 +653,10 @@ document.addEventListener('DOMContentLoaded', function() {
             closeFilmModal();
         }
     });
+
+    if (watchToggle) {
+        watchToggle.addEventListener('change', (event) => handleWatchInputChange(event.target, 'toggle'));
+    }
 
     init();
 });

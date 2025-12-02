@@ -9,6 +9,10 @@ REST API filmadatbázis kezeléséhez PHP-ban.
 - Felhasználói regisztráció és bejelentkezés
 - Jogosultságkezelés (admin, moderátor, user)
 - Filmekhez kapcsolódó hozzászólások megtekintése és beküldése a keresés oldalon
+- **Dinamikus főoldal:** kiemelt filmek slider automatikus váltással, legújabb filmek carousel kétirányú navigációval
+- **Sötét/világos téma** váltás (localStorage-ban mentve)
+- **Responsive design:** mobil-, tablet- és desktop-optimalizált elrendezés
+- **Megnézett filmek** jelölése és nyomon követése (bejelentkezett felhasználóknak)
 
 ## Telepítés
 
@@ -19,7 +23,17 @@ REST API filmadatbázis kezeléséhez PHP-ban.
    - Importáld a `backend/database/filmadatbazis.sql` fájlt
 
 3. **Alkalmazás elérése:**
-   - API: `http://localhost/php/PHP projekt/Szerveroldali-programozas-projekt/frontend/index.html`
+   - Frontend: `http://localhost/php/PHP projekt/Szerveroldali-programozas-projekt/frontend/index.html`
+   - API: `http://localhost/php/PHP projekt/Szerveroldali-programozas-projekt/public/films`
+
+## Főbb oldalak
+
+- **`index.html`** - Főoldal kiemelt filmekkel és legújabb kiadásokkal
+- **`kereses.html`** - Filmkeresés (cím, műfaj, színész, rendező alapján) + vélemények
+- **`profil.html`** - Bejelentkezett felhasználó profil és jelszó szerkesztése
+- **`admin.html`** - Filmek és felhasználók kezelése (moderátor/admin jogosultság szükséges)
+- **`regisztracio.html`** - Új felhasználó regisztrációja
+- **`bejelentkezes.html`** - Bejelentkezés
 
 ## Alapértelmezett felhasználók
 
@@ -67,7 +81,12 @@ REST API filmadatbázis kezeléséhez PHP-ban.
 - `GET /reviews/film/{id}` - Az adott filmhez tartozó összes vélemény listázása
 - `POST /reviews` - Új vélemény létrehozása (bejelentkezett felhasználónak)
 
-> Tipp: a `frontend/kereses.html` oldalon bármelyik találatra kattintva megjelenik egy részletes modal, ahol a felhasználók elolvashatják a hozzászólásokat, illetve bejelentkezve új véleményt is beküldhetnek.
+> **Tipp:** a `frontend/kereses.html` oldalon bármelyik találatra kattintva megjelenik egy részletes modal, ahol a felhasználók elolvashatják a hozzászólásokat, illetve bejelentkezve új véleményt is beküldhetnek.
+
+### Megnézett filmek
+- `GET /watched-films` - Bejelentkezett felhasználó megnézett filmjei
+- `POST /watched-films` - Film megjelölése megnézettként
+- `DELETE /watched-films/{filmId}` - Film eltávolítása a megnézettek közül
 
 ### Admin (csak admin jogosultsággal)
 - `GET /users` - Összes felhasználó
@@ -94,7 +113,10 @@ Táblák:
 
 ## Technológiák
 
-- PHP 8.x
-- MySQL
-- Session alapú autentikáció
-- BCrypt jelszó hashelés
+- **Backend:** PHP 8.x
+- **Adatbázis:** MySQL
+- **Frontend:** HTML5, CSS3, Vanilla JavaScript (Fetch API)
+- **Autentikáció:** Session alapú
+- **Biztonság:** BCrypt jelszó hashelés, prepared statements
+- **UI/UX:** Sötét/világos téma, responsive layout, kétirányú carousel navigáció
+- **Képkezelés:** URL vagy fájl feltöltés támogatása (max 5MB, JPG/PNG/GIF/WebP)

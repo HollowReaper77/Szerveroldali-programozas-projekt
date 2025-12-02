@@ -1,7 +1,9 @@
 // API Configuration
+const DEFAULT_API_BASE_URL = 'http://localhost/php/PHP%20projekt/Szerveroldali-programozas-projekt/public';
+
 const API_CONFIG = {
-    // Backend API base URL - változtasd meg, ha más porton fut
-    BASE_URL: 'http://localhost/php/PHP%20projekt/Szerveroldali-programozas-projekt/public',
+    // Backend API base URL (eredeti, stabil alapértelmezés)
+    BASE_URL: DEFAULT_API_BASE_URL,
     
     // API Endpoints
     ENDPOINTS: {
@@ -15,7 +17,8 @@ const API_CONFIG = {
         FILM_GENRES: '/film-genres',
         USERS: '/users',
         UPLOAD: '/upload',
-        REVIEWS: '/reviews'
+        REVIEWS: '/reviews',
+        WATCHED: '/watched'
     },
     
     // HTTP Headers
@@ -285,5 +288,79 @@ const API = {
             method: 'POST',
             credentials: 'include',
             body: JSON.stringify(payload)
+        }),
+
+    // Watched films
+    getWatchedFilms: (options = {}) => {
+        const params = new URLSearchParams();
+        if (options.includeAll) {
+            params.append('includeAll', '1');
+        }
+        const queryString = params.toString() ? `?${params.toString()}` : '';
+        return apiRequest(`${API_CONFIG.ENDPOINTS.WATCHED}${queryString}`, {
+            method: 'GET',
+            credentials: 'include'
+        });
+    },
+
+    updateWatchedStatus: (filmId, isWatched, note = null) => 
+        apiRequest(`${API_CONFIG.ENDPOINTS.WATCHED}/${filmId}`, {
+            method: 'PUT',
+            credentials: 'include',
+            body: JSON.stringify({
+                megnezve_e: isWatched,
+                megjegyzes: note
+            })
         })
 };
+
+function sanitizeBaseUrl(url) {
+    if (typeof url !== 'string') {
+        return DEFAULT_API_BASE_URL;
+    }
+    const trimmed = url.trim();
+    if (!trimmed) {
+        return DEFAULT_API_BASE_URL;
+    }
+    return trimmed.replace(/\/+$/, '');
+}
+
+function deriveBaseUrlFromLocation() {
+    if (typeof window === 'undefined' || !window.location || !window.location.origin) {
+        return null;
+    }
+
+    const { origin, pathname } = window.location;
+    if (!origin || origin === 'null' || !pathname) {
+        return null;
+    }
+
+    const normalizedPath = pathname.replace(/\\/g, '/');
+    const frontendMarker = '/frontend/';
+
+    const markerIndex = normalizedPath.indexOf(frontendMarker);
+    if (markerIndex === -1) {
+        return null;
+    }
+
+    const projectRoot = normalizedPath.substring(0, markerIndex);
+    const trimmedOrigin = origin.replace(/\/+$/, '');
+    return `${trimmedOrigin}${projectRoot}/public`;
+}
+
+function setApiBaseUrl(newUrl) {
+    const finalUrl = sanitizeBaseUrl(newUrl);
+    API_CONFIG.BASE_URL = finalUrl;
+    return finalUrl;
+}
+
+function configureApiBaseUrlFromLocation() {
+    const derived = deriveBaseUrlFromLocation();
+    if (derived) {
+        return setApiBaseUrl(derived);
+    }
+    return API_CONFIG.BASE_URL;
+}
+
+API.setBaseUrl = setApiBaseUrl;
+API.configureBaseUrlFromLocation = configureApiBaseUrlFromLocation;
