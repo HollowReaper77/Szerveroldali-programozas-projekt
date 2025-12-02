@@ -45,7 +45,7 @@ class FilmController {
             $films = [];
 
             while ($row = $result->fetch(PDO::FETCH_ASSOC)) {
-                $films[] = $row;
+                $films[] = $this->formatFilmRow($row);
             }
 
             http_response_code(200);
@@ -71,21 +71,60 @@ class FilmController {
         if ($stmt && $stmt->rowCount() > 0) {
             http_response_code(200);
             echo json_encode([
-                "film" => [
-                    "film_id" => $this->filmModel->film_id,
-                    "cim" => $this->filmModel->cim,
-                    "idotartam" => $this->filmModel->idotartam,
-                    "poszter_url" => $this->filmModel->poszter_url,
-                    "leiras" => $this->filmModel->leiras,
-                    "kiadasi_ev" => $this->filmModel->kiadasi_ev,
-                    "rendezok" => $this->filmModel->rendezok_lista ? array_filter(array_map('trim', explode(',', $this->filmModel->rendezok_lista))) : [],
-                    "szineszek" => $this->filmModel->szineszek_lista ? array_filter(array_map('trim', explode(',', $this->filmModel->szineszek_lista))) : []
-                ]
+                "film" => $this->formatFilmFromModel()
             ]);
         } else {
             http_response_code(404);
             echo json_encode(["message" => "A film nem található."]);
         }
+    }
+
+    private function splitList(?string $value): array {
+        if (empty($value)) {
+            return [];
+        }
+        $parts = array_filter(array_map('trim', explode(',', $value)));
+        return array_values($parts);
+    }
+
+    private function parseIdList(?string $value): array {
+        if (empty($value)) {
+            return [];
+        }
+        $parts = $this->splitList($value);
+        return array_map('intval', $parts);
+    }
+
+    private function formatFilmRow(array $row): array {
+        return [
+            "film_id" => (int)$row['film_id'],
+            "cim" => $row['cim'],
+            "idotartam" => isset($row['idotartam']) ? (int)$row['idotartam'] : null,
+            "poszter_url" => $row['poszter_url'],
+            "leiras" => $row['leiras'],
+            "kiadasi_ev" => isset($row['kiadasi_ev']) ? (int)$row['kiadasi_ev'] : null,
+            "rendezok" => $this->splitList($row['rendezok'] ?? null),
+            "szineszek" => $this->splitList($row['szineszek'] ?? null),
+            "orszagok" => $this->splitList($row['orszagok'] ?? null),
+            "orszag_idk" => $this->parseIdList($row['orszag_ids'] ?? null),
+            "megnezve_db" => isset($row['megnezve_db']) ? (int)$row['megnezve_db'] : 0
+        ];
+    }
+
+    private function formatFilmFromModel(): array {
+        return [
+            "film_id" => (int)$this->filmModel->film_id,
+            "cim" => $this->filmModel->cim,
+            "idotartam" => $this->filmModel->idotartam,
+            "poszter_url" => $this->filmModel->poszter_url,
+            "leiras" => $this->filmModel->leiras,
+            "kiadasi_ev" => $this->filmModel->kiadasi_ev,
+            "rendezok" => $this->splitList($this->filmModel->rendezok_lista ?? null),
+            "szineszek" => $this->splitList($this->filmModel->szineszek_lista ?? null),
+            "orszagok" => $this->splitList($this->filmModel->orszagok_lista ?? null),
+            "orszag_idk" => $this->parseIdList($this->filmModel->orszag_idk_lista ?? null),
+            "megnezve_db" => (int)($this->filmModel->megnezve_db ?? 0)
+        ];
     }
 
     // -----------------------------------------------------------
@@ -130,8 +169,13 @@ class FilmController {
             $this->filmModel->poszter_url = $posterUrl;
         }
 
+        $countryIds = $this->extractCountryIds($data);
+
         try {
             if ($this->filmModel->create()) {
+                if ($countryIds !== null) {
+                    $this->syncFilmCountries($this->filmModel->film_id, $countryIds);
+                }
                 http_response_code(201);
                 echo json_encode([
                     "message"     => "Film sikeresen létrehozva.",
@@ -210,8 +254,13 @@ class FilmController {
             $this->filmModel->kiadasi_ev = $data['kiadasi_ev'];
         }
 
+        $countryIds = $this->extractCountryIds($data);
+
         try {
             if ($this->filmModel->update()) {
+                if ($countryIds !== null) {
+                    $this->syncFilmCountries($this->filmModel->film_id, $countryIds);
+                }
                 http_response_code(200);
                 echo json_encode(["message" => "Film sikeresen frissítve."]);
             } else {
@@ -221,6 +270,58 @@ class FilmController {
         } catch (PDOException $e) {
             http_response_code(500);
             echo json_encode(["message" => "Adatbázis hiba: " . $e->getMessage()]);
+        }
+    }
+
+    private function extractCountryIds(array $data): ?array {
+        if (!array_key_exists('orszagok', $data)) {
+            return null;
+        }
+
+        $value = $data['orszagok'];
+
+        if ($value === null) {
+            return [];
+        }
+
+        if (!is_array($value)) {
+            http_response_code(400);
+            echo json_encode(["message" => "Az 'orszagok' mező tömbként küldendő."]);
+            exit;
+        }
+
+        $ids = [];
+        foreach ($value as $countryId) {
+            validateNumber($countryId, "Ország ID", 1);
+            $ids[] = (int)$countryId;
+        }
+
+        return array_values(array_unique($ids));
+    }
+
+    private function syncFilmCountries(int $filmId, array $countryIds): void {
+        try {
+            $this->db->beginTransaction();
+
+            $deleteStmt = $this->db->prepare("DELETE FROM film_orszagok WHERE film_id = :film_id");
+            $deleteStmt->execute([':film_id' => $filmId]);
+
+            if (!empty($countryIds)) {
+                $insertStmt = $this->db->prepare("INSERT INTO film_orszagok (film_id, orszag_id) VALUES (:film_id, :orszag_id)");
+                foreach ($countryIds as $countryId) {
+                    $insertStmt->execute([
+                        ':film_id' => $filmId,
+                        ':orszag_id' => $countryId
+                    ]);
+                }
+            }
+
+            $this->db->commit();
+        } catch (PDOException $e) {
+            if ($this->db->inTransaction()) {
+                $this->db->rollBack();
+            }
+            throw $e;
         }
     }
 

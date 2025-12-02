@@ -12,6 +12,9 @@ class Film{
     public $kiadasi_ev;
     public $rendezok_lista;
     public $szineszek_lista;
+    public $orszagok_lista;
+    public $orszag_idk_lista;
+    public $megnezve_db;
 
     public function __construct($dbConn) {
         $this->conn = $dbConn;
@@ -27,7 +30,18 @@ class Film{
                  (SELECT GROUP_CONCAT(DISTINCT sz.nev ORDER BY sz.nev SEPARATOR ', ')
                   FROM film_szineszek fs
                   JOIN szineszek sz ON fs.szinesz_id = sz.szinesz_id
-                  WHERE fs.film_id = f.film_id) AS szineszek
+                  WHERE fs.film_id = f.film_id) AS szineszek,
+                 (SELECT GROUP_CONCAT(DISTINCT o.nev ORDER BY o.nev SEPARATOR ', ')
+                  FROM film_orszagok fo
+                  JOIN orszagok o ON fo.orszag_id = o.orszag_id
+                  WHERE fo.film_id = f.film_id) AS orszagok,
+                 (SELECT GROUP_CONCAT(DISTINCT o.orszag_id ORDER BY o.nev SEPARATOR ',')
+                  FROM film_orszagok fo
+                  JOIN orszagok o ON fo.orszag_id = o.orszag_id
+                  WHERE fo.film_id = f.film_id) AS orszag_ids,
+                 (SELECT COUNT(*)
+                  FROM megnezett_filmek mf
+                  WHERE mf.film_id = f.film_id AND mf.megnezve_e = 1) AS megnezve_db
               FROM {$this->table} f
               ORDER BY f.kiadasi_ev DESC, f.cim ASC
               LIMIT :limit OFFSET :offset";
@@ -59,7 +73,18 @@ class Film{
                  (SELECT GROUP_CONCAT(DISTINCT sz.nev ORDER BY sz.nev SEPARATOR ', ')
                   FROM film_szineszek fs
                   JOIN szineszek sz ON fs.szinesz_id = sz.szinesz_id
-                  WHERE fs.film_id = f.film_id) AS szineszek
+                  WHERE fs.film_id = f.film_id) AS szineszek,
+                 (SELECT GROUP_CONCAT(DISTINCT o.nev ORDER BY o.nev SEPARATOR ', ')
+                  FROM film_orszagok fo
+                  JOIN orszagok o ON fo.orszag_id = o.orszag_id
+                  WHERE fo.film_id = f.film_id) AS orszagok,
+                 (SELECT GROUP_CONCAT(DISTINCT o.orszag_id ORDER BY o.nev SEPARATOR ',')
+                  FROM film_orszagok fo
+                  JOIN orszagok o ON fo.orszag_id = o.orszag_id
+                  WHERE fo.film_id = f.film_id) AS orszag_ids,
+                 (SELECT COUNT(*)
+                  FROM megnezett_filmek mf
+                  WHERE mf.film_id = f.film_id AND mf.megnezve_e = 1) AS megnezve_db
               FROM {$this->table} f
               WHERE f.film_id = ? 
               LIMIT 1";
@@ -79,6 +104,9 @@ class Film{
             $this->kiadasi_ev = $row['kiadasi_ev'];
             $this->rendezok_lista = $row['rendezok'] ?? null;
             $this->szineszek_lista = $row['szineszek'] ?? null;
+            $this->orszagok_lista = $row['orszagok'] ?? null;
+            $this->orszag_idk_lista = $row['orszag_ids'] ?? null;
+            $this->megnezve_db = isset($row['megnezve_db']) ? (int)$row['megnezve_db'] : 0;
         }
 
         return $stmt;

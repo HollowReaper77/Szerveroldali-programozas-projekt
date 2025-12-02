@@ -90,12 +90,30 @@
                 <div class="film-modal__info">
                     <h2 id="film-modal-title"></h2>
                     <p id="film-modal-meta" class="film-modal__meta"></p>
+                    <div class="film-modal__tags">
+                        <span id="film-modal-countries" class="film-modal__tag hidden"></span>
+                        <span id="film-modal-views" class="film-modal__tag film-modal__tag--accent hidden"></span>
+                    </div>
                     <p id="film-modal-description" class="film-modal__description"></p>
+                    <div class="film-modal__credits">
+                        <div class="film-modal__credits-group">
+                            <span class="film-modal__credits-label">Rendezők</span>
+                            <p id="film-modal-directors" class="film-modal__credits-value">Nincs adat</p>
+                        </div>
+                        <div class="film-modal__credits-group">
+                            <span class="film-modal__credits-label">Színészek</span>
+                            <p id="film-modal-actors" class="film-modal__credits-value">Nincs adat</p>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="film-modal__comments">
-                <h3>Vélemények</h3>
-                <div id="film-modal-comments" class="film-modal__comment-list"></div>
+                <div class="film-modal__comment-heading">
+                    <h3>Vélemények</h3>
+                    <span id="film-modal-comment-count" class="film-modal__comment-count" aria-live="polite">0</span>
+                </div>
+                <p class="film-modal__comment-subtitle">Megosztott élmények a közösségtől.</p>
+                <div id="film-modal-comments" class="film-modal__comment-list" aria-live="polite"></div>
                 <div id="film-modal-comment-form" class="film-modal__form"></div>
             </div>
         </div>

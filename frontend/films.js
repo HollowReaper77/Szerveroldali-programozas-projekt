@@ -71,11 +71,14 @@ function renderFeaturedSlider(films, errorMessage) {
         descEl.textContent = 'Próbáld újra később vagy ellenőrizd az internetkapcsolatot.';
         if (counterEl) counterEl.textContent = '';
         disableFeaturedButtons(watchBtn, moreBtn);
+        renderFeaturedLatest(films);
         return;
     }
 
     featuredFilms = films.slice(0, 5);
     featuredIndex = 0;
+
+    renderFeaturedLatest(films);
 
     if (!featuredFilms.length) {
         titleEl.textContent = 'Még nincsenek kiemelt filmek';
@@ -166,6 +169,34 @@ function changeFeaturedFilm(direction) {
     startFeaturedAutoplay();
 }
 
+function renderFeaturedLatest(films) {
+    const latestContainer = document.getElementById('featured-latest');
+    if (!latestContainer) {
+        return;
+    }
+
+    if (!films.length) {
+        latestContainer.style.display = 'none';
+        latestContainer.innerHTML = '';
+        return;
+    }
+
+    const latestFilms = [...films]
+        .sort((a, b) => (b.kiadasi_ev || 0) - (a.kiadasi_ev || 0))
+        .slice(0, 3);
+
+    latestContainer.style.display = latestFilms.length ? 'flex' : 'none';
+    latestContainer.innerHTML = latestFilms.map(film => `
+        <div class="featured-latest__item">
+            <img class="featured-latest__poster" src="${getPosterUrl(film)}" alt="${escapeHtml(film.cim || 'Film poszter')}">
+            <div class="featured-latest__info">
+                <span class="featured-latest__title">${escapeHtml(film.cim || 'Ismeretlen cím')}</span>
+                <span class="featured-latest__meta">${escapeHtml(film.kiadasi_ev ? `${film.kiadasi_ev}` : 'Ismeretlen év')}</span>
+            </div>
+        </div>
+    `).join('');
+}
+
 function startFeaturedAutoplay() {
     if (featuredTimer) {
         clearInterval(featuredTimer);
@@ -201,11 +232,18 @@ function openFilmSearch(film) {
 
 function formatMeta(film) {
     const parts = [];
+    if (film.orszagok && film.orszagok.length) {
+        parts.push(film.orszagok.join(', '));
+    }
     if (film.kiadasi_ev) {
         parts.push(film.kiadasi_ev);
     }
     if (film.idotartam) {
         parts.push(`${film.idotartam} perc`);
+    }
+    const watchText = formatWatchStat(film);
+    if (watchText) {
+        parts.push(watchText);
     }
     return parts.length ? parts.join(' • ') : 'Nincs elérhető részletes adat';
 }
@@ -221,6 +259,17 @@ function getPosterUrl(film) {
     return film.poszter_url || 'img/f-1.jpg';
 }
 
+function formatWatchStat(film) {
+    if (!film || film.megnezve_db === undefined || film.megnezve_db === null) {
+        return null;
+    }
+    const count = Number(film.megnezve_db);
+    if (!Number.isFinite(count) || count < 0) {
+        return null;
+    }
+    return `👁 ${count}`;
+}
+
 // Film elem létrehozása
 function createMovieItem(film) {
     const div = document.createElement('div');
@@ -231,7 +280,7 @@ function createMovieItem(film) {
         <img class="movie-list-item-img" src="${getPosterUrl(film)}" alt="${escapeHtml(film.cim || 'Film poszter')}">
         <span class="movie-list-item-title">${escapeHtml(film.cim || 'Ismeretlen cím')}</span>
         <p class="movie-list-item-desc">${escapeHtml(description)}</p>
-        <p class="movie-list-item-desc" style="font-size: 12px; color: #ccc;">${escapeHtml(formatMeta(film))}</p>
+        <p class="movie-list-item-meta">${escapeHtml(formatMeta(film))}</p>
     `;
     
     return div;

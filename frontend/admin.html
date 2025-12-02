@@ -87,13 +87,14 @@
                             <input type="number" id="add-idotartam" min="1" max="999" required>
                         </div>
                         <div class="form-group">
-                            <label>Poszter URL</label>
-                            <input type="url" id="add-poszter-url">
+                            <label>Gyártó országok</label>
+                            <select id="add-orszagok" multiple class="multi-select" aria-label="Gyártó országok"></select>
+                            <small style="color: #ccc; font-size: 12px; display:block; margin-top:6px;">Tartsd lenyomva a Ctrl vagy Command gombot több ország kijelöléséhez.</small>
                         </div>
                         <div class="form-group">
-                            <label>Vagy tölts fel képet</label>
-                            <input type="file" id="add-poszter-file">
-                            <small style="color: #ccc; font-size: 12px;">Maximum 5MB, JPG/PNG/GIF/WebP</small>
+                            <label>Poszter feltöltése</label>
+                            <input type="file" id="add-poszter-file" accept="image/*">
+                            <small style="color: #ccc; font-size: 12px; display:block; margin-top:6px;">Maximum 5MB, JPG/PNG/GIF/WebP</small>
                         </div>
                         <button type="submit" class="btn btn-primary">Film Hozzáadása</button>
                     </form>
@@ -113,6 +114,7 @@
 
                     <form id="edit-film-form" class="hidden">
                         <input type="hidden" id="edit-film-id">
+                        <input type="hidden" id="edit-current-poszter-url">
                         <div class="form-group">
                             <label>Cím *</label>
                             <input type="text" id="edit-cim" required>
@@ -130,13 +132,14 @@
                             <input type="number" id="edit-idotartam" min="1" max="999" required>
                         </div>
                         <div class="form-group">
-                            <label>Poszter URL</label>
-                            <input type="url" id="edit-poszter-url">
+                            <label>Gyártó országok</label>
+                            <select id="edit-orszagok" multiple class="multi-select" aria-label="Gyártó országok"></select>
+                            <small style="color: #ccc; font-size: 12px; display:block; margin-top:6px;">Használd a Ctrl vagy Command billentyűt több ország kijelöléséhez, üres kiválasztás esetén törlődnek a társítások.</small>
                         </div>
                         <div class="form-group">
-                            <label>Vagy tölts fel új képet</label>
-                            <input type="file" id="edit-poszter-file">
-                            <small style="color: #ccc; font-size: 12px;">Maximum 5MB, JPG/PNG/GIF/WebP</small>
+                            <label>Új poszter feltöltése</label>
+                            <input type="file" id="edit-poszter-file" accept="image/*">
+                            <small style="color: #ccc; font-size: 12px; display:block; margin-top:6px;">Ha nem töltesz fel új képet, a jelenlegi poszter marad. Maximum 5MB, JPG/PNG/GIF/WebP.</small>
                         </div>
                         <button type="submit" class="btn btn-primary">Film Frissítése</button>
                         <button type="button" class="btn btn-secondary" onclick="cancelEdit()">Mégse</button>

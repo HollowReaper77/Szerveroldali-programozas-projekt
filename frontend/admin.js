@@ -3,7 +3,8 @@ let currentUserRole = 'user';
 const adminState = {
     actors: [],
     directors: [],
-    films: []
+    films: [],
+    countries: []
 };
 let editingActorId = null;
 let editingDirectorId = null;
@@ -62,7 +63,8 @@ async function checkAccess() {
         loadFilms(),
         loadFilmsForEdit(),
         loadActors(),
-        loadDirectors()
+        loadDirectors(),
+        loadCountries()
     ]);
     setupEventListeners();
 }
@@ -149,7 +151,7 @@ async function handleAddFilm(e) {
     
     const statusEl = document.getElementById('add-status');
     const fileInput = document.getElementById('add-poszter-file');
-    let poszterUrl = document.getElementById('add-poszter-url').value;
+    let poszterUrl = null;
 
     // Ha van feltöltött fájl, először azt feltöltjük
     if (fileInput.files.length > 0) {
@@ -170,7 +172,8 @@ async function handleAddFilm(e) {
         leiras: document.getElementById('add-leiras').value,
         kiadasi_ev: parseInt(document.getElementById('add-kiadasi-ev').value),
         idotartam: parseInt(document.getElementById('add-idotartam').value),
-        poszter_url: poszterUrl
+        poszter_url: poszterUrl || null,
+        orszagok: getSelectedCountryIds('add-orszagok')
     };
 
     try {
@@ -179,6 +182,7 @@ async function handleAddFilm(e) {
         if (result.success) {
             showStatus(statusEl, 'Film sikeresen hozzáadva!', 'success');
             document.getElementById('add-film-form').reset();
+            setMultiSelectValues('add-orszagok', []);
             await loadFilms();
             await loadFilmsForEdit();
         } else {
@@ -210,8 +214,13 @@ async function handleFilmSelect(e) {
             document.getElementById('edit-leiras').value = film.leiras || '';
             document.getElementById('edit-kiadasi-ev').value = film.kiadasi_ev || '';
             document.getElementById('edit-idotartam').value = film.idotartam || '';
-            document.getElementById('edit-poszter-url').value = film.poszter_url || '';
+            const currentPoster = document.getElementById('edit-current-poszter-url');
+            if (currentPoster) {
+                currentPoster.value = film.poszter_url || '';
+            }
             
+            setMultiSelectValues('edit-orszagok', film.orszag_idk || []);
+
             form.classList.remove('hidden');
         }
     } catch (error) {
@@ -226,7 +235,8 @@ async function handleEditFilm(e) {
     const statusEl = document.getElementById('edit-status');
     const filmId = document.getElementById('edit-film-id').value;
     const fileInput = document.getElementById('edit-poszter-file');
-    let poszterUrl = document.getElementById('edit-poszter-url').value;
+    const currentPosterInput = document.getElementById('edit-current-poszter-url');
+    let poszterUrl = currentPosterInput ? currentPosterInput.value : '';
 
     // Ha van feltöltött fájl, először azt feltöltjük
     if (fileInput.files.length > 0) {
@@ -240,6 +250,9 @@ async function handleEditFilm(e) {
             return;
         }
         poszterUrl = uploadResult.url;
+        if (currentPosterInput) {
+            currentPosterInput.value = poszterUrl;
+        }
     }
 
     const filmData = {
@@ -247,7 +260,8 @@ async function handleEditFilm(e) {
         leiras: document.getElementById('edit-leiras').value,
         kiadasi_ev: parseInt(document.getElementById('edit-kiadasi-ev').value),
         idotartam: parseInt(document.getElementById('edit-idotartam').value),
-        poszter_url: poszterUrl
+        poszter_url: poszterUrl || null,
+        orszagok: getSelectedCountryIds('edit-orszagok')
     };
 
     try {
@@ -313,6 +327,9 @@ async function loadFilms() {
                     <td>${film.kiadasi_ev || '-'}</td>
                     <td>${film.idotartam || '-'} perc</td>
                     <td>
+                        <button class="btn btn-secondary" onclick="startFilmEdit(${film.film_id})">
+                            <i class="fas fa-edit"></i> Szerkesztés
+                        </button>
                         <button class="btn btn-danger" onclick="deleteFilm(${film.film_id}, '${film.cim.replace(/'/g, "\\'")}')">
                             <i class="fas fa-trash"></i> Törlés
                         </button>
@@ -354,6 +371,11 @@ function cancelEdit() {
     document.getElementById('edit-film-select').value = '';
     document.getElementById('edit-film-form').classList.add('hidden');
     document.getElementById('edit-film-form').reset();
+    const currentPoster = document.getElementById('edit-current-poszter-url');
+    if (currentPoster) {
+        currentPoster.value = '';
+    }
+    setMultiSelectValues('edit-orszagok', []);
 }
 
 // Státusz üzenet megjelenítése
@@ -441,6 +463,26 @@ async function loadDirectors() {
     }
 }
 
+async function loadCountries() {
+    try {
+        const result = await API.getCountries();
+        let countries = [];
+        if (result.success) {
+            if (Array.isArray(result.data)) {
+                countries = result.data;
+            } else if (result.data && Array.isArray(result.data.countries)) {
+                countries = result.data.countries;
+            }
+        }
+        adminState.countries = countries;
+        populateCountrySelects();
+    } catch (error) {
+        console.error('Hiba az országok betöltésekor:', error);
+        adminState.countries = [];
+        populateCountrySelects();
+    }
+}
+
 function bindActorTableEvents() {
     document.querySelectorAll('.actor-edit-btn').forEach((btn) => {
         btn.addEventListener('click', () => startActorEdit(parseInt(btn.dataset.id, 10)));
@@ -496,6 +538,78 @@ function populateFilmRelationSelects() {
         directorFilmSelect.innerHTML = optionHtml;
     }
 }
+
+function populateCountrySelects() {
+    const selectIds = ['add-orszagok', 'edit-orszagok'];
+    selectIds.forEach((id) => {
+        const select = document.getElementById(id);
+        if (!select) return;
+
+        const existingSelection = Array.from(select.selectedOptions || [])
+            .map(option => parseInt(option.value, 10))
+            .filter(value => Number.isFinite(value));
+
+        if (!adminState.countries.length) {
+            select.innerHTML = '<option disabled>Nincs elérhető ország</option>';
+            select.disabled = true;
+            return;
+        }
+
+        select.disabled = false;
+        const optionsHtml = ['<option value="" disabled>-- Válassz országokat --</option>']
+            .concat(adminState.countries.map(country => `<option value="${country.orszag_id}">${escapeHtml(country.nev)}</option>`))
+            .join('');
+        select.innerHTML = optionsHtml;
+
+        if (existingSelection.length) {
+            setMultiSelectValues(id, existingSelection);
+        }
+    });
+}
+
+function getSelectedCountryIds(selectId) {
+    const select = document.getElementById(selectId);
+    if (!select) {
+        return [];
+    }
+
+    return Array.from(select.selectedOptions || [])
+        .map(option => parseInt(option.value, 10))
+        .filter(value => Number.isFinite(value));
+}
+
+function setMultiSelectValues(selectId, values = []) {
+    const select = document.getElementById(selectId);
+    if (!select) {
+        return;
+    }
+
+    const valueSet = new Set((values || []).map(value => value.toString()));
+    Array.from(select.options || []).forEach(option => {
+        option.selected = valueSet.has(option.value);
+    });
+}
+
+function startFilmEdit(filmId) {
+    const select = document.getElementById('edit-film-select');
+    if (!select) {
+        return;
+    }
+
+    select.value = String(filmId);
+    const changeEvent = new Event('change');
+    select.dispatchEvent(changeEvent);
+
+    const form = document.getElementById('edit-film-form');
+    if (form && form.classList.contains('hidden')) {
+        form.classList.remove('hidden');
+    }
+    if (form && typeof form.scrollIntoView === 'function') {
+        form.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+}
+
+window.startFilmEdit = startFilmEdit;
 
 async function handleAddActor(event) {
     event.preventDefault();

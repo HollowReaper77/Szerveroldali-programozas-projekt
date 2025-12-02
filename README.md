@@ -8,6 +8,7 @@ REST API filmadatbázis kezeléséhez PHP-ban.
 - Műfajok hozzárendelése filmekhez
 - Felhasználói regisztráció és bejelentkezés
 - Jogosultságkezelés (admin, moderátor, user)
+- Filmekhez kapcsolódó hozzászólások megtekintése és beküldése a keresés oldalon
 
 ## Telepítés
 
@@ -61,6 +62,12 @@ REST API filmadatbázis kezeléséhez PHP-ban.
 - `PUT /users/profile` - Profil módosítása
 - `PUT /users/password` - Jelszó módosítása
 - `POST /users/logout` - Kijelentkezés
+
+### Vélemények
+- `GET /reviews/film/{id}` - Az adott filmhez tartozó összes vélemény listázása
+- `POST /reviews` - Új vélemény létrehozása (bejelentkezett felhasználónak)
+
+> Tipp: a `frontend/kereses.html` oldalon bármelyik találatra kattintva megjelenik egy részletes modal, ahol a felhasználók elolvashatják a hozzászólásokat, illetve bejelentkezve új véleményt is beküldhetnek.
 
 ### Admin (csak admin jogosultsággal)
 - `GET /users` - Összes felhasználó

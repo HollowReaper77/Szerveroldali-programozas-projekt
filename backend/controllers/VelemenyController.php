@@ -28,16 +28,10 @@ class VelemenyController {
             }
 
             http_response_code(200);
-            echo json_encode([
-                "success" => true,
-                "data" => ["reviews" => $reviews]
-            ]);
+            echo json_encode(["reviews" => $reviews]);
         } catch (PDOException $e) {
             http_response_code(500);
-            echo json_encode([
-                "success" => false,
-                "message" => "Adatbázis hiba: " . $e->getMessage()
-            ]);
+            echo json_encode(["message" => "Adatbázis hiba: " . $e->getMessage()]);
         }
     }
 
@@ -62,28 +56,32 @@ class VelemenyController {
             return;
         }
 
+        $userId = getCurrentUserId();
+        if (!$userId) {
+            http_response_code(401);
+            echo json_encode(["message" => "A vélemény írásához be kell jelentkezned."]);
+            return;
+        }
+
         $this->velemeny->film_id = $filmId;
         $this->velemeny->komment = $comment;
         $this->velemeny->ertekeles = number_format($rating, 1, '.', '');
-        $this->velemeny->felhasznalo_id = getCurrentUserId();
+        $this->velemeny->felhasznalo_id = $userId;
         $this->velemeny->letrehozas_ideje = date('Y-m-d');
 
         try {
             if ($this->velemeny->create()) {
                 http_response_code(201);
                 echo json_encode([
-                    "success" => true,
                     "message" => "Vélemény sikeresen mentve.",
-                    "data" => [
-                        "review" => [
-                            "velemeny_id" => $this->velemeny->velemeny_id,
-                            "film_id" => $filmId,
-                            "felhasznalo_id" => $this->velemeny->felhasznalo_id,
-                            "felhasznalonev" => $_SESSION['username'] ?? 'Ismeretlen',
-                            "komment" => $comment,
-                            "ertekeles" => (float)$this->velemeny->ertekeles,
-                            "letrehozas_ideje" => $this->velemeny->letrehozas_ideje
-                        ]
+                    "review" => [
+                        "velemeny_id" => $this->velemeny->velemeny_id,
+                        "film_id" => $filmId,
+                        "felhasznalo_id" => $this->velemeny->felhasznalo_id,
+                        "felhasznalonev" => $_SESSION['username'] ?? 'Ismeretlen',
+                        "komment" => $comment,
+                        "ertekeles" => (float)$this->velemeny->ertekeles,
+                        "letrehozas_ideje" => $this->velemeny->letrehozas_ideje
                     ]
                 ]);
             } else {
@@ -92,9 +90,7 @@ class VelemenyController {
             }
         } catch (PDOException $e) {
             http_response_code(500);
-            echo json_encode([
-                "message" => "Adatbázis hiba: " . $e->getMessage()
-            ]);
+            echo json_encode(["message" => "Adatbázis hiba: " . $e->getMessage()]);
         }
     }
 }
