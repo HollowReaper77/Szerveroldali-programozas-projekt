@@ -8,11 +8,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css">
     <link rel="stylesheet" href="style.css">
     
-    <style>
-        html, body {
-            overflow-y: hidden; 
-        }
-    </style>
 </head>
 
 <body>
@@ -46,8 +41,6 @@
     <div class="container">
         <div class="sidebar">
             <!-- Dinamikusan töltődik az app.js-ből -->
-        </div>
-            <i class="left-menu-icon fas fa-bookmark"></i>
         </div>
 
         <div class="content-container" style="
@@ -83,6 +76,7 @@
                             ">
                             Kép feltöltése
                         </label>
+                        <p id="upload-status" class="status" style="margin-top: 10px;"></p>
                     </div>
 
                     <div style="flex-grow: 1; max-width: 600px; background-color: var(--card); padding: 25px; border-radius: 10px;">

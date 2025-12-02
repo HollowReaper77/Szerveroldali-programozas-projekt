@@ -1,4 +1,6 @@
 // Admin oldal funkciók
+let currentUserRole = 'user';
+
 document.addEventListener('DOMContentLoaded', async function() {
     await checkAccess();
 });
@@ -6,24 +8,30 @@ document.addEventListener('DOMContentLoaded', async function() {
 // Hozzáférés ellenőrzése
 async function checkAccess() {
     const result = await API.getProfile();
+    const user = result.success && result.data ? result.data.user : null;
+    const role = user ? (user.jogosultsag || user.szerepkor || 'user') : null;
     
-    if (!result.success || !result.data.user || 
-        (result.data.user.jogosultsag !== 'admin' && result.data.user.jogosultsag !== 'moderator')) {
+    if (!result.success || !user || (role !== 'admin' && role !== 'moderator')) {
         // Nincs jogosultság
         document.getElementById('access-denied').classList.remove('hidden');
         document.getElementById('admin-content').classList.add('hidden');
+        currentUserRole = 'user';
         return;
     }
 
-    const user = result.data.user;
-    
+    currentUserRole = role;
+
     // Van jogosultság
     document.getElementById('access-denied').classList.add('hidden');
     document.getElementById('admin-content').classList.remove('hidden');
     
     // Felhasználó kezelés fül csak admin-oknak
-    if (user.jogosultsag === 'admin') {
-        document.getElementById('users-tab').style.display = 'inline-block';
+    const usersTab = document.getElementById('users-tab');
+    if (role === 'admin' && usersTab) {
+        usersTab.style.display = 'inline-block';
+    } else if (usersTab) {
+        usersTab.style.display = 'none';
+        document.getElementById('users-section').style.display = 'none';
     }
     
     // Funkciók inicializálása
@@ -33,10 +41,19 @@ async function checkAccess() {
 }
 
 // Tab váltás
-function switchTab(tab) {
+function switchTab(evt, tab) {
+    if (tab === 'users' && currentUserRole !== 'admin') {
+        if (evt && typeof evt.preventDefault === 'function') {
+            evt.preventDefault();
+        }
+        return;
+    }
+
     // Tab gombok
     document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
-    event.target.classList.add('active');
+    if (evt && evt.target) {
+        evt.target.classList.add('active');
+    }
     
     // Tab szekciók
     if (tab === 'films') {

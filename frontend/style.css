@@ -172,12 +172,12 @@ body {
 }
 
 .sidebar {
+    display: none;
     width: 50px;
     height: 100%;
     background-color: black;
     position: fixed;
     top: 0;
-    display: flex;
     flex-direction: column;
     align-items: center;
     padding-top: 60px;
@@ -195,7 +195,7 @@ body {
 }
 
 .content-container {
-    margin-left: 50px;
+    margin-left: 0;
 }
 
 .featured-content {
@@ -227,6 +227,52 @@ body {
 
 .movie-list-container {
     padding: 0 20px;
+}
+
+.card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 20px;
+}
+
+.movie-card {
+    background-color: #1a1a1a;
+    border-radius: 12px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    min-height: 360px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+.movie-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.55);
+}
+
+.movie-card-poster {
+    width: 100%;
+    padding-top: 140%;
+    background-size: cover;
+    background-position: center;
+}
+
+.movie-card-info {
+    padding: 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.movie-card-info h3 {
+    font-size: 20px;
+    line-height: 1.2;
+}
+
+.movie-card-info p {
+    color: #b3b3b3;
+    font-size: 14px;
 }
 
 .movie-list-wrapper {
@@ -351,6 +397,16 @@ body {
 @media only screen and (max-width: 940px){
     .menu-container{
         display: none;
+    }
+}
+
+@media only screen and (max-width: 768px){
+    .sidebar{
+        display: flex;
+    }
+
+    .content-container{
+        margin-left: 50px;
     }
 }
 

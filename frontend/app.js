@@ -82,7 +82,7 @@ async function updateNavigationMenu() {
     
     if (result.success && result.data.user) {
       const user = result.data.user;
-      const role = user.jogosultsag;
+      const role = user.jogosultsag || user.szerepkor || 'user';
       
       // Profil kép megjelenítése bejelentkezett felhasználónak
       if (profilePicLink) {
@@ -97,6 +97,12 @@ async function updateNavigationMenu() {
       searchItem.className = 'menu-list-item';
       searchItem.innerHTML = '<a href="kereses.html">Keresés</a>';
       menuList.appendChild(searchItem);
+
+      // Film lista (csak bejelentkezett)
+      const filmsItem = document.createElement('li');
+      filmsItem.className = 'menu-list-item';
+      filmsItem.innerHTML = '<a href="filmek.html">Filmek</a>';
+      menuList.appendChild(filmsItem);
       
       // Admin (csak moderátor/admin)
       if (role === 'moderator' || role === 'admin') {
@@ -197,6 +203,12 @@ function updateSidebarForLoggedIn(role) {
   profileIcon.href = 'profil.html';
   profileIcon.innerHTML = '<i class="left-menu-icon fas fa-user"></i>';
   sidebar.appendChild(profileIcon);
+
+  // Film ikon
+  const filmsIcon = document.createElement('a');
+  filmsIcon.href = 'filmek.html';
+  filmsIcon.innerHTML = '<i class="left-menu-icon fas fa-film"></i>';
+  sidebar.appendChild(filmsIcon);
   
   // Admin ikon (csak moderátor/admin)
   if (role === 'moderator' || role === 'admin') {

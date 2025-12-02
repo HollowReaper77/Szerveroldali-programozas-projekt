@@ -146,11 +146,21 @@ const API = {
             credentials: 'include'
         }),
     
-    getProfile: () => 
-        apiRequest(`${API_CONFIG.ENDPOINTS.USERS}/profile`, {
+    getProfile: async () => {
+        const result = await apiRequest(`${API_CONFIG.ENDPOINTS.USERS}/profile`, {
             method: 'GET',
             credentials: 'include'
-        }),
+        });
+
+        if (result.success && result.data && result.data.data) {
+            return {
+                ...result,
+                data: result.data.data
+            };
+        }
+
+        return result;
+    },
     
     updateProfile: (userData) => 
         apiRequest(`${API_CONFIG.ENDPOINTS.USERS}/profile`, {

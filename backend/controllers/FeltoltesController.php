@@ -16,7 +16,7 @@ class FeltoltesController {
     // POST /upload/image (kép feltöltés)
     public function uploadImage() {
         // Ellenőrzi, hogy be van-e jelentkezve
-        if (!isset($_SESSION['felhasznalo_id'])) {
+        if (!isset($_SESSION['user_id'])) {
             http_response_code(401);
             echo json_encode(["message" => "Bejelentkezés szükséges."]);
             return;
@@ -75,14 +75,15 @@ class FeltoltesController {
     // DELETE /upload/image/{filename} (kép törlése)
     public function deleteImage($filename) {
         // Ellenőrzi, hogy be van-e jelentkezve
-        if (!isset($_SESSION['felhasznalo_id'])) {
+        if (!isset($_SESSION['user_id'])) {
             http_response_code(401);
             echo json_encode(["message" => "Bejelentkezés szükséges."]);
             return;
         }
 
         // Ellenőrzi, hogy admin vagy moderátor
-        if ($_SESSION['jogosultsag'] !== 'admin' && $_SESSION['jogosultsag'] !== 'moderator') {
+        $role = $_SESSION['user_role'] ?? 'user';
+        if ($role !== 'admin' && $role !== 'moderator') {
             http_response_code(403);
             echo json_encode(["message" => "Nincs jogosultságod a kép törléséhez."]);
             return;
