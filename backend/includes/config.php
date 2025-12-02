@@ -14,6 +14,9 @@
 
         $dbConn->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
         $dbConn->setAttribute(PDO::MYSQL_ATTR_USE_BUFFERED_QUERY, true);
+        
+        // Karakterkódolás explicit beállítása
+        $dbConn->exec("SET NAMES utf8mb4");
     } catch (PDOException $e){
         http_response_code(500);
         echo json_encode(["message" => "Adatbázis kapcsolódási hiba: {$e->getMessage()}"]);

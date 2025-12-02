@@ -25,7 +25,11 @@ const API_CONFIG = {
 
 // Helper függvény API hívásokhoz
 async function apiRequest(endpoint, options = {}) {
-    const url = `${API_CONFIG.BASE_URL}${endpoint}`;
+    // Távolítsd el a kezdő / jelet
+    const cleanEndpoint = endpoint.startsWith('/') ? endpoint.substring(1) : endpoint;
+    const url = `${API_CONFIG.BASE_URL}/index.php?url=${cleanEndpoint}`;
+    
+    console.log('API Request URL:', url); // DEBUG
     
     const config = {
         ...options,
@@ -45,7 +49,16 @@ async function apiRequest(endpoint, options = {}) {
         
         return { success: true, data };
     } catch (error) {
-        console.error('API Error:', error);
+        // Ne írjunk hibát a konzolra, ha csak nincs bejelentkezve
+        const isAuthError = error.message && (
+            error.message.includes('Nincs bejelentkezve') || 
+            error.message.includes('nem található')
+        );
+        
+        if (!isAuthError) {
+            console.error('API Error:', error);
+        }
+        
         return { success: false, error: error.message };
     }
 }
@@ -54,7 +67,7 @@ async function apiRequest(endpoint, options = {}) {
 const API = {
     // Films
     getFilms: (page = 1, limit = 10) => 
-        apiRequest(`${API_CONFIG.ENDPOINTS.FILMS}?page=${page}&limit=${limit}`),
+        apiRequest(`${API_CONFIG.ENDPOINTS.FILMS}&page=${page}&limit=${limit}`),
     
     getFilm: (id) => 
         apiRequest(`${API_CONFIG.ENDPOINTS.FILMS}/${id}`),
@@ -151,5 +164,25 @@ const API = {
             method: 'PUT',
             credentials: 'include',
             body: JSON.stringify(passwordData)
+        }),
+    
+    // Admin - User Management
+    getAllUsers: () => 
+        apiRequest(`${API_CONFIG.ENDPOINTS.USERS}/all`, {
+            method: 'GET',
+            credentials: 'include'
+        }),
+    
+    updateUserRole: (userId, newRole) => 
+        apiRequest(`${API_CONFIG.ENDPOINTS.USERS}/${userId}/role`, {
+            method: 'PUT',
+            credentials: 'include',
+            body: JSON.stringify({ jogosultsag: newRole })
+        }),
+    
+    deleteUser: (userId) => 
+        apiRequest(`${API_CONFIG.ENDPOINTS.USERS}/${userId}`, {
+            method: 'DELETE',
+            credentials: 'include'
         })
 };

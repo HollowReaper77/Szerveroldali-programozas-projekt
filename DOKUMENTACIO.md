@@ -141,15 +141,47 @@ const API_CONFIG = {
 **Regisztráció** - `regisztracio.html`  
 **Bejelentkezés** - `bejelentkezes.html`  
 **Profil kezelés** - `profil.html` (bejelentkezés szükséges)  
+**Jelszó módosítás** - `jelszo_modositas.html` (bejelentkezés szükséges)  
 **Admin felület** - `admin.html` (moderátor/admin jogosultság)
+  - **Film kezelés** - Új film hozzáadása, szerkesztése, törlése, képfeltöltés
+  - **Felhasználó kezelés** - Szerepkör módosítása, felhasználó törlése (csak admin)
 
 ### Jogosultságok
 
 | Funkció | Vendég | User | Moderátor | Admin |
 |---------|--------|------|-----------|-------|
 | Filmek böngészése | Igen | Igen | Igen | Igen |
+| Keresés | Igen | Igen | Igen | Igen |
 | Profil szerkesztése | - | Igen | Igen | Igen |
+| Jelszó módosítása | - | Igen | Igen | Igen |
 | Film CRUD | - | - | Igen | Igen |
+| Képfeltöltés | - | - | Igen | Igen |
 | Felhasználó kezelés | - | - | - | Igen |
+
+### Képfeltöltés
+- **Módok:** URL megadása vagy fájl feltöltése (max 5MB)
+- **Formátumok:** JPG, PNG, GIF, WebP
+- **Tárolt hely:** `uploads/` mappa
+- **Jogosultság:** Moderátor vagy admin
+
+---
+
+## 7. Projekt állapot
+
+### ✅ Kész funkciók
+- REST API teljes CRUD műveletekkel (filmek, színészek, műfajok, rendezők, országok)
+- Felhasználókezelés (regisztráció, bejelentkezés, session)
+- Profil és jelszó módosítás
+- Film kezelés admin felületen (hozzáadás, szerkesztés, törlés)
+- Képfeltöltés (URL vagy fájl)
+- Felhasználó kezelés admin felületen (szerepkör módosítás, törlés)
+- Keresési funkció (cím, műfaj, színész, rendező alapján)
+- Dinamikus navigációs menü (jogosultság alapján)
+- Sötét/világos téma váltás
+- Selenium tesztek (20 db)
+- Teljes dokumentáció
+
+### 🎯 Projekt célja teljesítve
+A CinemaTár weboldal és API **100%-ban kész** és használatra alkalmas!
 
 

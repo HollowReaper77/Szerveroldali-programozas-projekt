@@ -5,23 +5,48 @@ document.addEventListener('DOMContentLoaded', async function() {
 
 // Hozzáférés ellenőrzése
 async function checkAccess() {
-    const user = JSON.parse(localStorage.getItem('user') || 'null');
+    const result = await API.getProfile();
     
-    if (!user || (user.jogosultsag !== 'admin' && user.jogosultsag !== 'moderator')) {
+    if (!result.success || !result.data.user || 
+        (result.data.user.jogosultsag !== 'admin' && result.data.user.jogosultsag !== 'moderator')) {
         // Nincs jogosultság
         document.getElementById('access-denied').classList.remove('hidden');
         document.getElementById('admin-content').classList.add('hidden');
         return;
     }
 
+    const user = result.data.user;
+    
     // Van jogosultság
     document.getElementById('access-denied').classList.add('hidden');
     document.getElementById('admin-content').classList.remove('hidden');
+    
+    // Felhasználó kezelés fül csak admin-oknak
+    if (user.jogosultsag === 'admin') {
+        document.getElementById('users-tab').style.display = 'inline-block';
+    }
     
     // Funkciók inicializálása
     await loadFilms();
     await loadFilmsForEdit();
     setupEventListeners();
+}
+
+// Tab váltás
+function switchTab(tab) {
+    // Tab gombok
+    document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
+    event.target.classList.add('active');
+    
+    // Tab szekciók
+    if (tab === 'films') {
+        document.getElementById('films-section').style.display = 'block';
+        document.getElementById('users-section').style.display = 'none';
+    } else if (tab === 'users') {
+        document.getElementById('films-section').style.display = 'none';
+        document.getElementById('users-section').style.display = 'block';
+        loadUsers();
+    }
 }
 
 // Event listeners beállítása
@@ -271,5 +296,97 @@ async function uploadImage(file) {
             success: false,
             error: 'Hálózati hiba a képfeltöltés során'
         };
+    }
+}
+
+// ========================================
+// FELHASZNÁLÓ KEZELÉS (csak admin)
+// ========================================
+
+// Felhasználók betöltése
+async function loadUsers() {
+    const tbody = document.getElementById('users-list');
+    
+    try {
+        const result = await API.getAllUsers();
+        
+        if (result.success && result.data.felhasznalok) {
+            const users = result.data.felhasznalok;
+            
+            if (users.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" style="text-align: center;">Nincsenek felhasználók</td></tr>';
+                return;
+            }
+            
+            tbody.innerHTML = users.map(user => `
+                <tr>
+                    <td>${user.felhasznalo_id}</td>
+                    <td>${user.felhasznalonev}</td>
+                    <td>${user.email}</td>
+                    <td>
+                        <select onchange="changeUserRole(${user.felhasznalo_id}, this.value)" 
+                                ${user.jogosultsag === 'admin' ? 'disabled' : ''}>
+                            <option value="user" ${user.jogosultsag === 'user' ? 'selected' : ''}>User</option>
+                            <option value="moderator" ${user.jogosultsag === 'moderator' ? 'selected' : ''}>Moderátor</option>
+                            <option value="admin" ${user.jogosultsag === 'admin' ? 'selected' : ''}>Admin</option>
+                        </select>
+                    </td>
+                    <td>${new Date(user.regisztracio_ideje).toLocaleDateString('hu-HU')}</td>
+                    <td>
+                        ${user.jogosultsag !== 'admin' ? 
+                            `<button class="btn btn-danger" onclick="deleteUser(${user.felhasznalo_id}, '${user.felhasznalonev}')">
+                                <i class="fas fa-trash"></i> Törlés
+                            </button>` 
+                            : '<span style="color: #999;">Védett</span>'}
+                    </td>
+                </tr>
+            `).join('');
+        } else {
+            tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; color: #dc3545;">Hiba a felhasználók betöltésekor</td></tr>';
+        }
+    } catch (error) {
+        tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; color: #dc3545;">Hálózati hiba</td></tr>';
+    }
+}
+
+// Felhasználó szerepkör módosítása
+async function changeUserRole(userId, newRole) {
+    const statusEl = document.getElementById('users-status');
+    
+    try {
+        const result = await API.updateUserRole(userId, newRole);
+        
+        if (result.success) {
+            showStatus(statusEl, 'Szerepkör sikeresen módosítva!', 'success');
+            await loadUsers();
+        } else {
+            showStatus(statusEl, result.error || 'Hiba történt!', 'error');
+            await loadUsers(); // Visszaállítja az eredeti értéket
+        }
+    } catch (error) {
+        showStatus(statusEl, 'Hálózati hiba: ' + error.message, 'error');
+        await loadUsers();
+    }
+}
+
+// Felhasználó törlése
+async function deleteUser(userId, username) {
+    if (!confirm(`Biztosan törölni szeretnéd "${username}" felhasználót?`)) {
+        return;
+    }
+
+    const statusEl = document.getElementById('users-status');
+
+    try {
+        const result = await API.deleteUser(userId);
+        
+        if (result.success) {
+            showStatus(statusEl, 'Felhasználó sikeresen törölve!', 'success');
+            await loadUsers();
+        } else {
+            showStatus(statusEl, result.error || 'Hiba történt a törlés során!', 'error');
+        }
+    } catch (error) {
+        showStatus(statusEl, 'Hálózati hiba: ' + error.message, 'error');
     }
 }

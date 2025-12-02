@@ -20,23 +20,30 @@
             
             <div class="menu-container">
                 <ul class="menu-list">
-                    <li class="menu-list-item"><a href="index.html">Főoldal</a></li>
-                    <li class="menu-list-item"><a href="kereses.html">Keresés</a></li>
-                    <li class="menu-list-item active"><a href="admin.html">Admin</a></li>
-                    <li class="menu-list-item"><a href="profil.html">Profil</a></li>
+                    <!-- Dinamikusan töltődik az app.js-ből -->
                 </ul>
+            </div>
+            
+            <div class="profile-container">
+                <a href="profil.html">
+                    <img class="profile-picture" src="img/profil.jpg" alt="Profil">
+                </a>
+                <div class="toggle">
+                    <i class="fas fa-moon toggle-icon"></i>
+                    <i class="fas fa-sun toggle-icon"></i>
+                    <div class="toggle-ball"></div>
+                </div>
             </div>
         </div>
     </div>
 
-    <div class="sidebar">
-        <a href="kereses.html"><i class="left-menu-icon fas fa-search"></i></a>
-        <a href="index.html"><i class="left-menu-icon fas fa-home"></i></a>
-        <a href="profil.html"><i class="left-menu-icon fas fa-user"></i></a>
-        <a href="admin.html"><i class="left-menu-icon fas fa-cog"></i></a>
-    </div>
-
     <div class="container">
+        <div class="sidebar">
+            <a href="kereses.html"><i class="left-menu-icon fas fa-search"></i></a>
+            <a href="index.html"><i class="left-menu-icon fas fa-home"></i></a>
+            <a href="profil.html"><i class="left-menu-icon fas fa-user"></i></a>
+            <a href="admin.html"><i class="left-menu-icon fas fa-cog"></i></a>
+        </div>
         <div class="content-container" style="padding-top: 80px;">
             
             <!-- Hozzáférés megtagadva üzenet -->
@@ -48,7 +55,17 @@
 
             <!-- Admin tartalom -->
             <div id="admin-content" class="admin-container hidden">
-                <h1 style="color: var(--primary);">Film Kezelés</h1>
+                <h1 style="color: var(--primary);">Admin Panel</h1>
+                
+                <!-- Fül váltó -->
+                <div class="tab-container" style="margin-bottom: 30px;">
+                    <button class="tab-button active" onclick="switchTab('films')">Film Kezelés</button>
+                    <button class="tab-button" id="users-tab" onclick="switchTab('users')" style="display: none;">Felhasználó Kezelés</button>
+                </div>
+                
+                <!-- Film Kezelés Szekció -->
+                <div id="films-section" class="tab-section">
+                <h2 style="color: var(--primary);">Film Kezelés</h2>
 
                 <!-- Új film hozzáadása -->
                 <div class="admin-section">
@@ -147,6 +164,31 @@
                         <tbody id="films-list">
                             <tr>
                                 <td colspan="5" style="text-align: center;">Betöltés...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                </div>
+                
+                <!-- Felhasználó Kezelés Szekció (csak admin) -->
+                <div id="users-section" class="tab-section" style="display: none;">
+                    <h2 style="color: var(--primary);">Felhasználó Kezelés</h2>
+                    <div id="users-status" class="status-message"></div>
+                    
+                    <table class="films-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Felhasználónév</th>
+                                <th>Email</th>
+                                <th>Szerepkör</th>
+                                <th>Regisztráció</th>
+                                <th>Műveletek</th>
+                            </tr>
+                        </thead>
+                        <tbody id="users-list">
+                            <tr>
+                                <td colspan="6" style="text-align: center;">Betöltés...</td>
                             </tr>
                         </tbody>
                     </table>
