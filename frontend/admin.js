@@ -407,7 +407,9 @@ async function loadActors() {
                     <td>${escapeHtml(actor.nev)}</td>
                     <td>${actor.szuletesi_datum || '-'}</td>
                     <td>
-                        <button type="button" class="btn btn-secondary actor-edit-btn" data-id="${actor.szinesz_id}">Szerkesztés</button>
+                        <button type="button" class="btn btn-secondary actor-edit-btn" onclick="startActorEdit(${actor.szinesz_id})">
+                            <i class="fas fa-edit"></i> Szerkesztés
+                        </button>
                         <button type="button" class="btn btn-danger actor-delete-btn" data-id="${actor.szinesz_id}">Törlés</button>
                     </td>
                 </tr>
@@ -444,7 +446,9 @@ async function loadDirectors() {
                     <td>${escapeHtml(director.nev)}</td>
                     <td>${director.szuletesi_datum || '-'}</td>
                     <td>
-                        <button type="button" class="btn btn-secondary director-edit-btn" data-id="${director.rendezo_id}">Szerkesztés</button>
+                        <button type="button" class="btn btn-secondary director-edit-btn" onclick="startDirectorEdit(${director.rendezo_id})">
+                            <i class="fas fa-edit"></i> Szerkesztés
+                        </button>
                         <button type="button" class="btn btn-danger director-delete-btn" data-id="${director.rendezo_id}">Törlés</button>
                     </td>
                 </tr>
@@ -484,20 +488,12 @@ async function loadCountries() {
 }
 
 function bindActorTableEvents() {
-    document.querySelectorAll('.actor-edit-btn').forEach((btn) => {
-        btn.addEventListener('click', () => startActorEdit(parseInt(btn.dataset.id, 10)));
-    });
-
     document.querySelectorAll('.actor-delete-btn').forEach((btn) => {
         btn.addEventListener('click', () => handleDeleteActor(parseInt(btn.dataset.id, 10)));
     });
 }
 
 function bindDirectorTableEvents() {
-    document.querySelectorAll('.director-edit-btn').forEach((btn) => {
-        btn.addEventListener('click', () => startDirectorEdit(parseInt(btn.dataset.id, 10)));
-    });
-
     document.querySelectorAll('.director-delete-btn').forEach((btn) => {
         btn.addEventListener('click', () => handleDeleteDirector(parseInt(btn.dataset.id, 10)));
     });
@@ -590,6 +586,21 @@ function setMultiSelectValues(selectId, values = []) {
     });
 }
 
+function focusForm(formId) {
+    const form = document.getElementById(formId);
+    if (!form) {
+        return;
+    }
+
+    if (form.classList && form.classList.contains('hidden')) {
+        form.classList.remove('hidden');
+    }
+
+    if (typeof form.scrollIntoView === 'function') {
+        form.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+}
+
 function startFilmEdit(filmId) {
     const select = document.getElementById('edit-film-select');
     if (!select) {
@@ -600,13 +611,7 @@ function startFilmEdit(filmId) {
     const changeEvent = new Event('change');
     select.dispatchEvent(changeEvent);
 
-    const form = document.getElementById('edit-film-form');
-    if (form && form.classList.contains('hidden')) {
-        form.classList.remove('hidden');
-    }
-    if (form && typeof form.scrollIntoView === 'function') {
-        form.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
+    focusForm('edit-film-form');
 }
 
 window.startFilmEdit = startFilmEdit;
@@ -678,7 +683,11 @@ function startActorEdit(actorId) {
     document.getElementById('actor-bio').value = actor.bio || '';
     document.getElementById('actor-submit-btn').textContent = 'Színész mentése';
     document.getElementById('actor-cancel-edit').classList.remove('hidden');
+
+    focusForm('add-actor-form');
 }
+
+window.startActorEdit = startActorEdit;
 
 function cancelActorEdit() {
     editingActorId = null;
@@ -704,7 +713,11 @@ function startDirectorEdit(directorId) {
     document.getElementById('director-bio').value = director.bio || '';
     document.getElementById('director-submit-btn').textContent = 'Rendező mentése';
     document.getElementById('director-cancel-edit').classList.remove('hidden');
+
+    focusForm('add-director-form');
 }
+
+window.startDirectorEdit = startDirectorEdit;
 
 function cancelDirectorEdit() {
     editingDirectorId = null;
