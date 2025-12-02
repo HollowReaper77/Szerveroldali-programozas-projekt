@@ -82,7 +82,7 @@ async function updateNavigationMenu() {
     
     if (result.success && result.data.user) {
       const user = result.data.user;
-      const role = user.szerepkor;
+      const role = user.jogosultsag;
       
       // Profil kép megjelenítése bejelentkezett felhasználónak
       if (profilePicLink) {
@@ -125,6 +125,9 @@ async function updateNavigationMenu() {
         window.location.href = 'index.html';
       });
       
+      // SIDEBAR frissítése - bejelentkezett
+      updateSidebarForLoggedIn(role);
+      
     } else {
       // Nincs bejelentkezve - profil kép elrejtése
       if (profilePicLink) {
@@ -133,6 +136,9 @@ async function updateNavigationMenu() {
       
       // Alapértelmezett menü
       showGuestMenu(menuList);
+      
+      // SIDEBAR frissítése - vendég
+      updateSidebarForGuest();
     }
   } catch (error) {
     // Hiba esetén profil kép elrejtése és alapértelmezett menü
@@ -140,6 +146,7 @@ async function updateNavigationMenu() {
       profilePicLink.style.display = 'none';
     }
     showGuestMenu(menuList);
+    updateSidebarForGuest();
   }
 }
 
@@ -165,6 +172,64 @@ function showGuestMenu(menuList) {
   registerItem.innerHTML = '<a href="regisztracio.html">Regisztráció</a>';
   menuList.appendChild(registerItem);
 }
+
+// SIDEBAR frissítése - bejelentkezett felhasználóknak
+function updateSidebarForLoggedIn(role) {
+  const sidebar = document.querySelector('.sidebar');
+  if (!sidebar) return;
+  
+  sidebar.innerHTML = '';
+  
+  // Keresés ikon
+  const searchIcon = document.createElement('a');
+  searchIcon.href = 'kereses.html';
+  searchIcon.innerHTML = '<i class="left-menu-icon fas fa-search"></i>';
+  sidebar.appendChild(searchIcon);
+  
+  // Főoldal ikon
+  const homeIcon = document.createElement('a');
+  homeIcon.href = 'index.html';
+  homeIcon.innerHTML = '<i class="left-menu-icon fas fa-home"></i>';
+  sidebar.appendChild(homeIcon);
+  
+  // Profil ikon
+  const profileIcon = document.createElement('a');
+  profileIcon.href = 'profil.html';
+  profileIcon.innerHTML = '<i class="left-menu-icon fas fa-user"></i>';
+  sidebar.appendChild(profileIcon);
+  
+  // Admin ikon (csak moderátor/admin)
+  if (role === 'moderator' || role === 'admin') {
+    const adminIcon = document.createElement('a');
+    adminIcon.href = 'admin.html';
+    adminIcon.innerHTML = '<i class="left-menu-icon fas fa-cog"></i>';
+    sidebar.appendChild(adminIcon);
+  }
+}
+
+// SIDEBAR frissítése - vendég felhasználóknak
+function updateSidebarForGuest() {
+  const sidebar = document.querySelector('.sidebar');
+  if (!sidebar) return;
+  
+  sidebar.innerHTML = '';
+  
+  // Keresés ikon
+  const searchIcon = document.createElement('a');
+  searchIcon.href = 'kereses.html';
+  searchIcon.innerHTML = '<i class="left-menu-icon fas fa-search"></i>';
+  sidebar.appendChild(searchIcon);
+  
+  // Főoldal ikon
+  const homeIcon = document.createElement('a');
+  homeIcon.href = 'index.html';
+  homeIcon.innerHTML = '<i class="left-menu-icon fas fa-home"></i>';
+  sidebar.appendChild(homeIcon);
+  
+  // NINCS Profil, Bejelentkezés, Regisztráció ikon
+  // (Ezek a navbar-ban jelennek meg)
+}
+
 
 // Oldal betöltésekor frissítsd a menüt
 document.addEventListener('DOMContentLoaded', updateNavigationMenu);
