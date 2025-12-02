@@ -151,7 +151,10 @@ class FelhasznaloController {
     public function getProfile() {
         if (!isset($_SESSION['user_id'])) {
             http_response_code(401);
-            echo json_encode(["message" => "Nincs bejelentkezve."]);
+            echo json_encode([
+                "success" => false,
+                "message" => "Nincs bejelentkezve."
+            ]);
             return;
         }
 
@@ -161,22 +164,31 @@ class FelhasznaloController {
             if ($this->felhasznalo->read_single()) {
                 http_response_code(200);
                 echo json_encode([
-                    "felhasznalo" => [
-                        "id" => $this->felhasznalo->felhasznalo_id,
-                        "felhasznalonev" => $this->felhasznalo->felhasznalonev,
-                        "email" => $this->felhasznalo->email,
-                        "profilkep_url" => $this->felhasznalo->profilkep_url,
-                        "jogosultsag" => $this->felhasznalo->jogosultsag,
-                        "regisztracio_ideje" => $this->felhasznalo->regisztracio_ideje,
+                    "success" => true,
+                    "data" => [
+                        "user" => [
+                            "id" => $this->felhasznalo->felhasznalo_id,
+                            "felhasznalonev" => $this->felhasznalo->felhasznalonev,
+                            "email" => $this->felhasznalo->email,
+                            "profilkep_url" => $this->felhasznalo->profilkep_url,
+                            "szerepkor" => $this->felhasznalo->jogosultsag,
+                            "regisztracio_ideje" => $this->felhasznalo->regisztracio_ideje,
+                        ]
                     ]
                 ]);
             } else {
                 http_response_code(404);
-                echo json_encode(["message" => "Felhasználó nem található."]);
+                echo json_encode([
+                    "success" => false,
+                    "message" => "Felhasználó nem található."
+                ]);
             }
         } catch (PDOException $e) {
             http_response_code(500);
-            echo json_encode(["message" => "Adatbázis hiba: " . $e->getMessage()]);
+            echo json_encode([
+                "success" => false,
+                "message" => "Adatbázis hiba: " . $e->getMessage()
+            ]);
         }
     }
 

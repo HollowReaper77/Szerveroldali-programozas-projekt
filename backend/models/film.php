@@ -10,6 +10,11 @@ class Film{
     public $poszter_url;
     public $leiras;
     public $kiadasi_ev;
+    public $rendezok_lista;
+    public $szineszek_lista;
+    public $orszagok_lista;
+    public $orszag_idk_lista;
+    public $megnezve_db;
 
     public function __construct($dbConn) {
         $this->conn = $dbConn;
@@ -17,10 +22,29 @@ class Film{
 
     // READ ALL - pagination támogatással
     public function read($limit = 20, $offset = 0){
-        $query = "SELECT film_id, cim, idotartam, poszter_url, leiras, kiadasi_ev
-                  FROM {$this->table}
-                  ORDER BY kiadasi_ev DESC, cim ASC
-                  LIMIT :limit OFFSET :offset";
+        $query = "SELECT f.film_id, f.cim, f.idotartam, f.poszter_url, f.leiras, f.kiadasi_ev,
+                 (SELECT GROUP_CONCAT(DISTINCT r.nev ORDER BY r.nev SEPARATOR ', ')
+                  FROM film_rendezok fr
+                  JOIN rendezok r ON fr.rendezo_id = r.rendezo_id
+                  WHERE fr.film_id = f.film_id) AS rendezok,
+                 (SELECT GROUP_CONCAT(DISTINCT sz.nev ORDER BY sz.nev SEPARATOR ', ')
+                  FROM film_szineszek fs
+                  JOIN szineszek sz ON fs.szinesz_id = sz.szinesz_id
+                  WHERE fs.film_id = f.film_id) AS szineszek,
+                 (SELECT GROUP_CONCAT(DISTINCT o.nev ORDER BY o.nev SEPARATOR ', ')
+                  FROM film_orszagok fo
+                  JOIN orszagok o ON fo.orszag_id = o.orszag_id
+                  WHERE fo.film_id = f.film_id) AS orszagok,
+                 (SELECT GROUP_CONCAT(DISTINCT o.orszag_id ORDER BY o.nev SEPARATOR ',')
+                  FROM film_orszagok fo
+                  JOIN orszagok o ON fo.orszag_id = o.orszag_id
+                  WHERE fo.film_id = f.film_id) AS orszag_ids,
+                 (SELECT COUNT(*)
+                  FROM megnezett_filmek mf
+                  WHERE mf.film_id = f.film_id AND mf.megnezve_e = 1) AS megnezve_db
+              FROM {$this->table} f
+              ORDER BY f.kiadasi_ev DESC, f.cim ASC
+              LIMIT :limit OFFSET :offset";
 
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(':limit', $limit, PDO::PARAM_INT);
@@ -41,10 +65,29 @@ class Film{
 
     // READ SINGLE
     public function read_single(){
-        $query = "SELECT film_id, cim, idotartam, poszter_url, leiras, kiadasi_ev 
-                  FROM {$this->table}
-                  WHERE film_id = ? 
-                  LIMIT 1";
+        $query = "SELECT f.film_id, f.cim, f.idotartam, f.poszter_url, f.leiras, f.kiadasi_ev,
+                 (SELECT GROUP_CONCAT(DISTINCT r.nev ORDER BY r.nev SEPARATOR ', ')
+                  FROM film_rendezok fr
+                  JOIN rendezok r ON fr.rendezo_id = r.rendezo_id
+                  WHERE fr.film_id = f.film_id) AS rendezok,
+                 (SELECT GROUP_CONCAT(DISTINCT sz.nev ORDER BY sz.nev SEPARATOR ', ')
+                  FROM film_szineszek fs
+                  JOIN szineszek sz ON fs.szinesz_id = sz.szinesz_id
+                  WHERE fs.film_id = f.film_id) AS szineszek,
+                 (SELECT GROUP_CONCAT(DISTINCT o.nev ORDER BY o.nev SEPARATOR ', ')
+                  FROM film_orszagok fo
+                  JOIN orszagok o ON fo.orszag_id = o.orszag_id
+                  WHERE fo.film_id = f.film_id) AS orszagok,
+                 (SELECT GROUP_CONCAT(DISTINCT o.orszag_id ORDER BY o.nev SEPARATOR ',')
+                  FROM film_orszagok fo
+                  JOIN orszagok o ON fo.orszag_id = o.orszag_id
+                  WHERE fo.film_id = f.film_id) AS orszag_ids,
+                 (SELECT COUNT(*)
+                  FROM megnezett_filmek mf
+                  WHERE mf.film_id = f.film_id AND mf.megnezve_e = 1) AS megnezve_db
+              FROM {$this->table} f
+              WHERE f.film_id = ? 
+              LIMIT 1";
         
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(1, $this->film_id);
@@ -59,6 +102,11 @@ class Film{
             $this->poszter_url = $row['poszter_url'];
             $this->leiras = $row['leiras'];
             $this->kiadasi_ev = $row['kiadasi_ev'];
+            $this->rendezok_lista = $row['rendezok'] ?? null;
+            $this->szineszek_lista = $row['szineszek'] ?? null;
+            $this->orszagok_lista = $row['orszagok'] ?? null;
+            $this->orszag_idk_lista = $row['orszag_ids'] ?? null;
+            $this->megnezve_db = isset($row['megnezve_db']) ? (int)$row['megnezve_db'] : 0;
         }
 
         return $stmt;
@@ -77,13 +125,17 @@ class Film{
 
         $this->cim = htmlspecialchars(strip_tags($this->cim));
         $this->idotartam = htmlspecialchars(strip_tags($this->idotartam));
-        $this->poszter_url = htmlspecialchars(strip_tags($this->poszter_url));
+        $this->poszter_url = $this->sanitizeNullable($this->poszter_url);
         $this->leiras = htmlspecialchars(strip_tags($this->leiras));
         $this->kiadasi_ev = htmlspecialchars(strip_tags($this->kiadasi_ev));
 
         $stmt->bindParam(':cim', $this->cim);
         $stmt->bindParam(':idotartam', $this->idotartam);
-        $stmt->bindParam(':poszter_url', $this->poszter_url);
+        if ($this->poszter_url === null) {
+            $stmt->bindValue(':poszter_url', null, PDO::PARAM_NULL);
+        } else {
+            $stmt->bindParam(':poszter_url', $this->poszter_url);
+        }
         $stmt->bindParam(':leiras', $this->leiras);
         $stmt->bindParam(':kiadasi_ev', $this->kiadasi_ev);
 
@@ -109,7 +161,7 @@ class Film{
 
         $this->cim = htmlspecialchars(strip_tags($this->cim));
         $this->idotartam = htmlspecialchars(strip_tags($this->idotartam));
-        $this->poszter_url = htmlspecialchars(strip_tags($this->poszter_url));
+        $this->poszter_url = $this->sanitizeNullable($this->poszter_url);
         $this->leiras = htmlspecialchars(strip_tags($this->leiras));
         $this->kiadasi_ev = htmlspecialchars(strip_tags($this->kiadasi_ev));
         $this->film_id = htmlspecialchars(strip_tags($this->film_id));
@@ -117,7 +169,11 @@ class Film{
         $stmt->bindParam(':film_id', $this->film_id);
         $stmt->bindParam(':cim', $this->cim);
         $stmt->bindParam(':idotartam', $this->idotartam);
-        $stmt->bindParam(':poszter_url', $this->poszter_url);
+        if ($this->poszter_url === null) {
+            $stmt->bindValue(':poszter_url', null, PDO::PARAM_NULL);
+        } else {
+            $stmt->bindParam(':poszter_url', $this->poszter_url);
+        }
         $stmt->bindParam(':leiras', $this->leiras);
         $stmt->bindParam(':kiadasi_ev', $this->kiadasi_ev);
 
@@ -143,6 +199,13 @@ class Film{
 
         return false;
     }
+
+        private function sanitizeNullable($value) {
+            if ($value === null || $value === '') {
+                return null;
+            }
+            return htmlspecialchars(strip_tags($value));
+        }
 }
 
 ?>

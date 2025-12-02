@@ -4,36 +4,31 @@
 <head>
     <meta charset="utf-8">
     <title>Cinematár - Keresés</title>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400;500;700;900&family=Sen:wght@400;700;800&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400;500;700;900&family=Sen:wght@400;700;800&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css">
     <link rel="stylesheet" href="style.css">
-    
-    <style>
-        html, body {
-            overflow-y: hidden; 
-        }
-    </style>
+
 </head>
 
 <body>
     <div class="navbar">
         <div class="navbar-container">
             <div class="logo-container">
-    <a href="index.html" class="logo-link">
-        <h1 class="logo">Cinematár</h1>
-    </a>
-</div>
-            
+                <a href="index.html" class="logo-link">
+                    <h1 class="logo">Cinematár</h1>
+                </a>
+            </div>
+
             <div class="menu-container">
                 <ul class="menu-list">
-                    <li class="menu-list-item active"><a href="search.html">Keresés</a></li>
-                    <li class="menu-list-item"><a href="bejelentkezes.html">Bejelentkezés</a></li>
-                    <li class="menu-list-item"><a href="regisztracio.html">Regisztráció</a></li>
+                    <!-- Dinamikusan töltődik az app.js-ből -->
                 </ul>
             </div>
-            
+
             <div class="profile-container">
-                <a href="profil.html">
+                <a href="profil.html" style="display: none;">
                     <img class="profile-picture" src="img/profil.jpg" alt="Profil">
                 </a>
                 <div class="toggle">
@@ -47,10 +42,7 @@
 
     <div class="container">
         <div class="sidebar">
-            <a href="search.html"><i class="left-menu-icon fas fa-search"></i></a>
-            <a href="index.html"><i class="left-menu-icon fas fa-home"></i></a>
-            <a href="profil.html"><i class="left-menu-icon fas fa-user"></i></a>
-            <a href="bejelentkezes.html"><i class="left-menu-icon fas fa-key"></i></a>
+            <!-- Dinamikusan töltődik az app.js-ből -->
         </div>
 
         <div class="content-container" style="
@@ -63,15 +55,11 @@
         ">
             <div class="movie-list-container">
                 <h1 class="movie-list-title" style="margin-top: 0;">FILM KERESÉS</h1>
-                
-                <div class="search-input-group" style="display: flex; align-items: center; width: 100%; max-width: 600px; margin: 2rem 0;">
-                    <input 
-                        id="search" 
-                        type="search" 
-                        placeholder="Keresés cím vagy leírás alapján..." 
-                        class="search-input" 
-                        style="flex-grow: 1; padding: 0.65rem 1rem; border-radius: 10px 0 0 10px;"
-                    >
+
+                <div class="search-input-group"
+                    style="display: flex; align-items: center; width: 100%; max-width: 600px; margin: 2rem 0;">
+                    <input id="search" type="search" placeholder="Keresés cím vagy leírás alapján..."
+                        class="search-input" style="flex-grow: 1; padding: 0.65rem 1rem; border-radius: 10px 0 0 10px;">
                     <button id="search-button" type="submit" class="search-btn" style="
                         border: none;
                         padding: 0.6rem 1.0rem;
@@ -81,20 +69,66 @@
                         align-items: center;
                         cursor: pointer; 
                     ">
-                        <img src="img/search_icon.jpg" alt="Keresés" class="search-icon" style="width: 20px; height: 20px;">
+                        <img src="img/search_icon.jpg" alt="Keresés" class="search-icon"
+                            style="width: 20px; height: 20px;">
                     </button>
                 </div>
 
                 <div id="status" class="status" style="margin-bottom: 1rem; color: #4dbf00;"></div>
-                
+
                 <h2 class="movie-list-title" style="font-size: 24px; margin-top: 30px;">Találatok</h2>
-                <section id="films" class="card-grid"></section>
+                <section id="films" class="search-results"></section>
             </div>
         </div>
     </div>
-    
+
+    <div id="film-modal" class="film-modal hidden" aria-hidden="true">
+        <div class="film-modal__dialog">
+            <button type="button" class="film-modal__close" aria-label="Bezárás">&times;</button>
+            <div class="film-modal__header">
+                <img id="film-modal-poster" src="" alt="Film poszter" class="film-modal__poster">
+                <div class="film-modal__info">
+                    <h2 id="film-modal-title"></h2>
+                    <p id="film-modal-meta" class="film-modal__meta"></p>
+                    <div class="film-modal__tags">
+                        <span id="film-modal-countries" class="film-modal__tag hidden"></span>
+                        <span id="film-modal-views" class="film-modal__tag film-modal__tag--accent hidden"></span>
+                    </div>
+                    <div id="film-watch-wrapper" class="film-modal__watch hidden">
+                        <div class="film-modal__watch-toggle">
+                            <input type="checkbox" id="film-watch-toggle" />
+                            <label for="film-watch-toggle">Megnéztem már ezt a filmet</label>
+                        </div>
+                        <p id="film-watch-status" class="film-modal__watch-status"></p>
+                    </div>
+                    <p id="film-modal-description" class="film-modal__description"></p>
+                    <div class="film-modal__credits">
+                        <div class="film-modal__credits-group">
+                            <span class="film-modal__credits-label">Rendezők</span>
+                            <p id="film-modal-directors" class="film-modal__credits-value">Nincs adat</p>
+                        </div>
+                        <div class="film-modal__credits-group">
+                            <span class="film-modal__credits-label">Színészek</span>
+                            <p id="film-modal-actors" class="film-modal__credits-value">Nincs adat</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="film-modal__comments">
+                <div class="film-modal__comment-heading">
+                    <h3>Vélemények</h3>
+                    <span id="film-modal-comment-count" class="film-modal__comment-count" aria-live="polite">0</span>
+                </div>
+                <p class="film-modal__comment-subtitle">Megosztott élmények a közösségtől.</p>
+                <div id="film-modal-comments" class="film-modal__comment-list" aria-live="polite"></div>
+                <div id="film-modal-comment-form" class="film-modal__form"></div>
+            </div>
+        </div>
+    </div>
+
     <script src="config.js"></script>
     <script src="app.js"></script>
     <script src="search.js"></script>
 </body>
+
 </html>

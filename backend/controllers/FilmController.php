@@ -45,7 +45,7 @@ class FilmController {
             $films = [];
 
             while ($row = $result->fetch(PDO::FETCH_ASSOC)) {
-                $films[] = $row;
+                $films[] = $this->formatFilmRow($row);
             }
 
             http_response_code(200);
@@ -71,14 +71,7 @@ class FilmController {
         if ($stmt && $stmt->rowCount() > 0) {
             http_response_code(200);
             echo json_encode([
-                "film" => [
-                    "film_id" => $this->filmModel->film_id,
-                    "cim" => $this->filmModel->cim,
-                    "idotartam" => $this->filmModel->idotartam,
-                    "poszter_url" => $this->filmModel->poszter_url,
-                    "leiras" => $this->filmModel->leiras,
-                    "kiadasi_ev" => $this->filmModel->kiadasi_ev
-                ]
+                "film" => $this->formatFilmFromModel()
             ]);
         } else {
             http_response_code(404);
@@ -86,17 +79,69 @@ class FilmController {
         }
     }
 
+    private function splitList(?string $value): array {
+        if (empty($value)) {
+            return [];
+        }
+        $parts = array_filter(array_map('trim', explode(',', $value)));
+        return array_values($parts);
+    }
+
+    private function parseIdList(?string $value): array {
+        if (empty($value)) {
+            return [];
+        }
+        $parts = $this->splitList($value);
+        return array_map('intval', $parts);
+    }
+
+    private function formatFilmRow(array $row): array {
+        return [
+            "film_id" => (int)$row['film_id'],
+            "cim" => $row['cim'],
+            "idotartam" => isset($row['idotartam']) ? (int)$row['idotartam'] : null,
+            "poszter_url" => $row['poszter_url'],
+            "leiras" => $row['leiras'],
+            "kiadasi_ev" => isset($row['kiadasi_ev']) ? (int)$row['kiadasi_ev'] : null,
+            "rendezok" => $this->splitList($row['rendezok'] ?? null),
+            "szineszek" => $this->splitList($row['szineszek'] ?? null),
+            "orszagok" => $this->splitList($row['orszagok'] ?? null),
+            "orszag_idk" => $this->parseIdList($row['orszag_ids'] ?? null),
+            "megnezve_db" => isset($row['megnezve_db']) ? (int)$row['megnezve_db'] : 0
+        ];
+    }
+
+    private function formatFilmFromModel(): array {
+        return [
+            "film_id" => (int)$this->filmModel->film_id,
+            "cim" => $this->filmModel->cim,
+            "idotartam" => $this->filmModel->idotartam,
+            "poszter_url" => $this->filmModel->poszter_url,
+            "leiras" => $this->filmModel->leiras,
+            "kiadasi_ev" => $this->filmModel->kiadasi_ev,
+            "rendezok" => $this->splitList($this->filmModel->rendezok_lista ?? null),
+            "szineszek" => $this->splitList($this->filmModel->szineszek_lista ?? null),
+            "orszagok" => $this->splitList($this->filmModel->orszagok_lista ?? null),
+            "orszag_idk" => $this->parseIdList($this->filmModel->orszag_idk_lista ?? null),
+            "megnezve_db" => (int)($this->filmModel->megnezve_db ?? 0)
+        ];
+    }
+
     // -----------------------------------------------------------
     // POST /films      (új film)
     // -----------------------------------------------------------
     public function createFilm() {
+        // Jogosultság ellenőrzés - csak admin és moderátor
+        if (!requireRole('moderator')) {
+            return;
+        }
+
         $data = getJsonInput();
 
         // Kötelező mezők ellenőrzése
         if (
             !isset($data['cim']) ||
             !isset($data['idotartam']) ||
-            !isset($data['poszter_url']) ||
             !isset($data['leiras']) ||
             !isset($data['kiadasi_ev'])
         ) {
@@ -109,17 +154,28 @@ class FilmController {
         validateLength($data['cim'], "Cím", 1, 255);
         validateNumber($data['idotartam'], "Időtartam", 1, 999);
         validateNumber($data['kiadasi_ev'], "Kiadási év", 1888, date('Y') + 5);
-        validateUrl($data['poszter_url'], "Poszter URL");
         validateLength($data['leiras'], "Leírás", 0, 2000);
 
         $this->filmModel->cim = $data['cim'];
         $this->filmModel->idotartam = $data['idotartam'];
-        $this->filmModel->poszter_url = $data['poszter_url'];
         $this->filmModel->leiras = $data['leiras'];
         $this->filmModel->kiadasi_ev = $data['kiadasi_ev'];
 
+        $posterUrl = isset($data['poszter_url']) ? trim((string)$data['poszter_url']) : '';
+        if ($posterUrl === '') {
+            $this->filmModel->poszter_url = null;
+        } else {
+            validateUrl($posterUrl, "Poszter URL");
+            $this->filmModel->poszter_url = $posterUrl;
+        }
+
+        $countryIds = $this->extractCountryIds($data);
+
         try {
             if ($this->filmModel->create()) {
+                if ($countryIds !== null) {
+                    $this->syncFilmCountries($this->filmModel->film_id, $countryIds);
+                }
                 http_response_code(201);
                 echo json_encode([
                     "message"     => "Film sikeresen létrehozva.",
@@ -144,6 +200,11 @@ class FilmController {
     // PUT /films/{id}    (film frissítése)
     // -----------------------------------------------------------
     public function updateFilm($id) {
+        // Jogosultság ellenőrzés - csak admin és moderátor
+        if (!requireRole('moderator')) {
+            return;
+        }
+
         $id = validateId($id, "Film ID");
         $data = getJsonInput();
 
@@ -170,10 +231,15 @@ class FilmController {
             $this->filmModel->idotartam = $data['idotartam'];
         }
 
-        // Ha van poszter URL, validáld és frissítsd
-        if (isset($data['poszter_url'])) {
-            validateUrl($data['poszter_url'], "Poszter URL");
-            $this->filmModel->poszter_url = $data['poszter_url'];
+        // Ha van poszter URL, validáld és frissítsd (üres string esetén törölhető)
+        if (array_key_exists('poszter_url', $data)) {
+            $posterUrl = trim((string)$data['poszter_url']);
+            if ($posterUrl === '') {
+                $this->filmModel->poszter_url = null;
+            } else {
+                validateUrl($posterUrl, "Poszter URL");
+                $this->filmModel->poszter_url = $posterUrl;
+            }
         }
 
         // Ha van leírás, validáld és frissítsd
@@ -188,8 +254,13 @@ class FilmController {
             $this->filmModel->kiadasi_ev = $data['kiadasi_ev'];
         }
 
+        $countryIds = $this->extractCountryIds($data);
+
         try {
             if ($this->filmModel->update()) {
+                if ($countryIds !== null) {
+                    $this->syncFilmCountries($this->filmModel->film_id, $countryIds);
+                }
                 http_response_code(200);
                 echo json_encode(["message" => "Film sikeresen frissítve."]);
             } else {
@@ -202,10 +273,67 @@ class FilmController {
         }
     }
 
+    private function extractCountryIds(array $data): ?array {
+        if (!array_key_exists('orszagok', $data)) {
+            return null;
+        }
+
+        $value = $data['orszagok'];
+
+        if ($value === null) {
+            return [];
+        }
+
+        if (!is_array($value)) {
+            http_response_code(400);
+            echo json_encode(["message" => "Az 'orszagok' mező tömbként küldendő."]);
+            exit;
+        }
+
+        $ids = [];
+        foreach ($value as $countryId) {
+            validateNumber($countryId, "Ország ID", 1);
+            $ids[] = (int)$countryId;
+        }
+
+        return array_values(array_unique($ids));
+    }
+
+    private function syncFilmCountries(int $filmId, array $countryIds): void {
+        try {
+            $this->db->beginTransaction();
+
+            $deleteStmt = $this->db->prepare("DELETE FROM film_orszagok WHERE film_id = :film_id");
+            $deleteStmt->execute([':film_id' => $filmId]);
+
+            if (!empty($countryIds)) {
+                $insertStmt = $this->db->prepare("INSERT INTO film_orszagok (film_id, orszag_id) VALUES (:film_id, :orszag_id)");
+                foreach ($countryIds as $countryId) {
+                    $insertStmt->execute([
+                        ':film_id' => $filmId,
+                        ':orszag_id' => $countryId
+                    ]);
+                }
+            }
+
+            $this->db->commit();
+        } catch (PDOException $e) {
+            if ($this->db->inTransaction()) {
+                $this->db->rollBack();
+            }
+            throw $e;
+        }
+    }
+
     // -----------------------------------------------------------
     // DELETE /films/{id}
     // -----------------------------------------------------------
     public function deleteFilm($id) {
+        // Jogosultság ellenőrzés - csak admin és moderátor
+        if (!requireRole('moderator')) {
+            return;
+        }
+
         $id = validateId($id, "Film ID");
         
         // Ellenőrizd, hogy létezik-e a film

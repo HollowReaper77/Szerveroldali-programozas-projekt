@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="hu">
+
+<head>
+    <meta charset="utf-8">
+    <title>Cinematár - Megnézett filmek</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400;500;700;900&family=Sen:wght@400;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="navbar">
+        <div class="navbar-container">
+            <div class="logo-container">
+                <a href="index.html" class="logo-link">
+                    <h1 class="logo">Cinematár</h1>
+                </a>
+            </div>
+            
+            <div class="menu-container">
+                <ul class="menu-list">
+                    <!-- Dinamikusan töltődik az app.js-ből -->
+                </ul>
+            </div>
+
+            <div class="profile-container">
+                <a href="profil.html" style="display: none;">
+                    <img class="profile-picture" src="img/profil.jpg" alt="Profil">
+                </a>
+                <div class="toggle">
+                    <i class="fas fa-moon toggle-icon"></i>
+                    <i class="fas fa-sun toggle-icon"></i>
+                    <div class="toggle-ball"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="sidebar">
+            <!-- Dinamikusan töltődik az app.js-ből -->
+        </div>
+
+        <div class="content-container" style="min-height: calc(100vh - 50px); padding: 40px 20px; background-color: #0f0f0f;">
+            <div class="movie-list-container">
+                <h1 class="movie-list-title">Megnézett filmek</h1>
+                <p id="films-status" class="status" style="margin: 10px 0 20px 0;"></p>
+                <section id="film-grid" class="card-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 20px;"></section>
+            </div>
+        </div>
+    </div>
+
+    <script src="config.js"></script>
+    <script src="app.js"></script>
+    <script src="filmlista.js"></script>
+</body>
+</html>

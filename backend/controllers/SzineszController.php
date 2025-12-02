@@ -86,6 +86,7 @@ class SzineszController {
     // POST /actors   (új színész)
     // -----------------------------------------------------------
     public function createActor() {
+        requireRole('moderator');
         $data = getJsonInput();
 
         // Kötelező mezők
@@ -132,6 +133,7 @@ class SzineszController {
     // PUT /actors/{id}
     // -----------------------------------------------------------
     public function updateActor($id) {
+        requireRole('moderator');
         $id = validateId($id, "Színész ID");
         $data = getJsonInput();
 
@@ -179,6 +181,7 @@ class SzineszController {
     // DELETE /actors/{id}
     // -----------------------------------------------------------
     public function deleteActor($id) {
+        requireRole('moderator');
         $id = validateId($id, "Színész ID");
         
         // Ellenőrizd, hogy létezik-e

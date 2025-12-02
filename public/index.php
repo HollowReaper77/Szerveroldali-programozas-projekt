@@ -26,8 +26,12 @@ require_once __DIR__ . '/../backend/controllers/MufajController.php';
 require_once __DIR__ . '/../backend/controllers/NemzetisegController.php';
 require_once __DIR__ . '/../backend/controllers/SzereploController.php';
 require_once __DIR__ . '/../backend/controllers/FilmMufajController.php';
+require_once __DIR__ . '/../backend/controllers/FilmRendezoController.php';
 require_once __DIR__ . '/../backend/controllers/RendezoController.php';
 require_once __DIR__ . '/../backend/controllers/FelhasznaloController.php';
+require_once __DIR__ . '/../backend/controllers/FeltoltesController.php';
+require_once __DIR__ . '/../backend/controllers/VelemenyController.php';
+require_once __DIR__ . '/../backend/controllers/MegnezettFilmController.php';
 
 // Modellek betöltése
 require_once __DIR__ . '/../backend/models/film.php';
@@ -37,7 +41,10 @@ require_once __DIR__ . '/../backend/models/orszag.php';
 require_once __DIR__ . '/../backend/models/rendezo.php';
 require_once __DIR__ . '/../backend/models/szereplo.php';
 require_once __DIR__ . '/../backend/models/film_mufaj.php';
+require_once __DIR__ . '/../backend/models/film_rendezo.php';
 require_once __DIR__ . '/../backend/models/felhasznalo.php';
+require_once __DIR__ . '/../backend/models/velemeny.php';
+require_once __DIR__ . '/../backend/models/megnezett_film.php';
 
 // Adatbázis kapcsolat változó
 $db = $dbConn;
@@ -301,6 +308,38 @@ switch ($urlParts[0]) {
         break;
 
     // -----------------------------------------
+    // FILM–RENDEZŐ kapcsolat
+    // -----------------------------------------
+    case "film-directors":
+        $controller = new FilmRendezoController($db);
+
+        if ($method === 'GET') {
+            if (isset($urlParts[1]) && $urlParts[1] === "film" && isset($urlParts[2])) {
+                $controller->getDirectorsByFilm($urlParts[2]);
+            } elseif (isset($urlParts[1]) && $urlParts[1] === "director" && isset($urlParts[2])) {
+                $controller->getFilmsByDirector($urlParts[2]);
+            } else {
+                http_response_code(400);
+                echo json_encode(["message" => "Érvénytelen endpoint vagy hiányzó ID."]);
+            }
+        }
+
+        if ($method === 'POST') {
+            $controller->addDirectorToFilm();
+        }
+
+        if ($method === 'DELETE') {
+            if (isset($urlParts[1]) && $urlParts[1] === "film" && isset($urlParts[2]) &&
+                isset($urlParts[3]) && $urlParts[3] === "director" && isset($urlParts[4])) {
+                $controller->removeDirectorFromFilm($urlParts[2], $urlParts[4]);
+            } else {
+                $controller->removeDirectorFromFilm();
+            }
+        }
+
+        break;
+
+    // -----------------------------------------
     // FELHASZNÁLÓK (Users)
     // -----------------------------------------
     case "users":
@@ -364,6 +403,78 @@ switch ($urlParts[0]) {
             }
         }
 
+        break;
+
+    // -----------------------------------------
+    // KÉPFELTÖLTÉS
+    // -----------------------------------------
+    case "upload":
+        $controller = new FeltoltesController();
+
+        if ($method === 'POST' && isset($urlParts[1]) && $urlParts[1] === 'image') {
+            $controller->uploadImage();
+        }
+
+        if ($method === 'DELETE' && isset($urlParts[1]) && $urlParts[1] === 'image' && isset($urlParts[2])) {
+            $controller->deleteImage($urlParts[2]);
+        }
+
+        if ($method !== 'POST' && $method !== 'DELETE') {
+            http_response_code(405);
+            echo json_encode(["message" => "Method not allowed"]);
+        }
+
+        break;
+
+    // -----------------------------------------
+    // VÉLEMÉNYEK
+    // -----------------------------------------
+    case "reviews":
+        $controller = new VelemenyController($db);
+
+        if ($method === 'GET') {
+            if (isset($urlParts[1]) && $urlParts[1] === 'film' && isset($urlParts[2])) {
+                $controller->getReviewsByFilm($urlParts[2]);
+            } else {
+                http_response_code(400);
+                echo json_encode(["message" => "Film ID vagy endpoint hiányzik."]);
+            }
+        }
+
+        if ($method === 'POST') {
+            $controller->createReview();
+        }
+
+        if (!in_array($method, ['GET', 'POST'])) {
+            http_response_code(405);
+            echo json_encode(["message" => "Method not allowed"]);
+        }
+
+        break;
+
+    // -----------------------------------------
+    // MEGNÉZETT FILMEK
+    // -----------------------------------------
+    case "watched":
+        $controller = new MegnezettFilmController($db);
+
+        if ($method === 'GET') {
+            $controller->getWatchedFilms();
+            break;
+        }
+
+        if ($method === 'PUT') {
+            if (!isset($urlParts[1])) {
+                http_response_code(400);
+                echo json_encode(["message" => "Film ID hiányzik."]);
+                break;
+            }
+            $controller->updateStatus($urlParts[1]);
+            break;
+        }
+
+        http_response_code(405);
+        echo json_encode(["message" => "Method not allowed"]);
         break;
 
     // -----------------------------------------

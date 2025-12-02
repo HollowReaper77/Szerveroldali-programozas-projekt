@@ -13,6 +13,18 @@
 					"name": "Register User",
 					"event": [
 						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"// Generate unique email with timestamp to avoid conflicts",
+									"const timestamp = Date.now();",
+									"pm.environment.set('testUserEmail', `teszt${timestamp}@cinematar.hu`);",
+									"pm.environment.set('testUsername', `teszt_user_${timestamp}`);"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
 							"listen": "test",
 							"script": {
 								"exec": [
@@ -45,7 +57,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"felhasznalonev\": \"teszt_user\",\n    \"email\": \"teszt@cinematar.hu\",\n    \"jelszo\": \"teszt123\"\n}"
+							"raw": "{\n    \"felhasznalonev\": \"{{testUsername}}\",\n    \"email\": \"{{testUserEmail}}\",\n    \"jelszo\": \"teszt123\"\n}"
 						},
 						"url": {
 							"raw": "{{baseUrl}}/users/register",
@@ -224,7 +236,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"felhasznalonev\": \"Admin Frissítve\",\n    \"email\": \"admin@cinematar.hu\"\n}"
+							"raw": "{\n    \"felhasznalonev\": \"Moderator Frissítve\",\n    \"email\": \"moderator@cinematar.hu\"\n}"
 						},
 						"url": {
 							"raw": "{{baseUrl}}/users/profile",
@@ -269,7 +281,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"regi_jelszo\": \"admin123\",\n    \"uj_jelszo\": \"admin123\"\n}"
+							"raw": "{\n    \"regi_jelszo\": \"moderator123\",\n    \"uj_jelszo\": \"moderator123\"\n}"
 						},
 						"url": {
 							"raw": "{{baseUrl}}/users/password",

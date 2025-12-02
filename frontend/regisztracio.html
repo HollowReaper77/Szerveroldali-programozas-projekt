@@ -8,11 +8,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css">
     <link rel="stylesheet" href="style.css">
     
-    <style>
-        html, body {
-            overflow-y: hidden; 
-        }
-    </style>
 </head>
 
 <body>
@@ -26,14 +21,12 @@
             
             <div class="menu-container">
                 <ul class="menu-list">
-                    <li class="menu-list-item"><a href="kereses.html">Keresés</a></li>
-                    <li class="menu-list-item"><a href="bejelentkezes.html">Bejelentkezés</a></li>
-                    <li class="menu-list-item active"><a href="regisztracio.html">Regisztráció</a></li>
+                    <!-- Dinamikusan töltődik az app.js-ből -->
                 </ul>
             </div>
             
             <div class="profile-container">
-                <a href="profil.html">
+                <a href="profil.html" style="display: none;">
                     <img class="profile-picture" src="img/profil.jpg" alt="Profil">
                 </a>
                 <div class="toggle">
@@ -47,10 +40,7 @@
 
     <div class="container">
         <div class="sidebar">
-            <a href="kereses.html"><i class="left-menu-icon fas fa-search"></i></a>
-            <a href="index.html"><i class="left-menu-icon fas fa-home"></i></a>
-            <a href="profil.html"><i class="left-menu-icon fas fa-user"></i></a>
-            <a href="bejelentkezes.html"><i class="left-menu-icon fas fa-key"></i></a>
+            <!-- Dinamikusan töltődik az app.js-ből -->
         </div>
 
         <div class="content-container" style="

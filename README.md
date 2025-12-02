@@ -1,6 +1,47 @@
 # CinemaTár - Film API
 
-REST API filmadatbázis kezeléséhez. Tartalmaz filmek, színészek, műfajok és felhasználó-kezelési funkciókat.
+REST API filmadatbázis kezeléséhez PHP-ban.
+
+## Funkciók
+
+- Filmek, színészek, rendezők kezelése
+- Műfajok hozzárendelése filmekhez
+- Felhasználói regisztráció és bejelentkezés
+- Jogosultságkezelés (admin, moderátor, user)
+- Filmekhez kapcsolódó hozzászólások megtekintése és beküldése a keresés oldalon
+- **Dinamikus főoldal:** kiemelt filmek slider automatikus váltással, legújabb filmek carousel kétirányú navigációval
+- **Sötét/világos téma** váltás (localStorage-ban mentve)
+- **Responsive design:** mobil-, tablet- és desktop-optimalizált elrendezés
+- **Megnézett filmek** jelölése és nyomon követése (bejelentkezett felhasználóknak)
+
+## Telepítés
+
+1. **XAMPP indítása** (Apache + MySQL)
+
+2. **Adatbázis importálása:**
+   - Nyisd meg a phpMyAdmin-t: `http://localhost/phpmyadmin`
+   - Importáld a `backend/database/filmadatbazis.sql` fájlt
+
+3. **Alkalmazás elérése:**
+   - Frontend: `http://localhost/php/PHP projekt/Szerveroldali-programozas-projekt/frontend/index.html`
+   - API: `http://localhost/php/PHP projekt/Szerveroldali-programozas-projekt/public/films`
+
+## Főbb oldalak
+
+- **`index.html`** - Főoldal kiemelt filmekkel és legújabb kiadásokkal
+- **`kereses.html`** - Filmkeresés (cím, műfaj, színész, rendező alapján) + vélemények
+- **`profil.html`** - Bejelentkezett felhasználó profil és jelszó szerkesztése
+- **`admin.html`** - Filmek és felhasználók kezelése (moderátor/admin jogosultság szükséges)
+- **`regisztracio.html`** - Új felhasználó regisztrációja
+- **`bejelentkezes.html`** - Bejelentkezés
+
+## Alapértelmezett felhasználók
+
+| Email | Jelszó | Jogosultság |
+|-------|--------|-------------|
+| admin@cinematar.hu | admin123 | admin |
+| moderator@cinematar.hu | moderator123 | moderator |
+| user@cinematar.hu | user123 | user |
 
 ## API Végpontok
 
@@ -36,6 +77,17 @@ REST API filmadatbázis kezeléséhez. Tartalmaz filmek, színészek, műfajok �
 - `PUT /users/password` - Jelszó módosítása
 - `POST /users/logout` - Kijelentkezés
 
+### Vélemények
+- `GET /reviews/film/{id}` - Az adott filmhez tartozó összes vélemény listázása
+- `POST /reviews` - Új vélemény létrehozása (bejelentkezett felhasználónak)
+
+> **Tipp:** a `frontend/kereses.html` oldalon bármelyik találatra kattintva megjelenik egy részletes modal, ahol a felhasználók elolvashatják a hozzászólásokat, illetve bejelentkezve új véleményt is beküldhetnek.
+
+### Megnézett filmek
+- `GET /watched-films` - Bejelentkezett felhasználó megnézett filmjei
+- `POST /watched-films` - Film megjelölése megnézettként
+- `DELETE /watched-films/{filmId}` - Film eltávolítása a megnézettek közül
+
 ### Admin (csak admin jogosultsággal)
 - `GET /users` - Összes felhasználó
 - `PUT /users/{id}/role` - Jogosultság módosítása
@@ -53,66 +105,18 @@ Táblák:
 - `film_mufaj` - Film-műfaj kapcsolótábla
 - `szerepel_benne` - Film-színész kapcsolótábla
 
-## Tesztelés
+## Tesztelés Postman-nel
 
-### Automatikus tesztek Newman CLI-vel:
-
-```bash
-# Minden teszt futtatása cookie jar-ral (ajánlott)
-newman run tesztek/Film-API.postman_collection.json --cookie-jar tesztek/cookies.json
-
-# Adott kategória tesztelése
-newman run tesztek/Film-API.postman_collection.json --folder "Films"
-newman run tesztek/Film-API.postman_collection.json --folder "Authentication" --cookie-jar tesztek/cookies.json
-```
-
-**Fontos:** A `--cookie-jar` kapcsoló szükséges az autentikációs tesztekhez, hogy a session cookie-k megmaradjanak a kérések között.
-
-### Teszt adatok beállítása:
-
-```bash
-mysql -u root film < tesztek/test-data-setup.sql
-```
-
-Ez létrehozza:
-- Moderátor felhasználót (email: moderator@cinematar.hu, jelszó: moderator123)
-- Admin jogosultságot az admin felhasználónak
-
-## Teszt eredmények
-
-**46/57 teszt sikeres (81%)**
-
-- ✅ Films: 11/11 (100%)
-- ✅ Actors: 11/11 (100%)
-- ✅ Genres: 6/6 (100%)
-- ✅ Film-Genres: 6/6 (100%)
-- ⚠️ Authentication: 10/16 (63%)
-- ⚠️ Admin: 2/7 (29%)
-
-### Ismert problémák
-
-1. **Register User konfliktus**: A `teszt_user` már létezik az adatbázisban (várható viselkedés)
-2. **Session kezelés**: Newman CLI nem perzisztálja automatikusan a session cookie-kat a kérések között, ezért az admin tesztek és jelszó módosítás sikertelen
-3. **Update Profile 500 hiba**: Profil frissítési endpoint hibát dob (külön vizsgálandó)
-
-### Magyar mezőnevek
-
-Az API következetes magyar elnevezéseket használ:
-- `filmek`, `film_id`, `cim`, `kiadasi_ev`, `idotartam`
-- `szineszek`, `szinesz_id`, `nev`, `szuletesi_datum`
-- `mufajok`, `mufaj_id`
-- `felhasznalo`, `felhasznalonev`, `jogosultsag`
-
-## Telepítés
-
-1. XAMPP indítása (Apache + MySQL)
-2. Adatbázis importálása
-3. Backend elérése: `http://localhost/php/PHP projekt/Szerveroldali-programozas-projekt/public/`
+1. Importáld a `tesztek/Film-API.postman_collection.json` fájlt
+2. Importáld a `tesztek/Film-API.postman_environment.json` fájlt
+3. Futtasd a teszteket
 
 ## Technológiák
 
-- PHP 8.x
-- MySQL
-- PDO adatbázis kapcsolat
-- Session alapú autentikáció
-- Newman CLI automatikus teszteléshez
+- **Backend:** PHP 8.x
+- **Adatbázis:** MySQL
+- **Frontend:** HTML5, CSS3, Vanilla JavaScript (Fetch API)
+- **Autentikáció:** Session alapú
+- **Biztonság:** BCrypt jelszó hashelés, prepared statements
+- **UI/UX:** Sötét/világos téma, responsive layout, kétirányú carousel navigáció
+- **Képkezelés:** URL vagy fájl feltöltés támogatása (max 5MB, JPG/PNG/GIF/WebP)

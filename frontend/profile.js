@@ -1,78 +1,157 @@
+let currentUser = null;
+let uploadStatusElement = null;
+
 // Profil kezelés
 document.addEventListener('DOMContentLoaded', async function() {
-    const statusElement = document.getElementById('status');
-    
-    // Felhasználó betöltése
+    uploadStatusElement = document.getElementById('upload-status');
+    const fileInput = document.getElementById('file-upload');
+
+    if (fileInput) {
+        fileInput.addEventListener('change', handleProfileImageUpload);
+    }
+
     await loadUserProfile();
+    setupNavbarFromLocalStorage();
 });
 
 async function loadUserProfile() {
     try {
-        const response = await fetch(`${API_CONFIG.BASE_URL}/users/profile`, {
-            method: 'GET',
-            headers: API_CONFIG.HEADERS,
-            credentials: 'include'
-        });
+        const result = await API.getProfile();
 
-        const result = await response.json();
-
-        if (response.ok && result.user) {
-            displayUserProfile(result.user);
-        } else {
-            // Nincs bejelentkezve - átirányítás
-            console.warn('Nincs bejelentkezve');
-            // localStorage-ból próbáljuk meg betölteni
-            const cachedUser = localStorage.getItem('user');
-            if (cachedUser) {
-                displayUserProfile(JSON.parse(cachedUser));
-            } else {
-                // Átirányítás bejelentkezéshez
-                window.location.href = 'bejelentkezes.html';
-            }
+        if (result.success && result.data && result.data.user) {
+            currentUser = normalizeUser(result.data.user);
+            displayUserProfile(currentUser);
+            cacheUser(currentUser);
+            return;
         }
     } catch (error) {
         console.error('Profile load error:', error);
-        // Próbálkozás localStorage-ból
-        const cachedUser = localStorage.getItem('user');
-        if (cachedUser) {
-            displayUserProfile(JSON.parse(cachedUser));
-        }
+    }
+
+    // Fallback: localStorage vagy átirányítás
+    const cachedUser = localStorage.getItem('user');
+    if (cachedUser) {
+        currentUser = JSON.parse(cachedUser);
+        displayUserProfile(currentUser);
+    } else {
+        window.location.href = 'bejelentkezes.html';
     }
 }
 
+function normalizeUser(user) {
+    if (!user) {
+        return null;
+    }
+
+    return {
+        ...user,
+        felhasznalonev: user.felhasznalonev || user.name || '',
+        email: user.email || '',
+        profilkep_url: user.profilkep_url || user.profile_image || null,
+        jogosultsag: user.jogosultsag || user.szerepkor || 'user'
+    };
+}
+
+function cacheUser(user) {
+    if (!user) return;
+    const existing = JSON.parse(localStorage.getItem('user') || '{}');
+    const merged = { ...existing, ...user };
+    localStorage.setItem('user', JSON.stringify(merged));
+}
+
 function displayUserProfile(user) {
+    if (!user) return;
+
+    currentUser = { ...currentUser, ...user };
+
     // Név megjelenítése
     const nameElements = document.querySelectorAll('[data-user-name]');
     nameElements.forEach(el => {
-        el.textContent = user.felhasznalonev || 'Felhasználó neve';
+        el.textContent = currentUser.felhasznalonev || 'Felhasználó neve';
     });
 
     // Email megjelenítése
     const emailElements = document.querySelectorAll('[data-user-email]');
     emailElements.forEach(el => {
-        el.textContent = user.email || 'user@domain.com';
+        el.textContent = currentUser.email || 'user@domain.com';
     });
 
     // Szerepkör megjelenítése (ha van ilyen elem)
     const roleElements = document.querySelectorAll('[data-user-role]');
     roleElements.forEach(el => {
-        el.textContent = user.szerep || 'user';
+        el.textContent = currentUser.jogosultsag || 'user';
     });
 
     // Profilkép megjelenítése
-    if (user.profilkep_url) {
-        const profileImages = document.querySelectorAll('.profile-picture');
-        profileImages.forEach(img => {
-            img.src = user.profilkep_url;
-        });
-    }
+    const profileImages = document.querySelectorAll('.profile-picture');
+    const profileSrc = currentUser.profilkep_url || 'img/profil.jpg';
+    profileImages.forEach(img => {
+        img.src = profileSrc;
+    });
 
     // Form mezők kitöltése (ha van szerkesztő form)
     const nameInput = document.querySelector('input[name="felhasznalonev"]');
     const emailInput = document.querySelector('input[name="email"]');
     
-    if (nameInput) nameInput.value = user.felhasznalonev || '';
-    if (emailInput) emailInput.value = user.email || '';
+    if (nameInput) nameInput.value = currentUser.felhasznalonev || '';
+    if (emailInput) emailInput.value = currentUser.email || '';
+}
+
+async function handleProfileImageUpload(event) {
+    const file = event.target.files && event.target.files[0];
+    if (!file) {
+        return;
+    }
+
+    showUploadStatus('Kép feltöltése folyamatban...', false);
+
+    const formData = new FormData();
+    formData.append('image', file);
+
+    try {
+        const response = await fetch(`${API_CONFIG.BASE_URL}/upload/image`, {
+            method: 'POST',
+            credentials: 'include',
+            body: formData
+        });
+
+        const uploadResult = await response.json();
+
+        if (!response.ok || !uploadResult.url) {
+            throw new Error(uploadResult.message || 'A kép feltöltése sikertelen.');
+        }
+
+        if (!currentUser) {
+            await loadUserProfile();
+        }
+
+        const payload = {
+            felhasznalonev: currentUser?.felhasznalonev || '',
+            email: currentUser?.email || '',
+            profilkep_url: uploadResult.url
+        };
+
+        const updateResult = await API.updateProfile(payload);
+
+        if (!updateResult.success) {
+            throw new Error(updateResult.error || updateResult.data?.message || 'A profil frissítése sikertelen.');
+        }
+
+        currentUser = { ...currentUser, profilkep_url: uploadResult.url };
+        cacheUser(currentUser);
+        displayUserProfile(currentUser);
+        showUploadStatus('Profilkép sikeresen frissítve.', false);
+        event.target.value = '';
+    } catch (error) {
+        console.error('Profile image upload error:', error);
+        showUploadStatus(error.message || 'Hiba történt a feltöltés közben.', true);
+    }
+}
+
+function showUploadStatus(message, isError = false) {
+    if (!uploadStatusElement) return;
+    uploadStatusElement.textContent = message;
+    uploadStatusElement.style.color = isError ? '#ff3b3b' : '#4dbf00';
 }
 
 // Kijelentkezés
@@ -132,38 +211,39 @@ async function updateProfile(formData) {
     }
 }
 
-// Navbar felhasználó megjelenítése minden oldalon
-document.addEventListener('DOMContentLoaded', function() {
+function setupNavbarFromLocalStorage() {
     const user = JSON.parse(localStorage.getItem('user') || 'null');
     
-    if (user) {
-        // Profil linkek frissítése
-        const profileLinks = document.querySelectorAll('a[href="profil.html"]');
-        profileLinks.forEach(link => {
-            const img = link.querySelector('.profile-picture');
-            if (img && user.profilkep_url) {
-                img.src = user.profilkep_url;
-            }
-        });
+    if (!user) {
+        return;
+    }
 
-        // Navbar menü módosítása (bejelentkezés helyett kijelentkezés)
-        const menuList = document.querySelector('.menu-list');
-        if (menuList && user) {
-            const loginItem = Array.from(menuList.querySelectorAll('a')).find(a => a.textContent === 'Bejelentkezés');
-            const registerItem = Array.from(menuList.querySelectorAll('a')).find(a => a.textContent === 'Regisztráció');
-            
-            if (loginItem) {
-                loginItem.textContent = 'Kijelentkezés';
-                loginItem.href = '#';
-                loginItem.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    logout();
-                });
-            }
-            
-            if (registerItem && registerItem.parentElement) {
-                registerItem.parentElement.style.display = 'none';
-            }
+    // Profil linkek frissítése
+    const profileLinks = document.querySelectorAll('a[href="profil.html"]');
+    profileLinks.forEach(link => {
+        const img = link.querySelector('.profile-picture');
+        if (img && user.profilkep_url) {
+            img.src = user.profilkep_url;
+        }
+    });
+
+    // Navbar menü módosítása (bejelentkezés helyett kijelentkezés)
+    const menuList = document.querySelector('.menu-list');
+    if (menuList) {
+        const loginItem = Array.from(menuList.querySelectorAll('a')).find(a => a.textContent === 'Bejelentkezés');
+        const registerItem = Array.from(menuList.querySelectorAll('a')).find(a => a.textContent === 'Regisztráció');
+        
+        if (loginItem) {
+            loginItem.textContent = 'Kijelentkezés';
+            loginItem.href = '#';
+            loginItem.addEventListener('click', (e) => {
+                e.preventDefault();
+                logout();
+            });
+        }
+        
+        if (registerItem && registerItem.parentElement) {
+            registerItem.parentElement.style.display = 'none';
         }
     }
-});
+}

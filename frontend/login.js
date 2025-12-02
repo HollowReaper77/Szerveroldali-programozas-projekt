@@ -44,7 +44,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 statusElement.style.color = '#4dbf00';
 
                 // Felhasználó adatok mentése localStorage-ba
-                localStorage.setItem('user', JSON.stringify(result.user));
+                localStorage.setItem('user', JSON.stringify(result.felhasznalo));
 
                 // Átirányítás a főoldalra 1 másodperc múlva
                 setTimeout(() => {

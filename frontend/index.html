@@ -1,4 +1,5 @@
-<html lang="en">
+<!doctype html>
+<html lang="hu">
 
 <head>
     <meta charset="UTF-8">
@@ -24,14 +25,12 @@
             
             <div class="menu-container">
                 <ul class="menu-list">
-                    <li class="menu-list-item"><a href="kereses.html">Keresés</a></li>
-                    <li class="menu-list-item"><a href="bejelentkezes.html">Bejelentkezés</a></li>
-                    <li class="menu-list-item"><a href="regisztracio.html">Regisztráció</a></li>
+                    <!-- Dinamikusan töltődik az app.js-ből -->
                 </ul>
             </div>
 
             <div class="profile-container">
-                <a href="profil.html">
+                <a href="profil.html" style="display: none;">
                     <img class="profile-picture" src="img/profil.jpg" alt="Profil">
                 </a>
                 
@@ -44,27 +43,41 @@
         </div>
     </div>
     <div class="sidebar">
-        <a href="kereses.html"><i class="left-menu-icon fas fa-search"></i></a>
-        <a href="index.html"><i class="left-menu-icon fas fa-home"></i></a>
-        <a href="profil.html"><i class="left-menu-icon fas fa-user"></i></a>
-        <a href="bejelentkezes.html"><i class="left-menu-icon fas fa-key"></i></a>
-        <i class="left-menu-icon fas fa-bookmark"></i>
+        <!-- Dinamikusan töltődik az app.js-ből -->
     </div>
     
     <div class="container">
-        <div class="content-container">
-            <div class="featured-content"
-                style="background: linear-gradient(to bottom, rgba(0,0,0,0), #151515), url('img/f-1.jpg');">
-                <img class="featured-title" src="img/f-t-1.png" alt="">
-                <p class="featured-desc">Leírás</p>
-                <a href="https://www.netflix.com/" target="_blank">
-                    <button class="featured-button">MEGNÉZEM</button>
-                </a>
+        <div class="content-container home-content">
+            <div class="featured-content" id="featured-content">
+                <div class="featured-overlay"></div>
+                <div class="featured-latest" id="featured-latest" aria-live="polite"></div>
+                <button class="featured-nav featured-prev" id="featured-prev" aria-label="Előző film">
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+                <button class="featured-nav featured-next" id="featured-next" aria-label="Következő film">
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+                <div class="featured-details">
+                    <p class="featured-tag" id="featured-tag">Kiemelt premier</p>
+                    <h1 class="featured-title" id="featured-title">Tölts fel filmeket</h1>
+                    <div class="featured-meta-row">
+                        <span class="featured-meta" id="featured-meta">A legújabb filmek itt jelennek meg.</span>
+                        <span class="featured-counter" id="featured-index"></span>
+                    </div>
+                    <p class="featured-desc" id="featured-desc">Csatlakozz bejelentkezve, hogy lásd a kiemelt alkotásokat.</p>
+                    <div class="featured-actions">
+                        <button class="featured-button" id="featured-watch-btn" disabled>Megnézem</button>
+                        <button class="featured-secondary-button" id="featured-more-btn" disabled>További részletek</button>
+                    </div>
+                </div>
             </div>
             
             <div class="movie-list-container">
                 <h1 class="movie-list-title">ÚJ FILMEK</h1>
                 <div class="movie-list-wrapper">
+                    <button class="arrow arrow-left" type="button" aria-label="Előző filmek">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
                     <div class="movie-list">
                         <div class="movie-list-item">
                             <img class="movie-list-item-img" src="img/1.jpeg" alt="">
@@ -109,7 +122,9 @@
                             <a href="https://www.netflix.com/" target="_blank"><button class="movie-list-item-button">Megnézem</button></a>
                         </div>
                     </div>
-                    <i class="fas fa-chevron-right arrow"></i>
+                    <button class="arrow arrow-right" type="button" aria-label="Következő filmek">
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
                 </div>
             </div>
         </div>
