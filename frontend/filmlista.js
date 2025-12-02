@@ -32,9 +32,26 @@ document.addEventListener('DOMContentLoaded', () => {
         const runtime = document.createElement('p');
         runtime.textContent = film.idotartam ? `Időtartam: ${film.idotartam} perc` : 'Hossz ismeretlen';
 
+        const directors = document.createElement('p');
+        directors.textContent = film.rendezok ? `Rendező: ${film.rendezok}` : 'Rendező: -';
+
+        const cast = document.createElement('p');
+        if (film.szineszek) {
+            const actorList = film.szineszek.split(',').map((name) => name.trim()).filter(Boolean);
+            const topActors = actorList.slice(0, 3);
+            const remaining = actorList.length - topActors.length;
+            cast.textContent = topActors.length
+                ? `Szereplők: ${topActors.join(', ')}${remaining > 0 ? ' …' : ''}`
+                : 'Szereplők: -';
+        } else {
+            cast.textContent = 'Szereplők: -';
+        }
+
         info.appendChild(title);
         info.appendChild(year);
         info.appendChild(runtime);
+        info.appendChild(directors);
+        info.appendChild(cast);
 
         if (film.leiras) {
             const description = document.createElement('p');

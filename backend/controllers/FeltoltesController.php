@@ -18,14 +18,20 @@ class FeltoltesController {
         // Ellenőrzi, hogy be van-e jelentkezve
         if (!isset($_SESSION['user_id'])) {
             http_response_code(401);
-            echo json_encode(["message" => "Bejelentkezés szükséges."]);
+            echo json_encode([
+                "success" => false,
+                "message" => "Bejelentkezés szükséges."
+            ]);
             return;
         }
 
         // Ellenőrzi, hogy van-e fájl
         if (!isset($_FILES['image']) || $_FILES['image']['error'] !== UPLOAD_ERR_OK) {
             http_response_code(400);
-            echo json_encode(["message" => "Nincs feltöltött fájl vagy hiba történt."]);
+            echo json_encode([
+                "success" => false,
+                "message" => "Nincs feltöltött fájl vagy hiba történt."
+            ]);
             return;
         }
 
@@ -38,14 +44,20 @@ class FeltoltesController {
 
         if (!in_array($mimeType, $this->allowedTypes)) {
             http_response_code(400);
-            echo json_encode(["message" => "Csak képfájlok engedélyezettek (JPG, PNG, GIF, WebP)."]);
+            echo json_encode([
+                "success" => false,
+                "message" => "Csak képfájlok engedélyezettek (JPG, PNG, GIF, WebP)."
+            ]);
             return;
         }
 
         // Fájl méret ellenőrzése
         if ($file['size'] > $this->maxFileSize) {
             http_response_code(400);
-            echo json_encode(["message" => "A fájl túl nagy. Maximum 5MB engedélyezett."]);
+            echo json_encode([
+                "success" => false,
+                "message" => "A fájl túl nagy. Maximum 5MB engedélyezett."
+            ]);
             return;
         }
 
@@ -62,13 +74,17 @@ class FeltoltesController {
 
             http_response_code(201);
             echo json_encode([
+                "success" => true,
                 "message" => "Kép sikeresen feltöltve.",
                 "url" => $imageUrl,
                 "filename" => $filename
             ]);
         } else {
             http_response_code(500);
-            echo json_encode(["message" => "Hiba történt a fájl mentése során."]);
+            echo json_encode([
+                "success" => false,
+                "message" => "Hiba történt a fájl mentése során."
+            ]);
         }
     }
 
@@ -77,7 +93,10 @@ class FeltoltesController {
         // Ellenőrzi, hogy be van-e jelentkezve
         if (!isset($_SESSION['user_id'])) {
             http_response_code(401);
-            echo json_encode(["message" => "Bejelentkezés szükséges."]);
+            echo json_encode([
+                "success" => false,
+                "message" => "Bejelentkezés szükséges."
+            ]);
             return;
         }
 
@@ -85,7 +104,10 @@ class FeltoltesController {
         $role = $_SESSION['user_role'] ?? 'user';
         if ($role !== 'admin' && $role !== 'moderator') {
             http_response_code(403);
-            echo json_encode(["message" => "Nincs jogosultságod a kép törléséhez."]);
+            echo json_encode([
+                "success" => false,
+                "message" => "Nincs jogosultságod a kép törléséhez."
+            ]);
             return;
         }
 
@@ -96,17 +118,26 @@ class FeltoltesController {
         // Fájl létezésének ellenőrzése
         if (!file_exists($filepath)) {
             http_response_code(404);
-            echo json_encode(["message" => "A fájl nem található."]);
+            echo json_encode([
+                "success" => false,
+                "message" => "A fájl nem található."
+            ]);
             return;
         }
 
         // Fájl törlése
         if (unlink($filepath)) {
             http_response_code(200);
-            echo json_encode(["message" => "Kép sikeresen törölve."]);
+            echo json_encode([
+                "success" => true,
+                "message" => "Kép sikeresen törölve."
+            ]);
         } else {
             http_response_code(500);
-            echo json_encode(["message" => "Hiba történt a fájl törlése során."]);
+            echo json_encode([
+                "success" => false,
+                "message" => "Hiba történt a fájl törlése során."
+            ]);
         }
     }
 
@@ -126,7 +157,18 @@ class FeltoltesController {
         $protocol = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http';
         $host = $_SERVER['HTTP_HOST'];
         $scriptName = dirname(dirname($_SERVER['SCRIPT_NAME']));
-        return $protocol . '://' . $host . $scriptName;
+        $encodedPath = $this->encodePath($scriptName);
+        return rtrim($protocol . '://' . $host . $encodedPath, '/');
+    }
+
+    private function encodePath($path) {
+        $trimmed = trim($path, '/');
+        if ($trimmed === '') {
+            return '';
+        }
+
+        $segments = array_map('rawurlencode', explode('/', $trimmed));
+        return '/' . implode('/', $segments);
     }
 }
 ?>

@@ -18,8 +18,7 @@ REST API filmadatbázis kezeléséhez PHP-ban.
    - Importáld a `backend/database/filmadatbazis.sql` fájlt
 
 3. **Alkalmazás elérése:**
-   - API: `http://localhost/php/PHP projekt/Szerveroldali-programozas-projekt/public/`
-   - Frontend: `frontend/index.html`
+   - API: `http://localhost/php/PHP projekt/Szerveroldali-programozas-projekt/frontend/index.html`
 
 ## Alapértelmezett felhasználók
 

@@ -11,9 +11,11 @@ const API_CONFIG = {
         GENRES: '/genres',
         COUNTRIES: '/countries',
         FILM_ACTORS: '/film-actors',
+        FILM_DIRECTORS: '/film-directors',
         FILM_GENRES: '/film-genres',
         USERS: '/users',
-        UPLOAD: '/upload'
+        UPLOAD: '/upload',
+        REVIEWS: '/reviews'
     },
     
     // HTTP Headers
@@ -75,33 +77,76 @@ const API = {
     createFilm: (filmData) => 
         apiRequest(API_CONFIG.ENDPOINTS.FILMS, {
             method: 'POST',
+            credentials: 'include',
             body: JSON.stringify(filmData)
         }),
     
     updateFilm: (id, filmData) => 
         apiRequest(`${API_CONFIG.ENDPOINTS.FILMS}/${id}`, {
             method: 'PUT',
+            credentials: 'include',
             body: JSON.stringify(filmData)
         }),
     
     deleteFilm: (id) => 
         apiRequest(`${API_CONFIG.ENDPOINTS.FILMS}/${id}`, {
-            method: 'DELETE'
+            method: 'DELETE',
+            credentials: 'include'
         }),
     
     // Actors
     getActors: (page = 1, limit = 10) => 
-        apiRequest(`${API_CONFIG.ENDPOINTS.ACTORS}?page=${page}&limit=${limit}`),
+        apiRequest(`${API_CONFIG.ENDPOINTS.ACTORS}&page=${page}&limit=${limit}`),
     
     getActor: (id) => 
         apiRequest(`${API_CONFIG.ENDPOINTS.ACTORS}/${id}`),
+
+    createActor: (payload) => 
+        apiRequest(API_CONFIG.ENDPOINTS.ACTORS, {
+            method: 'POST',
+            credentials: 'include',
+            body: JSON.stringify(payload)
+        }),
+
+    updateActor: (id, payload) => 
+        apiRequest(`${API_CONFIG.ENDPOINTS.ACTORS}/${id}`, {
+            method: 'PUT',
+            credentials: 'include',
+            body: JSON.stringify(payload)
+        }),
+
+    deleteActor: (id) => 
+        apiRequest(`${API_CONFIG.ENDPOINTS.ACTORS}/${id}`, {
+            method: 'DELETE',
+            credentials: 'include'
+        }),
     
     // Directors
     getDirectors: (page = 1, limit = 10) => 
-        apiRequest(`${API_CONFIG.ENDPOINTS.DIRECTORS}?page=${page}&limit=${limit}`),
+        apiRequest(`${API_CONFIG.ENDPOINTS.DIRECTORS}&page=${page}&limit=${limit}`),
     
     getDirector: (id) => 
         apiRequest(`${API_CONFIG.ENDPOINTS.DIRECTORS}/${id}`),
+
+    createDirector: (payload) => 
+        apiRequest(API_CONFIG.ENDPOINTS.DIRECTORS, {
+            method: 'POST',
+            credentials: 'include',
+            body: JSON.stringify(payload)
+        }),
+
+    updateDirector: (id, payload) => 
+        apiRequest(`${API_CONFIG.ENDPOINTS.DIRECTORS}/${id}`, {
+            method: 'PUT',
+            credentials: 'include',
+            body: JSON.stringify(payload)
+        }),
+
+    deleteDirector: (id) => 
+        apiRequest(`${API_CONFIG.ENDPOINTS.DIRECTORS}/${id}`, {
+            method: 'DELETE',
+            credentials: 'include'
+        }),
     
     // Genres
     getGenres: () => 
@@ -117,6 +162,41 @@ const API = {
     
     getFilmsByActor: (actorId) => 
         apiRequest(`${API_CONFIG.ENDPOINTS.FILM_ACTORS}/actor/${actorId}`),
+    
+    addActorToFilm: (filmId, actorId) => 
+        apiRequest(API_CONFIG.ENDPOINTS.FILM_ACTORS, {
+            method: 'POST',
+            credentials: 'include',
+            body: JSON.stringify({ film_id: filmId, szinesz_id: actorId })
+        }),
+
+    removeActorFromFilm: (filmId, actorId) => 
+        apiRequest(API_CONFIG.ENDPOINTS.FILM_ACTORS, {
+            method: 'DELETE',
+            credentials: 'include',
+            body: JSON.stringify({ film_id: filmId, szinesz_id: actorId })
+        }),
+
+    // Film-Directors relationships
+    getDirectorsByFilm: (filmId) => 
+        apiRequest(`${API_CONFIG.ENDPOINTS.FILM_DIRECTORS}/film/${filmId}`),
+
+    getFilmsByDirector: (directorId) => 
+        apiRequest(`${API_CONFIG.ENDPOINTS.FILM_DIRECTORS}/director/${directorId}`),
+
+    addDirectorToFilm: (filmId, directorId) => 
+        apiRequest(API_CONFIG.ENDPOINTS.FILM_DIRECTORS, {
+            method: 'POST',
+            credentials: 'include',
+            body: JSON.stringify({ film_id: filmId, rendezo_id: directorId })
+        }),
+
+    removeDirectorFromFilm: (filmId, directorId) => 
+        apiRequest(API_CONFIG.ENDPOINTS.FILM_DIRECTORS, {
+            method: 'DELETE',
+            credentials: 'include',
+            body: JSON.stringify({ film_id: filmId, rendezo_id: directorId })
+        }),
     
     // Film-Genres relationships
     getGenresByFilm: (filmId) => 
@@ -194,5 +274,16 @@ const API = {
         apiRequest(`${API_CONFIG.ENDPOINTS.USERS}/${userId}`, {
             method: 'DELETE',
             credentials: 'include'
+        }),
+
+    // Reviews
+    getReviewsByFilm: (filmId) => 
+        apiRequest(`${API_CONFIG.ENDPOINTS.REVIEWS}/film/${filmId}`),
+
+    createReview: (payload) => 
+        apiRequest(API_CONFIG.ENDPOINTS.REVIEWS, {
+            method: 'POST',
+            credentials: 'include',
+            body: JSON.stringify(payload)
         })
 };

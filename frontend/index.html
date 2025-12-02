@@ -47,14 +47,28 @@
     </div>
     
     <div class="container">
-        <div class="content-container">
-            <div class="featured-content"
-                style="background: linear-gradient(to bottom, rgba(0,0,0,0), #151515), url('img/f-1.jpg');">
-                <img class="featured-title" src="img/f-t-1.png" alt="">
-                <p class="featured-desc">Leírás</p>
-                <a href="https://www.netflix.com/" target="_blank">
-                    <button class="featured-button">MEGNÉZEM</button>
-                </a>
+        <div class="content-container home-content">
+            <div class="featured-content" id="featured-content">
+                <div class="featured-overlay"></div>
+                <button class="featured-nav featured-prev" id="featured-prev" aria-label="Előző film">
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+                <button class="featured-nav featured-next" id="featured-next" aria-label="Következő film">
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+                <div class="featured-details">
+                    <p class="featured-tag" id="featured-tag">Kiemelt premier</p>
+                    <h1 class="featured-title" id="featured-title">Tölts fel filmeket</h1>
+                    <div class="featured-meta-row">
+                        <span class="featured-meta" id="featured-meta">A legújabb filmek itt jelennek meg.</span>
+                        <span class="featured-counter" id="featured-index"></span>
+                    </div>
+                    <p class="featured-desc" id="featured-desc">Csatlakozz bejelentkezve, hogy lásd a kiemelt alkotásokat.</p>
+                    <div class="featured-actions">
+                        <button class="featured-button" id="featured-watch-btn" disabled>Megnézem</button>
+                        <button class="featured-secondary-button" id="featured-more-btn" disabled>További részletek</button>
+                    </div>
+                </div>
             </div>
             
             <div class="movie-list-container">

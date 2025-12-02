@@ -82,6 +82,25 @@
         </div>
     </div>
 
+    <div id="film-modal" class="film-modal hidden" aria-hidden="true">
+        <div class="film-modal__dialog">
+            <button type="button" class="film-modal__close" aria-label="Bezárás">&times;</button>
+            <div class="film-modal__header">
+                <img id="film-modal-poster" src="" alt="Film poszter" class="film-modal__poster">
+                <div class="film-modal__info">
+                    <h2 id="film-modal-title"></h2>
+                    <p id="film-modal-meta" class="film-modal__meta"></p>
+                    <p id="film-modal-description" class="film-modal__description"></p>
+                </div>
+            </div>
+            <div class="film-modal__comments">
+                <h3>Vélemények</h3>
+                <div id="film-modal-comments" class="film-modal__comment-list"></div>
+                <div id="film-modal-comment-form" class="film-modal__form"></div>
+            </div>
+        </div>
+    </div>
+
     <script src="config.js"></script>
     <script src="app.js"></script>
     <script src="search.js"></script>

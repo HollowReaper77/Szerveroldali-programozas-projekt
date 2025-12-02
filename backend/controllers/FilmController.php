@@ -77,7 +77,9 @@ class FilmController {
                     "idotartam" => $this->filmModel->idotartam,
                     "poszter_url" => $this->filmModel->poszter_url,
                     "leiras" => $this->filmModel->leiras,
-                    "kiadasi_ev" => $this->filmModel->kiadasi_ev
+                    "kiadasi_ev" => $this->filmModel->kiadasi_ev,
+                    "rendezok" => $this->filmModel->rendezok_lista ? array_filter(array_map('trim', explode(',', $this->filmModel->rendezok_lista))) : [],
+                    "szineszek" => $this->filmModel->szineszek_lista ? array_filter(array_map('trim', explode(',', $this->filmModel->szineszek_lista))) : []
                 ]
             ]);
         } else {
@@ -101,7 +103,6 @@ class FilmController {
         if (
             !isset($data['cim']) ||
             !isset($data['idotartam']) ||
-            !isset($data['poszter_url']) ||
             !isset($data['leiras']) ||
             !isset($data['kiadasi_ev'])
         ) {
@@ -114,14 +115,20 @@ class FilmController {
         validateLength($data['cim'], "Cím", 1, 255);
         validateNumber($data['idotartam'], "Időtartam", 1, 999);
         validateNumber($data['kiadasi_ev'], "Kiadási év", 1888, date('Y') + 5);
-        validateUrl($data['poszter_url'], "Poszter URL");
         validateLength($data['leiras'], "Leírás", 0, 2000);
 
         $this->filmModel->cim = $data['cim'];
         $this->filmModel->idotartam = $data['idotartam'];
-        $this->filmModel->poszter_url = $data['poszter_url'];
         $this->filmModel->leiras = $data['leiras'];
         $this->filmModel->kiadasi_ev = $data['kiadasi_ev'];
+
+        $posterUrl = isset($data['poszter_url']) ? trim((string)$data['poszter_url']) : '';
+        if ($posterUrl === '') {
+            $this->filmModel->poszter_url = null;
+        } else {
+            validateUrl($posterUrl, "Poszter URL");
+            $this->filmModel->poszter_url = $posterUrl;
+        }
 
         try {
             if ($this->filmModel->create()) {
@@ -180,10 +187,15 @@ class FilmController {
             $this->filmModel->idotartam = $data['idotartam'];
         }
 
-        // Ha van poszter URL, validáld és frissítsd
-        if (isset($data['poszter_url'])) {
-            validateUrl($data['poszter_url'], "Poszter URL");
-            $this->filmModel->poszter_url = $data['poszter_url'];
+        // Ha van poszter URL, validáld és frissítsd (üres string esetén törölhető)
+        if (array_key_exists('poszter_url', $data)) {
+            $posterUrl = trim((string)$data['poszter_url']);
+            if ($posterUrl === '') {
+                $this->filmModel->poszter_url = null;
+            } else {
+                validateUrl($posterUrl, "Poszter URL");
+                $this->filmModel->poszter_url = $posterUrl;
+            }
         }
 
         // Ha van leírás, validáld és frissítsd

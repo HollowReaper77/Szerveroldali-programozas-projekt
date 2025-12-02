@@ -165,6 +165,145 @@
                         </tbody>
                     </table>
                 </div>
+
+                <!-- Színészek kezelése -->
+                <div class="admin-section">
+                    <h2>Színészek Kezelése</h2>
+                    <div id="actor-status" class="status-message"></div>
+
+                    <form id="add-actor-form">
+                        <input type="hidden" id="actor-edit-id">
+                        <div class="form-group">
+                            <label>Név *</label>
+                            <input type="text" id="actor-name" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Születési dátum *</label>
+                            <input type="date" id="actor-birth" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Bio</label>
+                            <textarea id="actor-bio" rows="3"></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary" id="actor-submit-btn">Színész hozzáadása</button>
+                        <button type="button" class="btn btn-secondary hidden" id="actor-cancel-edit">Mégse szerkesztés</button>
+                    </form>
+
+                    <table class="films-table" style="margin-top: 20px;">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Név</th>
+                                <th>Születési dátum</th>
+                                <th>Műveletek</th>
+                            </tr>
+                        </thead>
+                        <tbody id="actors-table">
+                            <tr>
+                                <td colspan="4" style="text-align: center;">Betöltés...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Rendezők kezelése -->
+                <div class="admin-section">
+                    <h2>Rendezők Kezelése</h2>
+                    <div id="director-status" class="status-message"></div>
+
+                    <form id="add-director-form">
+                        <input type="hidden" id="director-edit-id">
+                        <div class="form-group">
+                            <label>Név *</label>
+                            <input type="text" id="director-name" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Születési dátum *</label>
+                            <input type="date" id="director-birth" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Bio</label>
+                            <textarea id="director-bio" rows="3"></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary" id="director-submit-btn">Rendező hozzáadása</button>
+                        <button type="button" class="btn btn-secondary hidden" id="director-cancel-edit">Mégse szerkesztés</button>
+                    </form>
+
+                    <table class="films-table" style="margin-top: 20px;">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Név</th>
+                                <th>Születési dátum</th>
+                                <th>Műveletek</th>
+                            </tr>
+                        </thead>
+                        <tbody id="directors-table">
+                            <tr>
+                                <td colspan="4" style="text-align: center;">Betöltés...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Kapcsolatok -->
+                <div class="admin-section">
+                    <h2>Szereplők hozzárendelése filmhez</h2>
+                    <div id="cast-status" class="status-message"></div>
+
+                    <div class="form-group">
+                        <label>Film</label>
+                        <select id="cast-film-select"></select>
+                    </div>
+                    <div class="form-group">
+                        <label>Színész</label>
+                        <select id="cast-actor-select"></select>
+                    </div>
+                    <button type="button" class="btn btn-primary" id="add-cast-button">Színész hozzárendelése</button>
+
+                    <table class="films-table" style="margin-top: 20px;">
+                        <thead>
+                            <tr>
+                                <th>Név</th>
+                                <th>Művelet</th>
+                            </tr>
+                        </thead>
+                        <tbody id="cast-table">
+                            <tr>
+                                <td colspan="2" style="text-align: center;">Válassz filmet a listából.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="admin-section">
+                    <h2>Rendezők hozzárendelése filmhez</h2>
+                    <div id="director-link-status" class="status-message"></div>
+
+                    <div class="form-group">
+                        <label>Film</label>
+                        <select id="director-film-select"></select>
+                    </div>
+                    <div class="form-group">
+                        <label>Rendező</label>
+                        <select id="director-select"></select>
+                    </div>
+                    <button type="button" class="btn btn-primary" id="add-director-link">Rendező hozzárendelése</button>
+
+                    <table class="films-table" style="margin-top: 20px;">
+                        <thead>
+                            <tr>
+                                <th>Név</th>
+                                <th>Művelet</th>
+                            </tr>
+                        </thead>
+                        <tbody id="director-link-table">
+                            <tr>
+                                <td colspan="2" style="text-align: center;">Válassz filmet a listából.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
                 </div>
                 
                 <!-- Felhasználó Kezelés Szekció (csak admin) -->

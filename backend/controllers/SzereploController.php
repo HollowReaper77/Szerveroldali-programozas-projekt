@@ -67,21 +67,22 @@ class SzereploController {
     // Színész hozzáadása egy filmhez
     // -----------------------------------------------------------
     public function addActorToFilm() {
+        requireRole('moderator');
         $data = getJsonInput();
 
-        if (!isset($data->film_id) || !isset($data->szinesz_id)) {
+        if (!isset($data['film_id']) || !isset($data['szinesz_id'])) {
             http_response_code(400);
             echo json_encode(["message" => "A film_id és szinesz_id mezők kötelezőek."]);
             return;
         }
 
         // Validálás - számok legyenek
-        validateNumber($data->film_id, "Film ID", 1);
-        validateNumber($data->szinesz_id, "Színész ID", 1);
+        validateNumber($data['film_id'], "Film ID", 1);
+        validateNumber($data['szinesz_id'], "Színész ID", 1);
 
         // Ellenőrizd, hogy a film létezik-e
         $filmCheck = $this->db->prepare("SELECT film_id FROM film WHERE film_id = ?");
-        $filmCheck->execute([$data->film_id]);
+        $filmCheck->execute([$data['film_id']]);
         if ($filmCheck->rowCount() === 0) {
             http_response_code(404);
             echo json_encode(["message" => "A megadott film nem található."]);
@@ -90,15 +91,15 @@ class SzereploController {
 
         // Ellenőrizd, hogy a színész létezik-e
         $actorCheck = $this->db->prepare("SELECT szinesz_id FROM szineszek WHERE szinesz_id = ?");
-        $actorCheck->execute([$data->szinesz_id]);
+        $actorCheck->execute([$data['szinesz_id']]);
         if ($actorCheck->rowCount() === 0) {
             http_response_code(404);
             echo json_encode(["message" => "A megadott színész nem található."]);
             return;
         }
 
-        $this->castModel->film_id = $data->film_id;
-        $this->castModel->szinesz_id = $data->szinesz_id;
+        $this->castModel->film_id = $data['film_id'];
+        $this->castModel->szinesz_id = $data['szinesz_id'];
 
         try {
             if ($this->castModel->create()) {
@@ -119,19 +120,20 @@ class SzereploController {
     // Színész eltávolítása egy filmből
     // -----------------------------------------------------------
     public function removeActorFromFilm() {
+        requireRole('moderator');
         $data = getJsonInput();
 
-        if (!isset($data->film_id) || !isset($data->szinesz_id)) {
+        if (!isset($data['film_id']) || !isset($data['szinesz_id'])) {
             http_response_code(400);
             echo json_encode(["message" => "A film_id és szinesz_id mezők kötelezőek a törléshez."]);
             return;
         }
 
-        validateNumber($data->film_id, "Film ID", 1);
-        validateNumber($data->szinesz_id, "Színész ID", 1);
+        validateNumber($data['film_id'], "Film ID", 1);
+        validateNumber($data['szinesz_id'], "Színész ID", 1);
 
-        $this->castModel->film_id = $data->film_id;
-        $this->castModel->szinesz_id = $data->szinesz_id;
+        $this->castModel->film_id = $data['film_id'];
+        $this->castModel->szinesz_id = $data['szinesz_id'];
 
         try {
             if ($this->castModel->delete()) {

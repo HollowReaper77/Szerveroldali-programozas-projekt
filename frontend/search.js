@@ -7,6 +7,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     let currentPage = 1;
     let allFilms = [];
+    let initialQuery = new URLSearchParams(window.location.search).get('title') || '';
 
     // Filmek betöltése az API-ból
     async function loadFilms() {
@@ -19,6 +20,12 @@ document.addEventListener('DOMContentLoaded', function() {
             allFilms = result.data.filmek || [];
             displayFilms(allFilms);
             statusElement.textContent = `${allFilms.length} film betöltve`;
+
+            if (initialQuery) {
+                searchInput.value = initialQuery;
+                searchFilms();
+                initialQuery = '';
+            }
         } else {
             statusElement.textContent = 'Hiba: ' + result.error;
             statusElement.style.color = '#ff3b3b';

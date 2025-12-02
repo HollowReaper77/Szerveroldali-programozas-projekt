@@ -61,26 +61,28 @@ class RendezoController {
     // POST /directors   (új rendező)
     // -----------------------------------------------------------
     public function createDirector() {
+        requireRole('moderator');
+
         $data = getJsonInput();
 
         // Kötelező mezők
-        if (!isset($data->nev) || !isset($data->szuletesi_datum)) {
+        if (!isset($data['nev']) || !isset($data['szuletesi_datum'])) {
             http_response_code(400);
             echo json_encode(["message" => "A 'nev' és 'szuletesi_datum' mezők kötelezőek."]);
             return;
         }
 
         // Validálás
-        validateLength($data->nev, "Név", 1, 255);
-        validateDate($data->szuletesi_datum, "Születési dátum");
+        validateLength($data['nev'], "Név", 1, 255);
+        validateDate($data['szuletesi_datum'], "Születési dátum");
 
-        $this->directorModel->nev = $data->nev;
-        $this->directorModel->szuletesi_datum = $data->szuletesi_datum;
-        $this->directorModel->bio = $data->bio ?? null;
+        $this->directorModel->nev = $data['nev'];
+        $this->directorModel->szuletesi_datum = $data['szuletesi_datum'];
+        $this->directorModel->bio = $data['bio'] ?? null;
 
         // Bio validálás, ha van
-        if (isset($data->bio)) {
-            validateLength($data->bio, "Bio", 0, 5000);
+        if (isset($data['bio'])) {
+            validateLength($data['bio'], "Bio", 0, 5000);
         }
 
         try {
@@ -101,6 +103,7 @@ class RendezoController {
     // PUT /directors/{id}
     // -----------------------------------------------------------
     public function updateDirector($id) {
+        requireRole('moderator');
         $id = validateId($id, "Rendező ID");
         $data = getJsonInput();
 
@@ -115,19 +118,19 @@ class RendezoController {
         }
 
         // Validálás, ha vannak változások
-        if (isset($data->nev)) {
-            validateLength($data->nev, "Név", 1, 255);
-            $this->directorModel->nev = $data->nev;
+        if (isset($data['nev'])) {
+            validateLength($data['nev'], "Név", 1, 255);
+            $this->directorModel->nev = $data['nev'];
         }
 
-        if (isset($data->szuletesi_datum)) {
-            validateDate($data->szuletesi_datum, "Születési dátum");
-            $this->directorModel->szuletesi_datum = $data->szuletesi_datum;
+        if (isset($data['szuletesi_datum'])) {
+            validateDate($data['szuletesi_datum'], "Születési dátum");
+            $this->directorModel->szuletesi_datum = $data['szuletesi_datum'];
         }
 
-        if (isset($data->bio)) {
-            validateLength($data->bio, "Bio", 0, 5000);
-            $this->directorModel->bio = $data->bio;
+        if (isset($data['bio'])) {
+            validateLength($data['bio'], "Bio", 0, 5000);
+            $this->directorModel->bio = $data['bio'];
         }
 
         try {
@@ -148,6 +151,7 @@ class RendezoController {
     // DELETE /directors/{id}
     // -----------------------------------------------------------
     public function deleteDirector($id) {
+        requireRole('moderator');
         $id = validateId($id, "Rendező ID");
         
         // Ellenőrizd, hogy létezik-e
